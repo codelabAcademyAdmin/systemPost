@@ -11,20 +11,29 @@
 
 <body>
    <?php 
-        require 'core/app.php';
-        $AppRoutes = new AppRoutes;
-        require 'routes/routes.php';
-        $listRoutes=$AppRoutes->getRoutes();
-        $AppViews = new AppViews($listRoutes);
-        $AppViews->loadViews();
+        session_start();     
+        if(!isset($_SESSION['user'])){
+            require 'pages/page.login.php';
+        }else{
+            require 'core/app.php';
+            $AppRoutes = new AppRoutes;
+            require 'routes/routes.php';
+            $listRoutes=$AppRoutes->getRoutes();
+            $AppViews = new AppViews($listRoutes);
+            require 'layout/layout.php';
+            
+        }
     ?>
-
    <script src="assets/js/jquery.min.js"></script>
    <script src="assets/js/apiManager.js"></script>
    <script src="assets/js/app.js"></script>
    <?php 
+    if(!isset($_SESSION['user'])){
+        echo '<script src="assets/js/script.login.js"></script>';
+    }else{
         $AppScript = new AppScript($listRoutes);
         $AppScript->loadScript();
+    }
     ?>
 </body>
 
