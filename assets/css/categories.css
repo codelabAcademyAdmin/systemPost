@@ -1,0 +1,35 @@
+
+.category-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px;
+    gap: 20px;
+    font-family: Arial;
+}
+
+.category-item {
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.category-item span {
+    font-size: 12px;
+    color: #888;
+}
+
+.category-item:hover {
+    background-color: #e0f7fa;
+    transform: scale(1.05);
+}
+
+.active {
+    background-color: #d4f1f4;
+}
+
