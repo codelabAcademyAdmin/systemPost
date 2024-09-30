@@ -1,6 +1,6 @@
 <?php   
     $listRoutes = array(
-'index',
+        'index',
         'test',
         
     );

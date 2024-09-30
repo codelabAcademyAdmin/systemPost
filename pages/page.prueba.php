@@ -1,1 +1,4 @@
-esto es una prueba
+<?php
+require 'components/categories/categories.php';
+?>
+
