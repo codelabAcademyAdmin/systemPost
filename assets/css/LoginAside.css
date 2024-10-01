@@ -92,8 +92,18 @@
 }
 
 .container-logo{
-    height: 50px;
-    width: 50px;
+    height: 210px;
+    width: 210px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+   
 }
 
-
+.container-logo .codelab {
+   
+    font-size: 45px;
+    font-weight: 600;
+    
+}

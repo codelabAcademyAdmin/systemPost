@@ -15,6 +15,7 @@
 
     <div class="container-logo"> 
          <img src="assets/images/LOGO.svg" alt="">
+          <div class="codelab">CODELAB</div>
     </div>
 
 </div>
