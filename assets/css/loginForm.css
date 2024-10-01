@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
+    background-color: #fff;
 }
 
 .login-container .login-header{
@@ -44,6 +44,25 @@
     padding: 10px;
     font-size: 16px;
     outline: none;
+}
+
+.login-container .login-form .input-group .password-container .input-password{
+    padding-right: 40px;
+}
+
+.login-container .login-form .input-group .password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon-password {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 10px;
+    bottom: 26px;
+    cursor: pointer; 
 }
 
 .login-container .login-form .remember-me{
