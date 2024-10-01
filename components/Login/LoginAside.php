@@ -13,8 +13,8 @@
         <div class="faq">FAQ</div>
    </div>
 
-    <div class="container-logo"> logo
-    
+    <div class="container-logo"> 
+         <img src="assets/images/LOGO.svg" alt="">
     </div>
 
 </div>
