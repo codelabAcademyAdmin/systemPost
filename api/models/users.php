@@ -18,7 +18,7 @@ class usersModel
 
         if ($stmt->execute()) {
             $newId = $this->conn->insert_id;
-            return json_encode([
+            return [
                 'status' => 'Success',
                 'message' => 'Usuario creado exitosamente',
                 'user' => [
@@ -28,12 +28,12 @@ class usersModel
                     'phone' => $phone,
                     'rol' => $rol
                 ]
-            ]);
+            ];
         } else {
-            return json_encode([
-                'status' => 'Error' . ' ',
+            return [
+                'status' => 'Error',
                 'message' => 'No se pudo crear el usuario: ' . $stmt->error
-            ]);
+            ];
         }
     }
 
@@ -90,12 +90,12 @@ class usersModel
             $user = $result->fetch_assoc();
 
             if (!$user) {
-                return json_encode([
+                return [
                     'status' => 'Error',
-                    'message' => 'Usuario y/o Contraseña incorrecto',
-                ]);
+                    'message' => 'Usuario y/o Contraseña incorrectos',
+                ];
             } else {
-                return json_encode([
+                return [
                     'status' => 'success',
                     'message' => 'Sesión iniciada exitosamente',
                     'user' => [
@@ -105,13 +105,13 @@ class usersModel
                         'phone' => $user['phone'],
                         'rol' => $user['rol']
                     ]
-                ]);
+                ];
             }
         } else {
-            return json_encode([
+            return [
                 'status' => 'Error',
                 'message' => 'Error en la consulta' . $stmt->error,
-            ]);
+            ];
         }
     }
 }
