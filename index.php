@@ -8,7 +8,6 @@
    <link rel="stylesheet" href="assets/css/style.css">
    <title>Sistema de ventas</title>
 </head>
-
 <body>
    <?php 
         session_start();     
