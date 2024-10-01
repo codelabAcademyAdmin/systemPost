@@ -12,30 +12,45 @@ class usersModel
 
     public function create($id_user, $fullname, $email, $pass, $phone, $rol)
     {
+        $validation = $this->readById($id_user);
+        if($validation){
+            return [
+                'status' => 'Error',
+                'message' => 'El usuario ya existe'
+            ];
+        }
+
+        $emailValidation = $this->readByEmial($email);
+        if($emailValidation){
+            return [
+                'status' => 'Error',
+                'message' => 'El email ya existe'
+            ];
+        }
         $query = "INSERT INTO users (id_user, fullname, email, pass, phone, rol) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("isssis", $id_user, $fullname, $email, $pass, $phone, $rol);
 
         if ($stmt->execute()) {
-            $newId = $this->conn->insert_id;
-            return [
-                'status' => 'Success',
-                'message' => 'Usuario creado exitosamente',
-                'user' => [
-                    'id' => $newId,
-                    'username' => $fullname,
-                    'email' => $email,
-                    'phone' => $phone,
-                    'rol' => $rol
-                ]
-            ];
-        } else {
-            return [
-                'status' => 'Error',
-                'message' => 'No se pudo crear el usuario: ' . $stmt->error
-            ];
+            // Llamar a readById para validar la creación del usuario
+            $validation = $this->readById($id_user);
+
+            if ($validation) {
+                return [
+                    'status' => 'Success',
+                    'message' => 'Usuario creado exitosamente',
+                    'user' => $validation
+                ];
+            } else {
+                return [
+                    'status' => 'Error',
+                    'message' => 'No se pudo validar la creación del usuario'.$stmt->error
+                ];
+            }
+        
+        } 
+        
         }
-    }
 
     public function readAll()
     {
@@ -46,7 +61,7 @@ class usersModel
 
     public function readById($id_user)
     {
-        $query = "SELECT * FROM users WHERE id_user = ?";
+        $query = "SELECT id_user, fullname, email phone, rol, create_date, update_date FROM users WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id_user);
         $stmt->execute();
@@ -61,9 +76,19 @@ class usersModel
         $stmt->bind_param("sssisi", $fullname, $email, $pass, $phone, $rol,  $id_user);
 
         if ($stmt->execute()) {
-            return $stmt->affected_rows > 0;
+            $validation = $this->readById($id_user);
+            if ($stmt->affected_rows > 0) {
+                return [
+                    'status' => 'Success',
+                    'message' => 'Usuario actualizado exitosamente',
+                    'user' => $validation
+                ];
+            }
         }
-        return false;
+        return [
+            'status' => 'Error',
+            'message' => 'No se pudo actualizar el usuario'
+        ];
     }
 
     public function delete($id_user)
@@ -73,9 +98,17 @@ class usersModel
         $stmt->bind_param("i", $id_user);
 
         if ($stmt->execute()) {
-            return $stmt->affected_rows > 0;
+            if ($stmt->affected_rows > 0) {
+                return [
+                    'status' => 'Success',
+                    'message' => 'Usuario eliminado exitosamente'
+                ];
+            }
         }
-        return false;
+        return [
+            'status' => 'Error',
+            'message' => 'No se pudo eliminar el usuario'
+        ];
     }
 
     public function login($username, $password)
@@ -114,4 +147,15 @@ class usersModel
             ];
         }
     }
+
+    public function readByEmial($email)
+    {
+        $query = "SELECT * FROM users WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 }
+
