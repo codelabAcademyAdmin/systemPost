@@ -28,6 +28,11 @@
     flex-direction: row;
     gap: 12px;
     align-items: center;
+    position: relative;
+}
+
+.header .content-profile .profile .name-profile{
+    cursor: pointer;
 }
 
 .header .content-profile .icon-row{
@@ -36,7 +41,7 @@
     color: black;
 }
 
-.header .content-profile .circle-profile{
+.header .content-profile .profile .circle-profile{
     display: flex;
     width: 40px;
     height: 40px;
@@ -45,17 +50,24 @@
 }
 
 
-.dropdown-content {
+.header .content-profile .profile .dropdown-content {
     position: absolute;
+    width: 130px;
+    top: 45px;
+    left: 50px;
     background-color: white;
     border: 1px solid #ccc;
     z-index: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .dropdown-content a {
     display: block;
     padding: 8px;
     text-decoration: none;
+    text-align: center;
+    color: black;
 }
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+   background-color: rgb(232, 231, 231);
+   font-weight: 600;
 }
