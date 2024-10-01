@@ -2,8 +2,8 @@
     $listRoutes = array(
 'index',
         'test',
-        'users'
-
+        'users',
+        'login',
     );
     foreach($listRoutes as $route) {
         require 'route.'.$route.'.php';
