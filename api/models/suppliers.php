@@ -8,42 +8,61 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function create($id_supplier , $fullname, $phone, $address, $description, $id_inventory){
-      
+   public function create($id_supplier, $fullname, $phone, $address, $description, $id_inventory) {
+
+      // Verificar si el proveedor ya existe
       $validation = $this->readById($id_supplier);
-      if($validation){
-         return [
+      if ($validation) {
+          return [
             'status' => 'Error',
             'message' => 'El proveedor ya existe'
          ];
       }
+      // Verificar si id_inventory existe
+      $inventoryCheck = $this->checkInventoryExists($id_inventory);
+      if (!$inventoryCheck) {
+        return [
+         'status' => 'Error',
+         'message' => 'El id_inventory no existe en la tabla inventorio.'
+        ];
+    }
 
+      //consulta para insertar nuevo  proveedor
       $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description, id_inventory) VALUES (?, ?, ?, ?, ?, ?)";
         
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("isissi", $id_supplier , $fullname, $phone, $address, $description, $id_inventory);
+      $stmt->bind_param("issssi", $id_supplier, $fullname, $phone, $address, $description, $id_inventory); 
 
       if ($stmt->execute()) {
-
-         // Llamar a readById para validar la creación del proveedor
-         $validation = $this->readById($id_supplier);
-
-         if ($validation) {
-            $stmt->close(); 
-            return [
-               'status' => 'Success',
-               'message' => 'Proveedor creado exitosamente',
-               'suppliers' => $validation
-            ];
-         } else {
-            $stmt->close(); 
-            return [
-               'status' => 'Error',
-               'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
-            ];
+      //validar la creación del proveedor
+      $validation = $this->readById($id_supplier);
+      if ($validation) {
+         $stmt->close(); 
+         return [
+            'status' => 'Success',
+            'message' => 'Proveedor creado exitosamente',
+            'supplier' => $validation 
+         ];
+      } else {
+             return [
+                 'status' => 'Error',
+                 'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
+             ];
          }
       }
    }
+
+   //consulta para el id del inventario
+   private function checkInventoryExists($id_inventory) {
+      $query = "SELECT * FROM inventories WHERE id_inventory = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $id_inventory);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      return $result->num_rows > 0; 
+   }
+   
 
     // Consulta para obtener todos los registros 
    public function readAll(){
@@ -65,7 +84,7 @@ class suppliersModel
    }
 
    // Consulta para actualizar los datos de un proveedor
-public function update($id_supplier, $fullname, $phone, $address, $description, $id_inventory) {
+   public function update($id_supplier, $fullname, $phone, $address, $description, $id_inventory) {
    
    $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, id_inventory = ? WHERE id_supplier = ?";
    $stmt = $this->conn->prepare($query);
@@ -80,12 +99,12 @@ public function update($id_supplier, $fullname, $phone, $address, $description, 
               'supplier' => $validation
           ];
       }
-  }
-  return [
+   }
+   return [
       'status' => 'Error',
       'message' => 'No se pudo actualizar el Proovedor'
-  ];
-}
+      ];
+   }
 
    public function delete($id_supplier){
       $query = "DELETE FROM suppliers WHERE id_supplier = ?";
