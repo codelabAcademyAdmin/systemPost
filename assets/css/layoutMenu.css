@@ -1,37 +1,59 @@
 .component-menu {
-    width: 100%;
-    background-color: #2f3e50;
+    width: 60px;
     height: 100vh;
+    background-color: #3f4b6b; 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    position: relative;
+}
+.menu-logo {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 30px;
 }
 
-.component-menu .menu-logo{
+.menu-options {
     width: 100%;
-    height: 60px;
+    margin-top: 10px; 
+}
+
+.menu-options .option {
+    margin: 20px 0;
+    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    color: #fff;
-    border-bottom: 1.5px solid #6d6d6d;
 }
 
-
-.sidebar-options .sidebar-search { 
-    flex-direction: column;
-    align-items: center;
+.menu-options .option svg {
+    width: 30px;    
+    height: 30px;
+    stroke: white; 
+    transition: stroke 0.3s, transform 0.3s;
+}
+.menu-options .option:hover svg {
+    stroke: #ff6b6b; 
+    transform: scale(1.1); 
 }
 
-.icon {
+.component-search {
+    margin-bottom: 20px; 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 20px; 
+}
+
+.component-search svg {
     width: 30px;
     height: 30px;
-    margin: 15px 0;
-    background-color: #546A7B;
-    border-radius: 5px;
-    transition: background-color 0.3s; 
+    stroke: white;
+    transition: stroke 0.3s, transform 0.3s;
 }
 
-.icon:hover {
-    background-color: #8D9BAE; 
+.component-search:hover svg {
+    stroke: #ff6b6b; 
+    transform: scale(1.1); 
 }
