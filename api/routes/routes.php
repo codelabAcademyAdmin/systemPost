@@ -2,6 +2,7 @@
     $listRoutes = array(
         'index',
         'test',
+        'inventories',
         
     );
     foreach($listRoutes as $route) {
