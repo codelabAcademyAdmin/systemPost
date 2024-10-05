@@ -56,7 +56,7 @@
     align-items: center;
 }
 
-.icon-password {
+.login-container .login-form .input-group .password-container .icon-password {
     width: 24px;
     height: 24px;
     position: absolute;

@@ -4,6 +4,6 @@
         
     </div>
     <div class="page-login-form">
-    <?php require 'components/login/LoginForm.php';?>
+        <?php require 'components/login/LoginForm.php';?>
     </div>
 </div>
