@@ -8,7 +8,7 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function create($id_supplier, $fullname, $phone, $address, $description, $id_inventory) {
+   public function create($id_supplier, $fullname, $phone, $address, $description) {
 
       // Verificar si el proveedor ya existe
       $validation = $this->readById($id_supplier);
@@ -18,20 +18,11 @@ class suppliersModel
             'message' => 'El proveedor ya existe'
          ];
       }
-      // Verificar si id_inventory existe
-      $inventoryCheck = $this->checkInventoryExists($id_inventory);
-      if (!$inventoryCheck) {
-        return [
-         'status' => 'Error',
-         'message' => 'El id_inventory no existe en la tabla inventorio.'
-        ];
-    }
-
+      
       //consulta para insertar nuevo  proveedor
-      $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description, id_inventory) VALUES (?, ?, ?, ?, ?, ?)";
-        
+      $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description) VALUES (?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("issssi", $id_supplier, $fullname, $phone, $address, $description, $id_inventory); 
+      $stmt->bind_param("isiss", $id_supplier, $fullname, $phone, $address, $description); 
 
       if ($stmt->execute()) {
       //validar la creación del proveedor
@@ -52,18 +43,6 @@ class suppliersModel
       }
    }
 
-   //consulta para el id del inventario
-   private function checkInventoryExists($id_inventory) {
-      $query = "SELECT * FROM inventories WHERE id_inventory = ?";
-      $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("i", $id_inventory);
-      $stmt->execute();
-      $result = $stmt->get_result();
-
-      return $result->num_rows > 0; 
-   }
-   
-
     // Consulta para obtener todos los registros 
    public function readAll(){
       $query = "SELECT * FROM suppliers";
@@ -73,7 +52,7 @@ class suppliersModel
 
    // Consulta para obtener por el ID un solo registro 
    public function readById($id_supplier) {
-      $query = "SELECT id_supplier, fullname, phone, address, description, id_inventory FROM suppliers WHERE id_supplier = ?";
+      $query = "SELECT id_supplier, fullname, phone, address, description FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
       $stmt->execute();
@@ -83,12 +62,12 @@ class suppliersModel
       return $supplier;
    }
 
-   // Consulta para actualizar los datos de un proveedor
-   public function update($id_supplier, $fullname, $phone, $address, $description, $id_inventory) {
+   // Consulta para actualizar los datos del proveedor
+   public function update($id_supplier, $fullname, $phone, $address, $description) {
    
-   $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, id_inventory = ? WHERE id_supplier = ?";
+   $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ? WHERE id_supplier = ?";
    $stmt = $this->conn->prepare($query);
-   $stmt->bind_param("sissii", $fullname, $phone, $address, $description, $id_inventory, $id_supplier);
+   $stmt->bind_param("sissi", $fullname, $phone, $address, $description,  $id_supplier);
    
    if ($stmt->execute()) {
       $validation = $this->readById($id_supplier);
