@@ -14,9 +14,8 @@
                 </svg>
             </div>
             <div class="dropdown-content" style="display: none;">
-                <a href="#">Opción 1</a>
-                <a href="#">Opción 2</a>
-                <a href="#">Opción 3</a>
+                <a href="#">Perfil</a>
+                <a href="#">Cerrar sesión</a>
             </div>
         </div>
     </div>

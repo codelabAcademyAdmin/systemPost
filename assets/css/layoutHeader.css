@@ -64,7 +64,7 @@
     display: block;
     padding: 8px;
     text-decoration: none;
-    text-align: center;
+    text-align: start;
     color: black;
 }
 .dropdown-content a:hover {
