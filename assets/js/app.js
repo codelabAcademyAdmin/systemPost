@@ -42,3 +42,8 @@ const ValidateSessionPage = (url) => {
 	const session = appSession.status();
 	session != false ? urlDir(url) : urlDir("login?goBack=" + url);
 };
+
+function toggleDropdown() {
+    const dropdown = document.querySelector('.dropdown-content');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+}
