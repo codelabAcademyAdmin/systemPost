@@ -7,9 +7,9 @@
     <div class="container5"></div>
 
     <div class="container-info-aside">
-        <div class="about">About</div>
-        <div class="privacy">Privacy</div>
-        <div class="terms">Terms of use</div>
+        <div class="about">Acerca de</div>
+        <div class="privacy">Privacidad</div>
+        <div class="terms">Condiciones de uso</div>
         <div class="faq">FAQ</div>
    </div>
 
