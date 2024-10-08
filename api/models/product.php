@@ -20,11 +20,6 @@ class productsModel
             ];
         }
 
-        //PENDIENTE:
-        // Validacion si existe la categoria
-        // Cuando se realize el endpoint categoria
-
-
         $query = "INSERT INTO products (id_product, name, stock, unit_price, description, id_category) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
