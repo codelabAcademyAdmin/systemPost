@@ -8,7 +8,7 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function create($id_supplier, $fullname, $phone, $address, $description) {
+   public function create($id_supplier, $fullname, $phone, $address, $description, $category) {
 
       // Verificar si el proveedor ya existe
       $validation = $this->readById($id_supplier);
@@ -20,9 +20,9 @@ class suppliersModel
       }
       
       //consulta para insertar nuevo  proveedor
-      $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description) VALUES (?, ?, ?, ?, ?)";
+      $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description, category) VALUES (?, ?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("isiss", $id_supplier, $fullname, $phone, $address, $description); 
+      $stmt->bind_param("isisss", $id_supplier, $fullname, $phone, $address, $description, $category); 
 
       if ($stmt->execute()) {
       //validar la creación del proveedor
@@ -52,7 +52,7 @@ class suppliersModel
 
    // Consulta para obtener por el ID un solo registro 
    public function readById($id_supplier) {
-      $query = "SELECT id_supplier, fullname, phone, address, description FROM suppliers WHERE id_supplier = ?";
+      $query = "SELECT id_supplier, fullname, phone, address, description, category FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
       $stmt->execute();
@@ -62,12 +62,25 @@ class suppliersModel
       return $supplier;
    }
 
+   public function validationProductSuppliers($id_supplier) {
+      $query = "SELECT COUNT(*) as total FROM products_suppliers WHERE id_supplier = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $id_supplier);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $supplier = $result->fetch_assoc();
+      $stmt->close(); 
+
+      return $supplier;
+   }
+
+
    // Consulta para actualizar los datos del proveedor
-   public function update($id_supplier, $fullname, $phone, $address, $description) {
+   public function update($id_supplier, $fullname, $phone, $address, $description, $category) {
    
-   $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ? WHERE id_supplier = ?";
+   $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, category = ? WHERE id_supplier = ?";
    $stmt = $this->conn->prepare($query);
-   $stmt->bind_param("sissi", $fullname, $phone, $address, $description,  $id_supplier);
+   $stmt->bind_param("sisssi", $fullname, $phone, $address, $description,  $category, $id_supplier);
    
    if ($stmt->execute()) {
       $validation = $this->readById($id_supplier);
@@ -86,6 +99,15 @@ class suppliersModel
    }
 
    public function delete($id_supplier){
+      //Validacion si el proovedor tiene productos relaciondos
+      if($this->validationProductSuppliers($id_supplier)){
+         return [
+            'status' => 'Error',
+            'message' => 'No se puede eliminar el proveedor porque tiene productos relacionados. '
+         ];
+      }
+      
+      //Si no tiene productos relacionados, procede a la eliminacion
       $query = "DELETE FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);

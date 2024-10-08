@@ -19,14 +19,14 @@
    if($request == 'POST'){
       $data = json_decode(file_get_contents('php://input'), true);
 
-      $response = $suppliers->create($data['id_supplier'], $data['fullname'], $data['phone'], $data['address'], $data['description']);
+      $response = $suppliers->create($data['id_supplier'], $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
       echo json_encode($response);
    }
 
    if($request == 'PUT'){
       $data = json_decode(file_get_contents('php://input'), true);
       $id = $_GET['id'];
-      $response = $suppliers->update($id, $data['fullname'], $data['phone'], $data['address'], $data['description']);
+      $response = $suppliers->update($id, $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
       echo json_encode($response);
    }  
    
