@@ -20,7 +20,7 @@
             <div class="button">Iniciar Sesión</div>
         </div>
         <div class="content-forgot-password">
-           <div class="forgot-password">Olvidaste la contraseña?</div>
+           <div class="forgot-password">¿Olvidaste la contraseña?</div>
         </div>
     </div>
 </div>
