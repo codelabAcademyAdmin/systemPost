@@ -1,42 +1,40 @@
 <?php
-   $AppRoutes->AddRoutes('GET', 'inventories', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/ventas', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;
       if(isset($_GET['id'])){
          $id = $_GET['id'];
-            $response = $inventories->readById($id);
+            $response = $inventories->readSaleById($id);
       }else{
-            $response = $inventories->readAll();
+            $response = $inventories->readSaleAll();
       }
       echo json_encode($response);
    });
 
-      $AppRoutes->AddRoutes('POST', 'inventories', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/productos', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;
-      $data = json_decode(file_get_contents('php://input'), true);
-      $response = $inventories->create($data['amount'],$data['sale_price']);
+      if(isset($_GET['id'])){
+         $id = $_GET['id'];
+            $response = $inventories->readProductoById($id);
+      }else{
+            $response = $inventories->readAllProductos();
+      }
       echo json_encode($response);
    });
 
-      $AppRoutes->AddRoutes('PUT', 'inventories', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/provedores', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;
-      $data = json_decode(file_get_contents('php://input'), true);
-      $id = $_GET['id'];
-      $response = $inventories->update($id, $data['amount'],$data['sale_price']);
-      echo json_encode($response);
-   });
-
-     $AppRoutes->AddRoutes('DELETE', 'inventories', function() {
-      require_once 'models/inventories.php';
-      $inventories = new inventoriesModel();
-      $response;
-      $id = $_GET['id'];
-      $response = $inventories->delete($id);
+      if(isset($_GET['id'])){
+         $id = $_GET['id'];
+            $response = $inventories->readProvedorById($id);
+      }else{
+            $response = $inventories->readAllProvedores();
+      }
       echo json_encode($response);
    });
    ?>

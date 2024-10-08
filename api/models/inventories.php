@@ -1,61 +1,92 @@
 <?php
 
 class inventoriesModel {
-   private $conn;
+    private $conn;
 
     public function __construct() {
         global $conn;
         $this->conn = $conn;
     }
 
-    public function create($amount,$sale_price) {
-        $query = "INSERT INTO inventories (amount,sale_price) VALUES (?,?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ii", $amount,$sale_price);
-        
-        if ($stmt->execute()) {
-            $newId = $this->conn->insert_id;
-            return $this->readById($newId);
-        }
-        return false;
-    }
-
-    public function readAll() {
-        $query = "SELECT * FROM inventories;";
+    public function readSaleAll() {
+        $query = "SELECT * FROM sales;";
         $result = $this->conn->query($query);
-        return $result->fetch_all(MYSQLI_ASSOC);
+        if (!$result) {
+            return ['status' => 500, 'error' => "Error al obtener las ventas: " . $this->conn->error];
+        }
+        return ['status' => 200, 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
 
-    public function readById($id) {
-        $query = "SELECT * FROM inventories WHERE id_inventory = ?";
+    public function readSaleById($id) {
+        if (!is_numeric($id)) {
+            return ['status' => 400, 'error' => "El ID de la venta debe ser un número."];
+        }
+        $query = "SELECT * FROM sales WHERE id_sale = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return ['status' => 500, 'error' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
-        return $result->fetch_assoc();
-    }
-
- public function update($id, $amount,$sale_price) {
-        $query = "UPDATE inventories SET amount = ?, sale_price = ? WHERE id_inventory = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("iii", $amount, $sale_price, $id);
-        
-        if ($stmt->execute()) {
-            return $stmt->affected_rows > 0;
+        if ($result->num_rows === 0) {
+            return ['status' => 404, 'error' => "No se encontró ninguna venta con el ID proporcionado."];
         }
-        return false;
+        return ['status' => 200, 'data' => $result->fetch_assoc()];
     }
 
-    
-    public function delete($id) {
-        $query = "DELETE FROM inventories WHERE id_inventory = ?";
+    public function readAllProductos() {
+        $query = "SELECT * FROM products;";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            return ['status' => 500, 'error' => "Error al obtener los productos: " . $this->conn->error];
+        }
+        return ['status' => 200, 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+    }
+
+    public function readProductoById($id) {
+        if (!is_numeric($id)) {
+            return ['status' => 400, 'error' => "El ID del producto debe ser un número."];
+        }
+        $query = "SELECT * FROM products WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return ['status' => 500, 'error' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("i", $id);
-        
-        if ($stmt->execute()) {
-            return $stmt->affected_rows > 0;
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return ['status' => 404, 'error' => "No se encontró ningún producto con el ID proporcionado."];
         }
-        return false;
+        return ['status' => 200, 'data' => $result->fetch_assoc()];
+    }
+
+    public function readAllProvedores() {
+        $query = "SELECT * FROM suppliers;";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            return ['status' => 500, 'error' => "Error al obtener los proveedores: " . $this->conn->error];
+        }
+        return ['status' => 200, 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+    }
+
+    public function readProvedorById($id) {
+        if (!is_numeric($id)) {
+            return ['status' => 400, 'error' => "El ID del proveedor debe ser un número."];
+        }
+        $query = "SELECT * FROM suppliers WHERE id_supplier = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return ['status' => 500, 'error' => "Error al preparar la consulta: " . $this->conn->error];
+        }
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return ['status' => 404, 'error' => "No se encontró ningún proveedor con el ID proporcionado."];
+        }
+        return ['status' => 200, 'data' => $result->fetch_assoc()];
     }
 }
-    ?>
+?>
