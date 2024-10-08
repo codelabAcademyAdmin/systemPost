@@ -5,13 +5,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    padding-top: 15px;
     position: relative;
 }
+
 .menu-logo {
-    font-size: 24px;
-    color: white;
-    margin-bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-logo .icon-logo{
+    display: inline-block;
 }
 
 .menu-options {
