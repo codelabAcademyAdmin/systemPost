@@ -32,7 +32,7 @@ class suppliersModel
       } else {
          return [
             'status' => 'Error',
-            'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
+            'message' => 'No se pudo validar la creación del proveedor' 
          ];
       }
    } else {
