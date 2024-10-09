@@ -17,7 +17,7 @@
       $suppliers = new suppliersModel();
       $response;
       $data = json_decode(file_get_contents('php://input'), true);
-      $response = $suppliers->create($data['id_supplier'], $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+      $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
       echo json_encode($response);
    });
 

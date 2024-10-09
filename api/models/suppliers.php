@@ -8,24 +8,19 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function create($id_supplier, $fullname, $phone, $address, $description, $category) {
-
-      // Verificar si el proveedor ya existe
-      $validation = $this->readById($id_supplier);
-      if ($validation) {
-          return [
-            'status' => 'Error',
-            'message' => 'El proveedor ya existe'
-         ];
-      }
+   public function create($fullname, $phone, $address, $description, $category) {
       
       //consulta para insertar nuevo  proveedor
-      $query = "INSERT INTO suppliers (id_supplier, fullname, phone, address, description, category) VALUES (?, ?, ?, ?, ?, ?)";
+      $query = "INSERT INTO suppliers (fullname, phone, address, description, category) VALUES (?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("isisss", $id_supplier, $fullname, $phone, $address, $description, $category); 
+      $stmt->bind_param("sisss", $fullname, $phone, $address, $description, $category); 
 
       if ($stmt->execute()) {
-      //validar la creación del proveedor
+      
+      // Obtener el ID autogenerado
+      $id_supplier = $this->conn->insert_id;
+
+      // Validar la creación del proveedor usando el nuevo ID
       $validation = $this->readById($id_supplier);
       if ($validation) {
          $stmt->close(); 
@@ -35,13 +30,18 @@ class suppliersModel
             'supplier' => $validation 
          ];
       } else {
-             return [
-                 'status' => 'Error',
-                 'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
-             ];
-         }
+         return [
+            'status' => 'Error',
+            'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
+         ];
       }
+   } else {
+      return [
+         'status' => 'Error',
+         'message' => 'Error al crear el proveedor: ' . $stmt->error
+      ];
    }
+}
 
     // Consulta para obtener todos los registros 
    public function readAll(){
