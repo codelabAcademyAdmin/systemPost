@@ -1,5 +1,5 @@
 <?php
-   $AppRoutes->AddRoutes('GET', 'inventories/ventas', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/sales', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;
@@ -12,7 +12,7 @@
       echo json_encode($response);
    });
 
-   $AppRoutes->AddRoutes('GET', 'inventories/productos', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/products', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;
@@ -25,7 +25,7 @@
       echo json_encode($response);
    });
 
-   $AppRoutes->AddRoutes('GET', 'inventories/provedores', function() {
+   $AppRoutes->AddRoutes('GET', 'inventories/suppliers', function() {
       require_once 'models/inventories.php';
       $inventories = new inventoriesModel();
       $response;

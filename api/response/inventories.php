@@ -17,21 +17,21 @@ if ($request == 'GET') {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
 
         switch ($action) {
-            case 'ventas':
+            case 'sales':
                 if ($id) {
                     $response = $inventories->readSaleById($id);
                 } else {
                     $response = $inventories->readSaleAll();
                 }
                 break;
-            case 'productos':
+            case 'products':
                 if ($id) {
                     $response = $inventories->readProductoById($id);
                 } else {
                     $response = $inventories->readAllProductos();
                 }
                 break;
-            case 'provedores':
+            case 'suppliers':
                 if ($id) {
                     $response = $inventories->readProvedorById($id);
                 } else {
