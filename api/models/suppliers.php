@@ -17,10 +17,10 @@ class suppliersModel
 
       if ($stmt->execute()) {
       
-      // Obtener el ID autogenerado
+      //obtener el id autoinclementable
       $id_supplier = $this->conn->insert_id;
 
-      // Validar la creación del proveedor usando el nuevo ID
+      //validar la creacion del proveedor usando el nuevo id
       $validation = $this->readById($id_supplier);
       if ($validation) {
          $stmt->close(); 
@@ -32,7 +32,7 @@ class suppliersModel
       } else {
          return [
             'status' => 'Error',
-            'message' => 'No se pudo validar la creación del proveedor: ' . $stmt->error
+            'message' => 'No se pudo validar la creación del proveedor: '
          ];
       }
    } else {
@@ -43,14 +43,14 @@ class suppliersModel
    }
 }
 
-    // Consulta para obtener todos los registros 
+    //consulta para obtener todos los registros 
    public function readAll(){
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
       return $result->fetch_all(MYSQLI_ASSOC);
    }
 
-   // Consulta para obtener por el ID un solo registro 
+   //consulta para obtener registrpo por un id
    public function readById($id_supplier) {
       $query = "SELECT id_supplier, fullname, phone, address, description, category FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
@@ -59,9 +59,22 @@ class suppliersModel
       $result = $stmt->get_result();
       $supplier = $result->fetch_assoc();
       $stmt->close(); 
-      return $supplier;
+
+      if ($supplier) {
+         return [
+             'status' => 'Success',
+             'message' => 'Proveedor con ID ' . $id_supplier . ' encontrado exitosamente',
+             'supplier' => $supplier
+         ];
+      } else {
+         return [
+             'status' => 'Error',
+             'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
+         ];
+      }
    }
 
+   //validacion si el proovedor tiene productos relacionados
    public function validationProductSuppliers($id_supplier) {
       $query = "SELECT COUNT(*) as total FROM products_suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
@@ -75,7 +88,7 @@ class suppliersModel
    }
 
 
-   // Consulta para actualizar los datos del proveedor
+   //consulta para actualizar los datos del proveedor
    public function update($id_supplier, $fullname, $phone, $address, $description, $category) {
    
    $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, category = ? WHERE id_supplier = ?";
@@ -94,20 +107,29 @@ class suppliersModel
    }
    return [
       'status' => 'Error',
-      'message' => 'No se pudo actualizar el Proovedor'
+      'message' => 'No se pudo actualizar el Proovedor o ID ' . $id_supplier . ' no existe.'
       ];
    }
 
    public function delete($id_supplier){
-      //Validacion si el proovedor tiene productos relaciondos
-      if($this->validationProductSuppliers($id_supplier)){
+      $supplier = $this->readById($id_supplier);
+      if ($supplier['status'] == 'Error') {
          return [
             'status' => 'Error',
-            'message' => 'No se puede eliminar el proveedor porque tiene productos relacionados. '
+            'message' => 'No se puede eliminar el proveedor porque el ID ' . $id_supplier . ' no existe.'
          ];
       }
+
+      //validar si el proveedor tiene productos relacionados
+      $validation = $this->validationProductSuppliers($id_supplier);
+      if ($validation['total'] > 0) {
+         return [
+            'status' => 'Error',
+            'message' => 'No se puede eliminar el proveedor porque tiene productos relacionados.'
+         ];
+      } 
       
-      //Si no tiene productos relacionados, procede a la eliminacion
+      //sino tiene productos relacionados, procede a la eliminacion
       $query = "DELETE FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
@@ -126,4 +148,5 @@ class suppliersModel
       ];
    }
 }
+
 ?>
