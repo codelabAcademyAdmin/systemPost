@@ -10,7 +10,7 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
 }
 
-.menu-logo {
+.component-menu .menu-logo {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -18,7 +18,7 @@
     margin-bottom: 20px; 
 }
 
-.menu-options {
+.component-menu .menu-options {
     width: 100%;
     margin-top: 10px;
     display: flex;
@@ -28,14 +28,14 @@
     padding-bottom: 30px; 
 }
 
-.menu-options .option {
+.component-menu .menu-options .option {
     margin: 15px 0;
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
-.menu-options .option svg {
+.component-menu .menu-options .option svg {
     width: 30px;
     height: 30px;
     stroke: white;
@@ -43,28 +43,7 @@
     cursor: pointer;
 }
 
-.menu-options .option:hover svg {
+.component-menu .menu-options .option:hover svg {
     stroke: #ff6b6b;
     transform: scale(1.1); 
-}
-
-.component-search {
-    margin-bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 20px;
-}
-
-.component-search svg {
-    width: 30px;
-    height: 30px;
-    stroke: white;
-    transition: stroke 0.3s, transform 0.3s;
-}
-
-.component-search:hover svg {
-    stroke: #ff6b6b;
-    transform: scale(1.1);
 }
