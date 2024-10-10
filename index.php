@@ -1,3 +1,8 @@
+<?php 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -32,7 +37,7 @@
    <script src="assets/js/app.js"></script>
    <?php 
     if(!isset($_SESSION['user'])){
-        echo '<script src="assets/js/script.login.js"></script>';
+        echo '<script src="scripts/script.login.js"></script>';
     }else{
         $AppScript = new AppScript($listRoutes);
         $AppScript->loadScript();
