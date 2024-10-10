@@ -40,7 +40,7 @@ class usersModel
                     'message' => 'No se pudo validar la creación del usuario'
                 ];
             }
-        }else {
+        } else {
             return [
                 'status' => 'Error',
                 'message' => 'Error al crear el usuario: ' . $stmt->error
@@ -114,13 +114,13 @@ class usersModel
         $stmt->bind_param("ss", $username, $password);
 
         if ($stmt->execute()) {
-
             $result = $stmt->get_result();
             $user = $result->fetch_assoc();
+            $stmt->close();
 
             if (!$user) {
                 return [
-                    'status' => 'Error',
+                    'status' => 'unauthorized',
                     'message' => 'Usuario y/o Contraseña incorrectos',
                 ];
             } else {
@@ -137,12 +137,14 @@ class usersModel
                 ];
             }
         } else {
+            $stmt->close();
             return [
-                'status' => 'Error',
-                'message' => 'Error en la consulta' . $stmt->error,
+                'status' => 'error',
+                'message' => 'Error en la consulta: ' . $stmt->error,
             ];
         }
     }
+
 
     public function readByEmial($email)
     {
