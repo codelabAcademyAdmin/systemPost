@@ -26,16 +26,16 @@ if ($request == 'GET') {
                 break;
             case 'products':
                 if ($id) {
-                    $response = $inventories->readProductoById($id);
+                    $response = $inventories->readProductsById($id);
                 } else {
-                    $response = $inventories->readAllProductos();
+                    $response = $inventories->readAllProducts();
                 }
                 break;
             case 'suppliers':
                 if ($id) {
-                    $response = $inventories->readProvedorById($id);
+                    $response = $inventories->readsuppliersById($id);
                 } else {
-                    $response = $inventories->readAllProvedores();
+                    $response = $inventories->readAllSuppliers();
                 }
                 break;
                 default:

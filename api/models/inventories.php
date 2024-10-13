@@ -35,7 +35,7 @@ class inventoriesModel {
         return ['status' => 200, 'data' => $result->fetch_assoc()];
     }
 
-    public function readAllProductos() {
+    public function readAllProducts() {
         $query = "SELECT * FROM products;";
         $result = $this->conn->query($query);
         if (!$result) {
@@ -44,7 +44,7 @@ class inventoriesModel {
         return ['status' => 200, 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
 
-    public function readProductoById($id) {
+    public function readProductsById($id) {
         if (!is_numeric($id)) {
             return ['status' => 400, 'error' => "El ID del producto debe ser un número."];
         }
@@ -62,7 +62,7 @@ class inventoriesModel {
         return ['status' => 200, 'data' => $result->fetch_assoc()];
     }
 
-    public function readAllProvedores() {
+    public function readAllSuppliers() {
         $query = "SELECT * FROM suppliers;";
         $result = $this->conn->query($query);
         if (!$result) {
@@ -71,7 +71,7 @@ class inventoriesModel {
         return ['status' => 200, 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
 
-    public function readProvedorById($id) {
+    public function readsuppliersById($id) {
         if (!is_numeric($id)) {
             return ['status' => 400, 'error' => "El ID del proveedor debe ser un número."];
         }

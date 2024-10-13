@@ -25,7 +25,6 @@ $AppRoutes->AddRoutes('POST', 'login', function() {
         http_response_code(500); // Internal Server Error
     }
 
-    // Enviar la respuesta en formato JSON
     echo json_encode($response);
 });
 ?>
