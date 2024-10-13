@@ -60,18 +60,17 @@ class suppliersModel
       $supplier = $result->fetch_assoc();
       $stmt->close(); 
 
-      if ($supplier) {
+      if (!$supplier) {
          return [
-             'status' => 'Success',
-             'message' => 'Proveedor con ID ' . $id_supplier . ' encontrado exitosamente',
-             'supplier' => $supplier
+            'status' => 'Error',
+            'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
          ];
-      } else {
-         return [
-             'status' => 'Error',
-             'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
-         ];
-      }
+     }
+     
+     return [
+         'status' => 'Success',
+         'supplier' => $supplier
+      ];
    }
 
    //validacion si el proovedor tiene productos relacionados
@@ -91,24 +90,36 @@ class suppliersModel
    //consulta para actualizar los datos del proveedor
    public function update($id_supplier, $fullname, $phone, $address, $description, $category) {
    
+   $validation = $this->readById($id_supplier);
+
+   if ($validation['status'] == 'Error') {
+      return [
+         'status' => 'Error',
+         'message' => 'No se puede actualizar el Proveedor porque el ID ' . $id_supplier . ' no existe.'
+      ];
+   }
+   
    $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, category = ? WHERE id_supplier = ?";
    $stmt = $this->conn->prepare($query);
    $stmt->bind_param("sisssi", $fullname, $phone, $address, $description,  $category, $id_supplier);
    
    if ($stmt->execute()) {
-      $validation = $this->readById($id_supplier);
       if ($stmt->affected_rows > 0) {
-          return [
-              'status' => 'Success',
-              'message' => 'Proveedor actualizado exitosamente',
-              'supplier' => $validation
-          ];
+         return [
+            'status' => 'Exito',
+            'message' => 'Proveedor actualizado exitosamente',
+            'supplier' => $this->readById($id_supplier)
+         ];
       }
+      return [
+         'status' => 'Advertencia',
+         'message' => 'No se hicieron cambios, los datos son iguales al proveedor existente.'
+      ];
    }
    return [
       'status' => 'Error',
-      'message' => 'No se pudo actualizar el Proovedor o ID ' . $id_supplier . ' no existe.'
-      ];
+      'message' => 'Error al actualizar el Proveedor: ' . $stmt->error
+   ];
    }
 
    public function delete($id_supplier){

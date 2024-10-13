@@ -23,14 +23,22 @@
       echo json_encode($response);
    }
 
-   if($request == 'PUT'){
+   if ($request == 'PUT') {
+      if (empty($_GET['id'])) {
+         http_response_code(400); 
+         echo json_encode(['status' => 'Error', 'message' => 'ID del proveedor es requerido.']);
+         return;
+      }
+  
+      $id_supplier = (int)$_GET['id']; 
       $data = json_decode(file_get_contents('php://input'), true);
-      $id = $_GET['id'];
-      $response = $suppliers->update($id, $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+  
+      $response = $suppliers->update($id_supplier, $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+      
       echo json_encode($response);
-   }  
-   
-   if($request == 'DELETE'){
+  }
+  
+   if ($request == 'DELETE') {
       $id = $_GET['id'];
       $response = $suppliers->delete($id);
       echo json_encode($response);
