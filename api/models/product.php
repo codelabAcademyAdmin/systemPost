@@ -9,23 +9,18 @@ class productsModel
         $this->conn = $conn;
     }
 
-    public function create($id_product, $name, $stock, $unit_price, $description, $id_category, $suppliers)
+    public function create($name, $description, $stock, $category, $product_price, $suppliers)
     {
 
-        $validation = $this->readById($id_product);
-        if ($validation) {
-            return [
-                'status' => 'Error',
-                'message' => 'El producto ya existe'
-            ];
-        }
-
-        $query = "INSERT INTO products (id_product, name, stock, unit_price, description, id_category) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO products (name, description, stock, category, product_price) 
+                VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("isidit", $id_product, $name, $stock, $unit_price, $description, $id_category);
+        $stmt->bind_param("ssisd", $name, $description, $stock, $category, $product_price);
 
         if ($stmt->execute()) {
+
+            $id_product = $this->conn->insert_id; //get id newly insert
+
 
             foreach ($suppliers as $id_supplier) {
                 $this->associateSupplier($id_product, $id_supplier);
@@ -55,7 +50,7 @@ class productsModel
         $data = $suppliers->readById($id_supplier);
         if (!$data) {
             return [
-                'status' => 'Error',
+                'status' => 'Not Found',
                 'message' => 'El Proveedor con Id: ' . $id_supplier . ' no existe existe'
             ];
         }
