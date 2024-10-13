@@ -28,9 +28,9 @@ $AppRoutes->AddRoutes('GET', 'inventories/products', function() {
 
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
-        $response = $inventories->readProductoById($id);
+        $response = $inventories->readProductsById($id);
     } else {
-        $response = $inventories->readAllProductos();
+        $response = $inventories->readAllProducts();
     }
 
     if (isset($response['status'])) {
@@ -50,9 +50,9 @@ $AppRoutes->AddRoutes('GET', 'inventories/suppliers', function() {
 
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
-        $response = $inventories->readProvedorById($id);
+        $response = $inventories->readsuppliersById($id);
     } else {
-        $response = $inventories->readAllProvedores();
+        $response = $inventories->readAllSuppliers();
     }
 
     if (isset($response['status'])) {
