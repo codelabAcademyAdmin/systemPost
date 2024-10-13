@@ -18,9 +18,7 @@ class productsModel
         $stmt->bind_param("ssisd", $name, $description, $stock, $category, $product_price);
 
         if ($stmt->execute()) {
-
             $id_product = $this->conn->insert_id; //get id newly insert
-
 
             foreach ($suppliers as $id_supplier) {
                 $this->associateSupplier($id_product, $id_supplier);
@@ -46,8 +44,8 @@ class productsModel
     private function associateSupplier($id_product, $id_supplier)
     {
         $suppliers = new suppliersModel();
-
         $data = $suppliers->readById($id_supplier);
+
         if (!$data) {
             return [
                 'status' => 'Not Found',
@@ -76,32 +74,64 @@ class productsModel
     public function readAll()
     {
         $query = "SELECT * FROM products";
+
         $result = $this->conn->query($query);
-        return $result->fetch_all(MYSQLI_ASSOC);
+
+        if ($result === false) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al ejecutar la consulta: ' . $this->conn->error
+            ];
+        }
+
+        if ($result->num_rows > 0) {
+            return [
+                'status' => 'Success',
+                'products' => $result->fetch_all(MYSQLI_ASSOC)
+            ];
+        }
     }
+
 
     public function readById($id_product)
     {
-        $query = "SELECT p.id_product, p.name, p.stock, p.unit_price, p.sale_price, p.date_sale, p.id_inventory, p.id_category, 
-                       GROUP_CONCAT(ps.id_supplier) AS suppliers 
-                FROM products p
-                LEFT JOIN products_suppliers ps ON p.id_product = ps.id_product
-                WHERE p.id_product = ?";
+        if (!is_numeric($id_product)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => "El ID del producto debe ser un numero."
+            ];
+        }
+        $query = "SELECT * FROM products WHERE id_product = ?";
+
         $stmt = $this->conn->prepare($query);
+
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => "Error al preparar la consulta" . $this->conn->error
+            ];
+        }
         $stmt->bind_param("i", $id_product);
         $stmt->execute();
         $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return [
+                'status' => 'Not Found',
+                'message' => "No se encontró ningún producto con el ID proporcionado."
+            ];
+        }
         $product = $result->fetch_assoc();
-        $stmt->close();
-        return $product;
+        return [
+            'status' => 'Success',
+            'product' => $product
+        ];
     }
 
-    public function update($id_product, $name, $stock, $unit_price, $sale_price, $date_sale, $id_inventory, $id_category, $suppliers)
+    public function update($id_product, $name, $description, $stock, $category, $product_price, $suppliers)
     {
-        $query = "UPDATE products SET name = ?, stock = ?, unit_price = ?, sale_price = ?, date_sale = ?, id_inventory = ?, id_category = ? 
-                WHERE id_product = ?";
+        $query = "UPDATE products SET name = ?, stock = ?, description = ?, category = ?, product_price = ? WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("siddsiii", $name, $stock, $unit_price, $sale_price, $date_sale, $id_inventory, $id_category, $id_product);
+        $stmt->bind_param("sissd", $name, $description, $stock, $category, $product_price, $id_product);
 
         if ($stmt->execute()) {
             $this->deleteProductSuppliers($id_product);
@@ -136,6 +166,12 @@ class productsModel
 
     public function delete($id_product)
     {
+        if (!is_numeric($id_product)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => "El ID del producto debe ser un numero."
+            ];
+        }
         $this->deleteProductSuppliers($id_product);
 
         $query = "DELETE FROM products WHERE id_product = ?";

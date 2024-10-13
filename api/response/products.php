@@ -1,5 +1,5 @@
 <?php
-require_once '../models/product.php';
+require_once '../models/products.php';
 
 $product = new productsModel();
 
@@ -18,8 +18,7 @@ if ($request == 'GET') {
 
 if ($request == 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    
-    $response = $product->create($data['id_product'], $data['name'], $data['stock'], $data['unit_price'], $data['description'],);
+    $response = $product->create($data['name'], $data['description'], $data['stock'], $data['category'],$data['product_price'], $data['suppliers']);
     echo json_encode($response);
 }
 
