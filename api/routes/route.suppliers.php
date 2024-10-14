@@ -31,7 +31,7 @@
          $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
          
          if ($response) {
-            http_response_code(201);
+            http_response_code(201); 
             echo json_encode(['message' => 'Proovedor creado exitosamente']);
          } else {
             http_response_code(400); 
@@ -48,37 +48,30 @@
       $supplies = new suppliersModel();
   
       if (empty($_GET['id'])) {
-          http_response_code(400); 
-          echo json_encode(['status' => 'Error', 'message' => 'ID del proveedor es requerido.']);
-          return;
+         http_response_code(400); 
+         echo json_encode(['status' => 'Error', 'message' => 'ID del proveedor es requerido.']);
+         return;
       }
   
       $id_supplier = (int)$_GET['id']; 
       $data = json_decode(file_get_contents('php://input'), true);
   
       if (!isset($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category'])) {
-          http_response_code(400); 
-          echo json_encode(['status' => 'Error', 'message' => 'Faltan datos requeridos.']);
-          return;
+         http_response_code(400); 
+         echo json_encode(['status' => 'Error', 'message' => 'Faltan datos requeridos.']);
+         return;
       }
   
       $response = $supplies->update($id_supplier, $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
   
       if ($response['status'] === 'Exito') {
-          http_response_code(200);  
-          echo json_encode($response);
-      } elseif ($response['status'] === 'Advertencia') {
-          http_response_code(200); 
-          echo json_encode($response);
-      } elseif ($response['status'] === 'Error' && $response['message'] === 'ID no existe') {
-          http_response_code(404);  
-          echo json_encode(['status' => 'Error', 'message' => 'No se puede actualizar el proveedor porque el ID no existe.']);
+         http_response_code(200); 
       } else {
-          http_response_code(500); 
-          echo json_encode(['status' => 'Error', 'message' => 'Error interno al actualizar el proveedor.']);
+         http_response_code(500);
       }
+      
+      echo json_encode($response);
   });
-  
   
   $AppRoutes->AddRoutes('DELETE', 'suppliers', function() {
    require_once 'models/suppliers.php';
@@ -89,19 +82,16 @@
       $response = $suppliers->delete($id);
 
       if ($response['status'] === 'Success') {
-         http_response_code(200);  
-         echo json_encode(['status' => 'Exito', 'message' => 'Proveedor eliminado exitosamente']);
-      } elseif ($response['status'] === 'Error' && $response['message'] === 'ID no existe') {
-         http_response_code(400);  
-         echo json_encode(['status' => 'Error', 'message' => 'El ID del proveedor no existe.']);
-      } else {
-         http_response_code(500);  
-         echo json_encode(['status' => 'Error', 'message' => 'Error al eliminar el proveedor.']);
-      }
+         http_response_code(200); 
+         } else {
+           http_response_code(400);
+         }
+      echo json_encode($response);
    } else {
-      http_response_code(400);  
+      http_response_code(400); 
       echo json_encode(['status' => 'Error', 'message' => 'ID del proveedor es requerido.']);
    }
+
 });
 
 ?>
