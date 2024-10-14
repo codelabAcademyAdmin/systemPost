@@ -29,6 +29,10 @@ class SalesModel{
             $total += $product_price * $quantity;
         }
 
+        if(empty($id_user)  || empty($id_product) || empty($quantity)){
+            http_response_code(400);
+            return ['status' => 'error', 'message' => "campo es requerido."];
+        }
         // Insertar la venta
         $query = "INSERT INTO sales (id_user, total) VALUES (?, ?);";
         $stmt = $this->conn->prepare($query);
@@ -50,6 +54,10 @@ class SalesModel{
 
                 $query = "INSERT INTO sale_details (id_sale, id_product, quantity, product_price) VALUES (?, ?, ?, ?);";
                 $stmt = $this->conn->prepare($query);
+                if(!$stmt){
+                    http_response_code(500);
+                    return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+                }
                 $stmt->bind_param("iiii", $id_sale, $id_product, $quantity, $product_price);
                 $stmt->execute();
                 if ($stmt->affected_rows === 0) {
@@ -95,6 +103,10 @@ class SalesModel{
     public function readSalesById($id){
         $query = "SELECT * FROM sales WHERE id_sale = ?";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt){
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -124,6 +136,10 @@ class SalesModel{
     public function readProductsById($id){
         $query = "SELECT * FROM products WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt){
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -171,6 +187,10 @@ class SalesModel{
 
         $query = "UPDATE products SET stock = ? WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt){
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("ii", $new_stock, $id_product);
         $stmt->execute();
         if ($stmt->affected_rows === 0) {
