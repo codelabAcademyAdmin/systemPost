@@ -45,7 +45,6 @@ if ($request == 'GET') {
     } else {
         $response = ['status' => 400, 'error' => 'Ruta no válida'];
     }
-    http_response_code($response['status']);
     echo json_encode($response);
 }
 ?>
