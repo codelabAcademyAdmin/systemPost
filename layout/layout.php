@@ -1,12 +1,12 @@
 <div class="layout">
     <div class="layout-aside">
         <div class="layout-aside-content">
-            1
+            <?php require('./components/Menu/Menu.php'); ?>
         </div>
     </div>
     <div class="layout-section">
         <div class="layout-section-header">
-            2
+            <?php require('./components/Header/Header.php'); ?>
         </div>
         <div class="layout-section-content">
             <?php $AppViews->loadViews(); ?>

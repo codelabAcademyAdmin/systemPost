@@ -10,29 +10,22 @@ class usersModel
         $this->conn = $conn;
     }
 
-    public function create($id_user, $fullname, $email, $pass, $phone, $rol)
+    public function create($fullname, $email, $pass, $phone, $rol)
     {
-        $validation = $this->readById($id_user);
-        if($validation){
-            return [
-                'status' => 'Error',
-                'message' => 'El usuario ya existe'
-            ];
-        }
 
         $emailValidation = $this->readByEmial($email);
-        if($emailValidation){
+        if ($emailValidation) {
             return [
                 'status' => 'Error',
                 'message' => 'El email ya existe'
             ];
         }
-        $query = "INSERT INTO users (id_user, fullname, email, pass, phone, rol) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO users ( fullname, email, pass, phone, rol) VALUES ( ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("isssis", $id_user, $fullname, $email, $pass, $phone, $rol);
+        $stmt->bind_param("sssis", $fullname, $email, $pass, $phone, $rol);
 
         if ($stmt->execute()) {
-            // Llamar a readById para validar la creación del usuario
+            $id_user = $this->conn->insert_id;
             $validation = $this->readById($id_user);
 
             if ($validation) {
@@ -44,13 +37,16 @@ class usersModel
             } else {
                 return [
                     'status' => 'Error',
-                    'message' => 'No se pudo validar la creación del usuario'.$stmt->error
+                    'message' => 'No se pudo validar la creación del usuario'
                 ];
             }
-        
-        } 
-        
+        } else {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al crear el usuario: ' . $stmt->error
+            ];
         }
+    }
 
     public function readAll()
     {
@@ -61,7 +57,7 @@ class usersModel
 
     public function readById($id_user)
     {
-        $query = "SELECT id_user, fullname, email phone, rol, create_date, update_date FROM users WHERE id_user = ?";
+        $query = "SELECT id_user, fullname, email phone, rol, create_at, update_at FROM users WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id_user);
         $stmt->execute();
@@ -118,13 +114,13 @@ class usersModel
         $stmt->bind_param("ss", $username, $password);
 
         if ($stmt->execute()) {
-
             $result = $stmt->get_result();
             $user = $result->fetch_assoc();
+            $stmt->close();
 
             if (!$user) {
                 return [
-                    'status' => 'Error',
+                    'status' => 'unauthorized',
                     'message' => 'Usuario y/o Contraseña incorrectos',
                 ];
             } else {
@@ -141,12 +137,14 @@ class usersModel
                 ];
             }
         } else {
+            $stmt->close();
             return [
-                'status' => 'Error',
-                'message' => 'Error en la consulta' . $stmt->error,
+                'status' => 'error',
+                'message' => 'Error en la consulta: ' . $stmt->error,
             ];
         }
     }
+
 
     public function readByEmial($email)
     {
@@ -158,4 +156,3 @@ class usersModel
         return $result->fetch_assoc();
     }
 }
-
