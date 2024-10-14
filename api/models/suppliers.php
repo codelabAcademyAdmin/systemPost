@@ -1,10 +1,9 @@
-<?php
+<?php 
 class suppliersModel
 {
    private $conn;
 
-   public function __construct()
-   {
+   public function __construct(){
       global $conn;
       $this->conn = $conn;
    }
@@ -26,24 +25,27 @@ class suppliersModel
             'message' => 'Proveedor creado exitosamente',
             'supplier' => $validation 
          ];
-
       } else {
          return [
             'status' => 'Error',
-            'message' => 'Error al crear el proveedor: ' . $stmt->error
+            'message' => 'No se pudo validar la creación del proveedor: '
          ];
       }
+   } else {
+      return [
+         'status' => 'Error',
+         'message' => 'Error al crear el proveedor: ' . $stmt->error
+      ];
    }
+}
 
    public function readAll(){
-
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
       return $result->fetch_all(MYSQLI_ASSOC);
    }
 
    public function readById($id_supplier) {
-
       $query = "SELECT id_supplier, fullname, phone, address, description, category FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
@@ -58,6 +60,7 @@ class suppliersModel
             'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
          ];
      }
+     
      return [
          'status' => 'Success',
          'supplier' => $supplier
@@ -65,14 +68,13 @@ class suppliersModel
    }
 
    public function validationProductSuppliers($id_supplier) {
-
       $query = "SELECT COUNT(*) as total FROM products_suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
       $stmt->execute();
       $result = $stmt->get_result();
       $supplier = $result->fetch_assoc();
-      $stmt->close();
+      $stmt->close(); 
 
       return $supplier;
    }
@@ -133,11 +135,9 @@ class suppliersModel
   }
   
 
-
-   public function delete($id_supplier)
-   {
+   public function delete($id_supplier){
       $supplier = $this->readById($id_supplier);
-      if (!$supplier) {
+      if ($supplier['status'] == 'Error') {
          return [
             'status' => 'Error',
             'message' => 'No se puede eliminar el proveedor porque el ID ' . $id_supplier . ' no existe.'
@@ -151,7 +151,7 @@ class suppliersModel
             'message' => 'No se puede eliminar el proveedor porque tiene productos relacionados.'
          ];
       } 
-
+      
       $query = "DELETE FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $id_supplier);
@@ -170,3 +170,5 @@ class suppliersModel
       ];
    }
 }
+
+?>
