@@ -36,6 +36,10 @@ class SalesModel{
         // Insertar la venta
         $query = "INSERT INTO sales (id_user, total) VALUES (?, ?);";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt){
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("ii", $id_user, $total);
         $stmt->execute();
         if ($stmt->affected_rows === 0) {
@@ -121,6 +125,10 @@ class SalesModel{
     public function readSalesDetailsById($id){
         $query = "SELECT * FROM sale_details WHERE id_sale = ?";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt){
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
+        }
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
