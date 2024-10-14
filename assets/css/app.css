@@ -13,7 +13,7 @@
 .page-login .page-login-aside{
     width: 50%;
     height: 100%;
-background-color: blue;
+background-color: #E6E6F0;
     
 }
 
@@ -21,4 +21,10 @@ background-color: blue;
     width: 50%;
     height: 100%;
 background-color: aquamarine;
+}
+
+.poppins{
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: normal;
 }

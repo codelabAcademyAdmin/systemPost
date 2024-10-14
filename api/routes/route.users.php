@@ -17,7 +17,7 @@
       $users = new usersModel();
       $response;
       $data = json_decode(file_get_contents('php://input'), true);
-      $response = $users->create($data['id_user'], $data['fullname'], $data['email'], $data['pass'], $data['phone'], $data['rol']);
+      $response = $users->create($data['fullname'], $data['email'], $data['pass'], $data['phone'], $data['rol']);
       echo json_encode($response);
    });
 

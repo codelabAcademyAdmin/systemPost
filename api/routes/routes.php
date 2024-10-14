@@ -2,6 +2,7 @@
     $listRoutes = array(
         'index',
         'test',
+        'inventories',
         'users',
         'login',
         'suppliers',
