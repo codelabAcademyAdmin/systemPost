@@ -1,5 +1,7 @@
 @import url('./app.css');
 @import url('./layout.css');
-@import url('./login.css');
-
-
+@import url('./layoutHeader.css');
+@import url('./layoutMenu.css');
+@import url('./loginForm.css');
+@import url('./loginAside.css');
+@import url('./categories.css');

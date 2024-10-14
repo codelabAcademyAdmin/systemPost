@@ -1,7 +1,8 @@
 <?php   
     $listRoutes = array(
-'index',
+        'index',
         'test',
+        'inventories',
         'users',
         'login',
         'suppliers'
