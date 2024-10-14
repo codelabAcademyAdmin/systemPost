@@ -5,8 +5,7 @@
         'inventories',
         'users',
         'login',
-        'suppliers',
-        'sales'
+        'suppliers'
     );
     foreach($listRoutes as $route) {
         require 'route.'.$route.'.php';
