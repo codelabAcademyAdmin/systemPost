@@ -10,14 +10,6 @@ $AppRoutes->AddRoutes('GET', 'inventories/sales', function() {
     } else {
         $response = $inventories->readSaleAll();
     }
-
-    if (isset($response['status'])) {
-        http_response_code($response['status']);
-    } else {
-        http_response_code(500); // Código de estado por defecto en caso de error inesperado
-        $response = ['status' => 500, 'error' => 'Error inesperado'];
-    }
-
     echo json_encode($response);
 });
 
@@ -31,13 +23,6 @@ $AppRoutes->AddRoutes('GET', 'inventories/products', function() {
         $response = $inventories->readProductsById($id);
     } else {
         $response = $inventories->readAllProducts();
-    }
-
-    if (isset($response['status'])) {
-        http_response_code($response['status']);
-    } else {
-        http_response_code(500); // Código de estado por defecto en caso de error inesperado
-        $response = ['status' => 500, 'error' => 'Error inesperado'];
     }
 
     echo json_encode($response);
@@ -54,14 +39,6 @@ $AppRoutes->AddRoutes('GET', 'inventories/suppliers', function() {
     } else {
         $response = $inventories->readAllSuppliers();
     }
-
-    if (isset($response['status'])) {
-        http_response_code($response['status']);
-    } else {
-        http_response_code(500); // Código de estado por defecto en caso de error inesperado
-        $response = ['status' => 500, 'error' => 'Error inesperado'];
-    }
-
     echo json_encode($response);
 });
 
