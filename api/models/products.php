@@ -12,15 +12,29 @@ class productsModel
     public function create($name, $description, $stock, $category, $product_price, $suppliers)
     {
 
+        $validationResult = $this->validateSuppliers($suppliers);
+        if ($validationResult['status'] === 'Error') {
+            return $validationResult;
+        }
+
         $query = "INSERT INTO products (name, description, stock, category, product_price) 
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+
         $stmt->bind_param("ssisd", $name, $description, $stock, $category, $product_price);
 
         if ($stmt->execute()) {
             $id_product = $this->conn->insert_id; //get id newly insert
 
-            foreach ($suppliers as $id_supplier) {
+            foreach ($suppliers as $supplier) {
+                $id_supplier = $supplier['id_supplier'];
                 $this->associateSupplier($id_product, $id_supplier);
             }
 
@@ -41,20 +55,36 @@ class productsModel
         }
     }
 
-    private function associateSupplier($id_product, $id_supplier)
+    private function validateSuppliers($suppliers)
     {
-        $suppliers = new suppliersModel();
-        $data = $suppliers->readById($id_supplier);
+        require_once 'models/suppliers.php';
+        $suppliersModel = new suppliersModel();
 
-        if (!$data) {
-            return [
-                'status' => 'Not Found',
-                'message' => 'El Proveedor con Id: ' . $id_supplier . ' no existe existe'
-            ];
+        foreach ($suppliers as $supplier) {
+            $id_supplier = $supplier['id_supplier'];
+            $data = $suppliersModel->readById($id_supplier);
+
+            if (!$data || $data['status'] === 'Error') {
+                return [
+                    'status' => 'Error',
+                    'message' => 'El proveedor con ID: ' . $id_supplier . ' no existe.'
+                ];
+            }
         }
 
+        return ['status' => 'Success'];
+    }
+
+    private function associateSupplier($id_product, $id_supplier)
+    {
         $query = "INSERT INTO products_suppliers (id_product, id_supplier) VALUES (?, ?)";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("ii", $id_product, $id_supplier);
         if ($stmt->execute()) {
             $stmt->close();
@@ -74,7 +104,6 @@ class productsModel
     public function readAll()
     {
         $query = "SELECT * FROM products";
-
         $result = $this->conn->query($query);
 
         if ($result === false) {
@@ -89,8 +118,14 @@ class productsModel
                 'status' => 'Success',
                 'products' => $result->fetch_all(MYSQLI_ASSOC)
             ];
+        } else {
+            return [
+                'status' => 'Not Found',
+                'message' => 'No se encontraron productos'
+            ];
         }
     }
+
 
 
     public function readById($id_product)
@@ -101,6 +136,7 @@ class productsModel
                 'message' => "El ID del producto debe ser un numero."
             ];
         }
+
         $query = "SELECT * FROM products WHERE id_product = ?";
 
         $stmt = $this->conn->prepare($query);
@@ -129,14 +165,29 @@ class productsModel
 
     public function update($id_product, $name, $description, $stock, $category, $product_price, $suppliers)
     {
+        if (!is_numeric($id_product)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => "El ID del producto debe ser un numero."
+            ];
+        }
+        $this->validateSuppliers($suppliers);
+
         $query = "UPDATE products SET name = ?, stock = ?, description = ?, category = ?, product_price = ? WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("sissd", $name, $description, $stock, $category, $product_price, $id_product);
 
         if ($stmt->execute()) {
             $this->deleteProductSuppliers($id_product);
 
-            foreach ($suppliers as $id_supplier) {
+            foreach ($suppliers as $supplier) {
+                $id_supplier = $supplier['id_supplier'];
                 $this->associateSupplier($id_product, $id_supplier);
             }
 
@@ -157,8 +208,20 @@ class productsModel
 
     private function deleteProductSuppliers($id_product)
     {
+        if (!is_numeric($id_product)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => "El ID del producto debe ser un numero."
+            ];
+        }
         $query = "DELETE FROM products_suppliers WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("i", $id_product);
         $stmt->execute();
         $stmt->close();
@@ -176,6 +239,12 @@ class productsModel
 
         $query = "DELETE FROM products WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("i", $id_product);
 
         if ($stmt->execute()) {

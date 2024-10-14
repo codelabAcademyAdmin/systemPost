@@ -1,5 +1,6 @@
 <?php
 
+
 $AppRoutes->AddRoutes('GET', 'products', function () {
     require_once 'models/products.php';
     $products = new productsModel();
@@ -7,16 +8,22 @@ $AppRoutes->AddRoutes('GET', 'products', function () {
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
         $response = $products->readById($id);
-
-        if($response['status'] === 'Not Valid'){
-            http_response_code(400); //Bad Request
-        }else if($response['status'] === 'Success'){
-            http_response_code(200); //Ok
-        }else if($response['status'] === 'Not Found'){
-            http_response_code(404); //Not Found
-        }else if($response['status'] === 'Internal Error'){
-            http_response_code(500); //Internal Server Error  
+        
+        switch ($response['status']) {
+            case 'Not Valid':
+                http_response_code(400); // Bad Request
+                break;
+            case 'Success':
+                http_response_code(200); // Ok
+                break;
+            case 'Not Found':
+                http_response_code(404); // Not Found
+                break;
+            case 'Internal Error':
+                http_response_code(500); // Internal Server Error
+                break;
         }
+        
     } else {
         $response = $products->readAll();
         
