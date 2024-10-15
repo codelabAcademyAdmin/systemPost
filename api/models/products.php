@@ -9,17 +9,24 @@ class productsModel
         $this->conn = $conn;
     }
 
+
     public function create($name, $description, $stock, $category, $product_price, $suppliers)
     {
+        $existingProduct = $this->checkIfProductExists($name);
+        if ($existingProduct) {
+            return [
+                'status' => 'Conflict',
+                'message' => 'Ya existe un producto con el nombre: ' . $name
+            ];
+        }
 
         $validationResult = $this->validateSuppliers($suppliers);
-        if ($validationResult['status'] === 'Error') {
+        if ($validationResult['status'] !== 'Success') {
             return $validationResult;
         }
 
         $query = "INSERT INTO products (name, description, stock, category, product_price) 
                 VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             return [
@@ -31,7 +38,7 @@ class productsModel
         $stmt->bind_param("ssisd", $name, $description, $stock, $category, $product_price);
 
         if ($stmt->execute()) {
-            $id_product = $this->conn->insert_id; //get id newly insert
+            $id_product = $this->conn->insert_id; // Obtener el ID del producto recién insertado
 
             foreach ($suppliers as $supplier) {
                 $id_supplier = $supplier['id_supplier'];
@@ -44,7 +51,7 @@ class productsModel
                 return [
                     'status' => 'Success',
                     'message' => 'Producto creado exitosamente',
-                    'product' => $validation
+                    'product' => $validation['product']
                 ];
             } else {
                 return [
@@ -52,7 +59,30 @@ class productsModel
                     'message' => 'No se pudo validar la creación del producto: ' . $stmt->error
                 ];
             }
+        } else {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al ejecutar la consulta: ' . $stmt->error
+            ];
         }
+    }
+
+    private function checkIfProductExists($name)
+    {
+        $query = "SELECT id_product FROM products WHERE name = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     private function validateSuppliers($suppliers)
@@ -64,9 +94,9 @@ class productsModel
             $id_supplier = $supplier['id_supplier'];
             $data = $suppliersModel->readById($id_supplier);
 
-            if (!$data || $data['status'] === 'Error') {
+            if (!$data || $data['status'] === 'Not Found') {
                 return [
-                    'status' => 'Error',
+                    'status' => 'Not Found',
                     'message' => 'El proveedor con ID: ' . $id_supplier . ' no existe.'
                 ];
             }
@@ -87,13 +117,11 @@ class productsModel
         }
         $stmt->bind_param("ii", $id_product, $id_supplier);
         if ($stmt->execute()) {
-            $stmt->close();
             return [
                 'status' => 'Success',
                 'message' => 'Proveedor asociado al producto exitosamente'
             ];
         } else {
-            $stmt->close();
             return [
                 'status' => 'Error',
                 'message' => 'Error al asociar el proveedor con el producto: ' . $stmt->error
@@ -117,11 +145,6 @@ class productsModel
             return [
                 'status' => 'Success',
                 'products' => $result->fetch_all(MYSQLI_ASSOC)
-            ];
-        } else {
-            return [
-                'status' => 'Not Found',
-                'message' => 'No se encontraron productos'
             ];
         }
     }
@@ -171,9 +194,17 @@ class productsModel
                 'message' => "El ID del producto debe ser un numero."
             ];
         }
-        $this->validateSuppliers($suppliers);
 
-        $query = "UPDATE products SET name = ?, stock = ?, description = ?, category = ?, product_price = ? WHERE id_product = ?";
+        $existingProduct = $this->readById($id_product);
+        if ($existingProduct['status'] !== 'Success') {
+            return $existingProduct;
+        }
+
+        $validationResult = $this->validateSuppliers($suppliers);
+        if ($validationResult['status'] !== 'Success') {
+            return $validationResult;
+        }
+        $query = "UPDATE products SET name = ?, description = ?, stock = ?, category = ?, product_price = ? WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             return [
@@ -181,29 +212,38 @@ class productsModel
                 'message' => 'Error al preparar la consulta: ' . $this->conn->error
             ];
         }
-        $stmt->bind_param("sissd", $name, $description, $stock, $category, $product_price, $id_product);
+        $stmt->bind_param("ssisdi", $name, $description, $stock, $category, $product_price, $id_product);
 
-        if ($stmt->execute()) {
-            $this->deleteProductSuppliers($id_product);
-
-            foreach ($suppliers as $supplier) {
-                $id_supplier = $supplier['id_supplier'];
-                $this->associateSupplier($id_product, $id_supplier);
-            }
-
-            $validation = $this->readById($id_product);
-            if ($stmt->affected_rows > 0) {
-                return [
-                    'status' => 'Success',
-                    'message' => 'Producto actualizado exitosamente',
-                    'product' => $validation
-                ];
-            }
+        $productUpdated = $stmt->execute();
+        if (!$productUpdated) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al ejecutar la actualización: ' . $stmt->error
+            ];
         }
-        return [
-            'status' => 'Error',
-            'message' => 'No se pudo actualizar el producto'
-        ];
+
+        $productAffectedRows = $stmt->affected_rows;
+
+        $this->deleteProductSuppliers($id_product);
+        foreach ($suppliers as $supplier) {
+            $id_supplier = $supplier['id_supplier'];
+            $this->associateSupplier($id_product, $id_supplier);
+        }
+
+        if ($productUpdated || count($suppliers) > 0) {
+            $updatedProduct = $this->readById($id_product); 
+            $message = ($productAffectedRows > 0) ? 'Producto actualizado exitosamente.' : 'Proveedores actualizados exitosamente, sin cambios en el producto.';
+            return [
+                'status' => 'Success',
+                'message' => $message,
+                'product' => $updatedProduct['product']
+            ];
+        } else {
+            return [
+                'status' => 'Success',
+                'message' => 'No se realizaron cambios ni en el producto ni en los proveedores.'
+            ];
+        }
     }
 
     private function deleteProductSuppliers($id_product)
