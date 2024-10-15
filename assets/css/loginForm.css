@@ -120,3 +120,7 @@
     padding-left: 6px;
     text-align: center;
 }
+
+#btn_disabled{
+    display: none;
+}
