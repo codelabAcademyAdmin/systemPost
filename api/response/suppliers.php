@@ -31,8 +31,27 @@ if ($request == 'PUT') {
    echo json_encode($response);
 }
 
-if ($request == 'DELETE') {
-   $id = $_GET['id'];
-   $response = $suppliers->delete($id);
-   echo json_encode($response);
+if ($request == 'PATCH') {
+   if (isset($_GET['id'])) {
+       $id = $_GET['id']; // ID del proveedor
+       
+       if ($_SERVER['REQUEST_URI'] === '/suppliers/activate') {
+           $response = $suppliers->activate($id); // Activar proveedor
+       } elseif ($_SERVER['REQUEST_URI'] === '/suppliers/deactivate') {
+           $response = $suppliers->deactivate($id); // Desactivar proveedor
+       } else {
+           $response = [
+               'status' => 'Not Found',
+               'message' => 'Ruta no válida.'
+           ];
+       }
+       
+       echo json_encode($response); // Devolver la respuesta
+   } else {
+       echo json_encode([
+           'status' => 'Not Valid',
+           'message' => 'Se debe proporcionar un ID.'
+       ]);
+   }
 }
+

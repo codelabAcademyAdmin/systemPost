@@ -10,29 +10,34 @@ class usersModel
         $this->conn = $conn;
     }
 
-    public function create($fullname, $email, $pass, $phone, $rol)
-    {
-
-        $emailValidation = $this->readByEmial($email);
+    public function create($fullname, $email, $pass, $phone, $rol) {
+        $emailValidation = $this->readByEmail($email);
         if ($emailValidation) {
             return [
                 'status' => 'Error',
-                'message' => 'El email ya existe'
+                'message' => 'Este email ya existe.'
             ];
         }
         $query = "INSERT INTO users ( fullname, email, pass, phone, rol) VALUES ( ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
+        if(!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("sssis", $fullname, $email, $pass, $phone, $rol);
 
         if ($stmt->execute()) {
             $id_user = $this->conn->insert_id;
-            $validation = $this->readById($id_user);
 
+            $validation = $this->readById($id_user);
             if ($validation) {
+                $stmt->close();
                 return [
                     'status' => 'Success',
                     'message' => 'Usuario creado exitosamente',
-                    'user' => $validation
+                    'user' => $validation['users']
                 ];
             } else {
                 return [
@@ -47,6 +52,18 @@ class usersModel
             ];
         }
     }
+    public function readByEmail($email) {
+        $query = "SELECT * FROM users WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+
+        return $user;
+    }
+
 
     public function readAll()
     {
@@ -55,40 +72,128 @@ class usersModel
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function readById($id_user)
-    {
-        $query = "SELECT id_user, fullname, email phone, rol, create_at, update_at FROM users WHERE id_user = ?";
+    public function readById($id_user) {
+        if(!is_numeric($id_user)){
+            return[
+                'status' => 'Not Valid',
+                'message' => 'El id debe ser solo numeros.'
+            ];
+        }
+
+        $query = "SELECT id_user, fullname, email, phone, rol, create_at, update_at FROM users WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt){
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' .$this->conn->error
+            ];
+        }
+
         $stmt->bind_param("i", $id_user);
         $stmt->execute();
         $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        $user = $result->fetch_assoc();
+
+        if(!$user) {
+            return[
+                'status' => 'Not Found',
+                'message' => 'No se encontro ningun usuario con el id ' . $id_user
+            ];
+        }
+        return [
+            'status' => 'Success',
+            'users' => $user
+        ];
     }
 
     public function update($id_user, $fullname, $email, $pass, $phone, $rol)
     {
+        if (!is_numeric($id_user)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El id debe ser solo numeros.'
+            ];
+        }
+        
+        $validation = $this->readById($id_user);
+        if (empty($validation['users'])) {
+            return [
+                'status' => 'Not Found',
+                'message' => 'No se encontró el usuario con ese id.'
+            ];
+        }        
+    
+        //Esta consulta es para validar la actualizacion del usuario, ya que no se puede usar un email que ya este en uso, tengo que verificar si el email existe o no para poder hacer la actualizacion del usuario (si algo preguntas al DM antes de rechazar la pr manito 🤣)
+        $queryEmail = "SELECT * FROM users WHERE email = ? AND id_user != ?";
+        $stmtEmail = $this->conn->prepare($queryEmail);
+        $stmtEmail->bind_param("si", $email, $id_user);
+        $stmtEmail->execute();
+        $resultEmail = $stmtEmail->get_result();
+
+        if ($resultEmail->num_rows > 0) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El correo no es valido, ya está siendo usado por otro usuario.'
+            ];
+        }
+
         $query = "UPDATE users SET fullname = ?, email = ?, pass = ?, phone = ?, rol = ? WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("sssisi", $fullname, $email, $pass, $phone, $rol,  $id_user);
-
+    
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+    
+        $stmt->bind_param("sssisi", $fullname, $email, $pass, $phone, $rol, $id_user);
+    
         if ($stmt->execute()) {
-            $validation = $this->readById($id_user);
-            if ($stmt->affected_rows > 0) {
+            if ($stmt->error) {
                 return [
-                    'status' => 'Success',
-                    'message' => 'Usuario actualizado exitosamente',
-                    'user' => $validation
+                    'status' => 'Error',
+                    'message' => 'Error al ejecutar la consulta: ' . $stmt->error
                 ];
             }
+    
+            if ($stmt->affected_rows > 0) {
+                $update = $this->readById($id_user);
+                return [
+                    'status' => 'Success',
+                    'message' => 'Usuario actualizado exitosamente.'
+                ];
+            } else {
+                return [
+                    'status' => 'Success',
+                    'message' => 'No se actualizaron datos del usuario.'
+                ];
+            }
+        } else {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al actualizar el usuario: ' . $stmt->error
+            ];
         }
-        return [
-            'status' => 'Error',
-            'message' => 'No se pudo actualizar el usuario'
-        ];
     }
+    
 
-    public function delete($id_user)
-    {
+    public function delete($id_user) {
+
+        if(!is_numeric($id_user)){
+            return[
+               'status' => 'Not Valid',
+               'message' => 'El id debe ser solo numeros.'
+            ];
+        }
+        $user = $this->readById($id_user);
+        if ($user['status'] == 'Not Found') {
+         return [
+            'status' => 'Not Found',
+            'message' => 'No se puede eliminar el usuario porque el ID ' . $id_user . ' no existe.'
+            ];
+        }
+
         $query = "DELETE FROM users WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id_user);
