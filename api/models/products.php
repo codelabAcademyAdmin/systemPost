@@ -20,11 +20,19 @@ class productsModel
             ];
         }
 
+        
         $validationResult = $this->validateSuppliers($suppliers);
         if ($validationResult['status'] !== 'Success') {
             return $validationResult;
         }
-
+        
+        if($stock < 0){
+            return [
+                'status' => 'Not Valid',
+                'message' => 'Cantidad ingresada en el Stock no valida'
+            ];
+        }
+        
         $query = "INSERT INTO products (name, description, stock, category, product_price) 
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
@@ -239,6 +247,13 @@ class productsModel
         $existingProduct = $this->readById($id_product);
         if ($existingProduct['status'] !== 'Success') {
             return $existingProduct;
+        }
+
+        if($stock < 0){
+            return [
+                'status' => 'Not Valid',
+                'message' => 'Cantidad ingresada en el Stock no valida'
+            ];
         }
 
         $validationResult = $this->validateSuppliers($suppliers);
