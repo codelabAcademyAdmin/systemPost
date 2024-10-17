@@ -25,12 +25,30 @@ if ($request == 'POST') {
 if ($request == 'PUT') {
     $data = json_decode(file_get_contents('php://input'), true);
     $id = $_GET['id'];
-    $response = $product->update($id, $data['fullname'], $data['phone'], $data['address'], $data['description']);
+    $response = $products->update($id,$data['name'], $data['description'], $data['stock'], $data['category'], $data['product_price'], $data['suppliers']);
     echo json_encode($response);
 }
 
-if ($request == 'DELETE') {
-    $id = $_GET['id'];
-    $response = $product->delete($id);
-    echo json_encode($response);
+if ($request == 'PATCH') {
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        
+        if ($_SERVER['REQUEST_URI'] === '/products/activate') {
+            $response = $product->activate($id);
+        } elseif ($_SERVER['REQUEST_URI'] === '/products/deactivate') {
+            $response = $product->deactivate($id); 
+        } else {
+            $response = [
+                'status' => 'Not Found',
+                'message' => 'Ruta no válida.'
+            ];
+        }
+        
+        echo json_encode($response);
+    } else {
+        echo json_encode([
+            'status' => 'Not Valid',
+            'message' => 'Se debe proporcionar un ID.'
+        ]);
+    }
 }

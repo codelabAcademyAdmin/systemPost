@@ -63,12 +63,23 @@ $AppRoutes->AddRoutes('PUT', 'products', function () {
 });
 
 
-$AppRoutes->AddRoutes('DELETE', 'products', function () {
+$AppRoutes->AddRoutes('PATCH', 'products/deactive', function () {
     require_once 'models/products.php';
     $products = new productsModel();
     $response;
     $id = $_GET['id'];
-    $response = $products->delete($id);
+    $response = $products->deactivate($id);
+
+    setHttpResponseCode($response['status']);
+    echo json_encode($response);
+});
+
+$AppRoutes->AddRoutes('PATCH', 'products/active', function () {
+    require_once 'models/products.php';
+    $products = new productsModel();
+    $response;
+    $id = $_GET['id'];
+    $response = $products->activate($id);
 
     setHttpResponseCode($response['status']);
     echo json_encode($response);

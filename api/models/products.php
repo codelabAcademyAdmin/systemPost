@@ -117,16 +117,57 @@ class productsModel
         }
         $stmt->bind_param("ii", $id_product, $id_supplier);
         if ($stmt->execute()) {
-            return [
-                'status' => 'Success',
-                'message' => 'Proveedor asociado al producto exitosamente'
-            ];
+            return $stmt->affected_rows;
         } else {
             return [
                 'status' => 'Error',
                 'message' => 'Error al asociar el proveedor con el producto: ' . $stmt->error
             ];
         }
+    }
+
+    private function removeSupplierFromProduct($id_product, $id_supplier)
+    {
+        $query = "DELETE FROM products_suppliers WHERE id_product = ? AND id_supplier = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $id_product, $id_supplier);
+        return $stmt->execute();
+    }
+
+    private function getSuppliersByProductId($id_product)
+    {
+        $query = "SELECT id_supplier FROM products_suppliers WHERE id_product = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_product);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    private function updateProductSuppliers($id_product, $newSuppliers)
+    {
+        // Obtener los proveedores actuales asociados al producto
+        $currentSuppliers = $this->getSuppliersByProductId($id_product);
+
+        // Crear arrays de IDs de proveedores
+        $newSupplierIds = array_column($newSuppliers, 'id_supplier');
+        $currentSupplierIds = array_column($currentSuppliers, 'id_supplier');
+
+        // Determinar proveedores a eliminar y a agregar
+        $suppliersToDelete = array_diff($currentSupplierIds, $newSupplierIds);
+        $suppliersToAdd = array_diff($newSupplierIds, $currentSupplierIds);
+
+        // Eliminar proveedores que ya no están en la lista
+        foreach ($suppliersToDelete as $supplierId) {
+            $this->removeSupplierFromProduct($id_product, $supplierId);
+        }
+
+        // Agregar nuevos proveedores que no estaban antes
+        foreach ($suppliersToAdd as $supplierId) {
+            $this->associateSupplier($id_product, $supplierId);
+        }
+
+        return count($suppliersToDelete) + count($suppliersToAdd);
     }
 
     public function readAll()
@@ -214,8 +255,7 @@ class productsModel
         }
         $stmt->bind_param("ssisdi", $name, $description, $stock, $category, $product_price, $id_product);
 
-        $productUpdated = $stmt->execute();
-        if (!$productUpdated) {
+        if (!$stmt->execute()) {
             return [
                 'status' => 'Internal Error',
                 'message' => 'Error al ejecutar la actualización: ' . $stmt->error
@@ -223,38 +263,53 @@ class productsModel
         }
 
         $productAffectedRows = $stmt->affected_rows;
+        $suppliersAffectedRows = $this->updateProductSuppliers($id_product, $suppliers);
 
-        $this->deleteProductSuppliers($id_product);
-        foreach ($suppliers as $supplier) {
-            $id_supplier = $supplier['id_supplier'];
-            $this->associateSupplier($id_product, $id_supplier);
-        }
+        // $this->deleteProductSuppliers($id_product);
+        // $isAffect = 0;
 
-        if ($productUpdated || count($suppliers) > 0) {
-            $updatedProduct = $this->readById($id_product); 
-            $message = ($productAffectedRows > 0) ? 'Producto actualizado exitosamente.' : 'Proveedores actualizados exitosamente, sin cambios en el producto.';
+        // foreach ($suppliers as $supplier) {
+        //     $id_supplier = $supplier['id_supplier'];
+        //     $isAffect = $this->associateSupplier($id_product, $id_supplier);
+        // }
+
+        if ($productAffectedRows > 0 || $suppliersAffectedRows > 0) {
+            $updatedProduct = $this->readById($id_product);
             return [
                 'status' => 'Success',
-                'message' => $message,
+                'message' => 'Datos del producto actualizado exitosamente.',
                 'product' => $updatedProduct['product']
             ];
         } else {
             return [
                 'status' => 'Success',
-                'message' => 'No se realizaron cambios ni en el producto ni en los proveedores.'
+                'message' => 'No se evidenciaron cambios en los datos del producto.'
             ];
         }
     }
 
-    private function deleteProductSuppliers($id_product)
+    public function activate($id_product)
     {
         if (!is_numeric($id_product)) {
             return [
                 'status' => 'Not Valid',
-                'message' => "El ID del producto debe ser un numero."
+                'message' => "El ID del producto debe ser un número."
             ];
         }
-        $query = "DELETE FROM products_suppliers WHERE id_product = ?";
+
+        $existingProduct = $this->readById($id_product);
+        if ($existingProduct['status'] !== 'Success') {
+            return $existingProduct; 
+        }
+
+        if ($existingProduct['product']['status'] == 'activo') {
+            return [
+                'status' => 'Conflict',
+                'message' => 'El producto ya está activo.'
+            ];
+        }
+
+        $query = "UPDATE products SET status = 'activo' WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             return [
@@ -262,42 +317,67 @@ class productsModel
                 'message' => 'Error al preparar la consulta: ' . $this->conn->error
             ];
         }
-        $stmt->bind_param("i", $id_product);
-        $stmt->execute();
-        $stmt->close();
-    }
 
-    public function delete($id_product)
-    {
-        if (!is_numeric($id_product)) {
-            return [
-                'status' => 'Not Valid',
-                'message' => "El ID del producto debe ser un numero."
-            ];
-        }
-        $this->deleteProductSuppliers($id_product);
-
-        $query = "DELETE FROM products WHERE id_product = ?";
-        $stmt = $this->conn->prepare($query);
-        if (!$stmt) {
-            return [
-                'status' => 'Internal Error',
-                'message' => 'Error al preparar la consulta: ' . $this->conn->error
-            ];
-        }
         $stmt->bind_param("i", $id_product);
 
         if ($stmt->execute()) {
             if ($stmt->affected_rows > 0) {
                 return [
                     'status' => 'Success',
-                    'message' => 'Producto eliminado exitosamente'
+                    'message' => 'Producto activado exitosamente.'
+                ];
+            } else {
+                return [
+                    'status' => 'Not Found',
+                    'message' => 'No se encontró el producto para activar.'
                 ];
             }
+        } else {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al activar el producto: ' . $stmt->error
+            ];
         }
-        return [
-            'status' => 'Error',
-            'message' => 'No se pudo eliminar el producto'
-        ];
+    }
+
+
+    public function deactivate($id_product)
+    {
+        if (!is_numeric($id_product)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => "El ID del producto debe ser un número."
+            ];
+        }
+
+        $existingProduct = $this->readById($id_product);
+        if ($existingProduct['status'] !== 'Success') {
+            return $existingProduct;
+        }
+
+        $query = "UPDATE products SET status = 'inactivo' WHERE id_product = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+
+        $stmt->bind_param("i", $id_product);
+
+        if ($stmt->execute()) {
+            if ($stmt->affected_rows > 0) {
+                return [
+                    'status' => 'Success',
+                    'message' => 'Producto inactivado exitosamente.'
+                ];
+            }
+        } else {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al inactivar el producto.' . $stmt->error
+            ];
+        }
     }
 }
