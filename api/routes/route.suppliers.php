@@ -1,181 +1,135 @@
 <?php
-$AppRoutes->AddRoutes('GET', 'suppliers', function () {
-   require_once 'models/suppliers.php';
-   $supplies = new suppliersModel();
-   $response;
 
-   if (isset($_GET['id'])) {
-      $id = $_GET['id'];
-      $response = $supplies->readById($id);
-
-      switch ($response['status']) {
+   function setHttpResponseSuppliers($status) {
+      switch ($status) {
          case 'Not Valid':
-            http_response_code(400); // Bad Request
-            break;
+               http_response_code(400); // Bad Request
+               break;
          case 'Success':
-            http_response_code(200); // Ok
-            break;
+               http_response_code(200); // OK
+               break;
          case 'Not Found':
-            http_response_code(404); // Not Found
-            break;
+               http_response_code(404); // Not Found
+               break;
          case 'Error':
-            http_response_code(500); // Internal Server Error
-            break;
+               http_response_code(500); // Internal Server Error
+               break;
+         case 'Conflicts':
+               http_response_code(409); // Conflict
+               break;
+         default:
+               http_response_code(500); // Por defecto a Internal Server Error
+               break;
       }
-   } else {
-      $response = $supplies->readAll();
-      http_response_code(200);
    }
 
-   echo json_encode($response);
-});
+   $AppRoutes->AddRoutes('GET', 'suppliers', function() {
+      require_once 'models/suppliers.php';
+      $suppliers = new suppliersModel();
+      $response;
 
-$AppRoutes->AddRoutes('POST', 'suppliers', function () {
-   require_once 'models/suppliers.php';
-   $suppliers = new suppliersModel();
-   $data = json_decode(file_get_contents('php://input'), true);
+      if (isset($_GET['id'])) {
+         $id = $_GET['id'];
+         $response = $suppliers->readById($id);
+         
+         setHttpResponseSuppliers($response['status']); 
+      } else {
+         $response = $suppliers->readAll();
+         setHttpResponseSuppliers('Success'); 
+      }
 
-   $response = [];
-
-   // Verificar que los datos sean obligatorios
-   if (!$data || 
-      empty($data['fullname']) || empty($data['phone']) || empty($data['address']) || empty($data['description']) || empty($data['category'])) {
-       
-      http_response_code(400); // Bad Request
-      $response = [
-         'status' => 'Not Valid',
-         'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
-      ];
       echo json_encode($response);
-      return; 
-   }
+   });
 
-   $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+   $AppRoutes->AddRoutes('POST', 'suppliers', function() {
+      require_once 'models/suppliers.php';
+      $suppliers = new suppliersModel();
+      $data = json_decode(file_get_contents('php://input'), true);
 
-   switch ($response['status']) {
-      case 'Not Valid':
-         http_response_code(400); // Bad Request
-         break;
-      case 'Success':
-         http_response_code(201); // Created
-         break;
-      case 'Conflicts':
-         http_response_code(409); // Conflict
-         break;
-      case 'Error':
-         http_response_code(500); // Internal Server Error
-         break;
-   }
+      if (!$data || 
+         empty($data['fullname']) || empty($data['phone']) || empty($data['address']) || 
+         empty($data['description']) || empty($data['category'])) {
+         
+         $response = [
+               'status' => 'Not Valid',
+               'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
+         ];
+         setHttpResponseSuppliers($response['status']); 
+         echo json_encode($response);
+         return; 
+      }
 
-   echo json_encode($response);
-});
+      $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+      setHttpResponseSuppliers($response['status']);
+      echo json_encode($response);
+   });
 
-$AppRoutes->AddRoutes('PUT', 'suppliers', function () {
-   require_once 'models/suppliers.php';
-   $supplies = new suppliersModel();
-   $id_supplier = $_GET['id'];
-   $data = json_decode(file_get_contents('php://input'), true);
+   $AppRoutes->AddRoutes('PUT', 'suppliers', function() {
+      require_once 'models/suppliers.php';
+      $suppliers = new suppliersModel();
+      $id_supplier = $_GET['id'];
+      $data = json_decode(file_get_contents('php://input'), true);
 
-   //verificar que los datos no esten vacios
-   if (empty($data)) {
-      http_response_code(400);
-      echo json_encode(['status' => 'Error', 'message' => 'Faltan datos requeridos.']);
-      return; 
-   }
+      if (empty($data)) {
+         $response = ['status' => 'Error', 'message' => 'Faltan datos requeridos.'];
+         setHttpResponseSuppliers($response['status']); 
+         echo json_encode($response);
+         return;
+      }
 
-   //traemos los datos del provedor existente para comparar
-   $existingSupplierResponse = $supplies->readById($id_supplier);
+      $existingSuppliersResponse = $suppliers->readById($id_supplier);
+      if ($existingSuppliersResponse['status'] !== 'Success') {
+         setHttpResponseSuppliers($existingSuppliersResponse['status']); 
+         echo json_encode([
+               'status' => 'Error',
+               'message' => $existingSuppliersResponse['message']
+         ]);
+         return;
+      }
 
-   if ($existingSupplierResponse['status'] !== 'Success') {
-      http_response_code(404);
-      echo json_encode([
-         'status' => 'Error',
-         // envia el mensaje que retorna del modelo
-         'message' => $existingSupplierResponse['message'] 
-      ]);
-      return;
-   }
-   $existingSupplier = $existingSupplierResponse['supplier'];
+      $existingSupplier = $existingSuppliersResponse['supplier'];
+      $updateData = [];
 
-   //comprobamos que campos se editaron, no es obligatorio editarlos todos
-   $updateData = [];
-   if (isset($data['fullname']) && $data['fullname'] !== $existingSupplier['fullname']) {
-      $updateData['fullname'] = $data['fullname'];
-   }
-   if (isset($data['phone']) && $data['phone'] !== $existingSupplier['phone']) {
-      $updateData['phone'] = $data['phone'];
-   }
-   if (isset($data['address']) && $data['address'] !== $existingSupplier['address']) {
-      $updateData['address'] = $data['address'];
-   }
-   if (isset($data['description']) && $data['description'] !== $existingSupplier['description']) {
-      $updateData['description'] = $data['description'];
-   }
-   if (isset($data['category']) && $data['category'] !== $existingSupplier['category']) {
-      $updateData['category'] = $data['category'];
-   }
+      // Verificamos si hay cambios para cada campo
+      if (isset($data['fullname']) && $data['fullname'] !== $existingSupplier['fullname']) {
+         $updateData['fullname'] = $data['fullname'];
+      }
+      if (isset($data['phone']) && $data['phone'] !== $existingSupplier['phone']) {
+         $updateData['phone'] = $data['phone'];
+      }
+      if (isset($data['address']) && $data['address'] !== $existingSupplier['address']) {
+         $updateData['address'] = $data['address'];
+      }
+      if (isset($data['description']) && $data['description'] !== $existingSupplier['description']) {
+         $updateData['description'] = $data['description'];
+      }
+      if (isset($data['category']) && $data['category'] !== $existingSupplier['category']) {
+         $updateData['category'] = $data['category'];
+      }
 
-   //llamamos a la función de actualización pasando solo los campos que cambiaron
-   $response = $supplies->update($id_supplier, $updateData);
+      $response = $suppliers->update($id_supplier, $updateData);
+      setHttpResponseSuppliers($response['status']); 
+      echo json_encode($response);
+   });
 
-   switch ($response['status']) {
-      case 'Not Valid':
-         http_response_code(400); // Bad Request
-         break;
-      case 'Success':
-         http_response_code(200); // Ok
-         break;
-      case 'Not Found':
-         http_response_code(404); // Not Found
-         break;
-      case 'Conflicts':
-         http_response_code(409); // Conflict
-         break;
-      case 'Error':
-         http_response_code(500); // Internal Server Error
-         break;
-   }
+   $AppRoutes->AddRoutes('PATCH', 'suppliers/deactivate', function() {
+      require_once 'models/suppliers.php';
+      $suppliers = new suppliersModel();
+      $id = $_GET['id']; 
+      $response = $suppliers->deactivate($id); 
 
-   echo json_encode($response);
-});
+      setHttpResponseSuppliers($response['status']); 
+      echo json_encode($response);
+   });
 
-$AppRoutes->AddRoutes('PATCH', 'suppliers/deactivate', function () {
-   require_once 'models/suppliers.php';
-   $suppliers = new suppliersModel();
-   $id = $_GET['id']; 
-   $response = $suppliers->deactivate($id); 
+   $AppRoutes->AddRoutes('PATCH', 'suppliers/activate', function() {
+      require_once 'models/suppliers.php';
+      $suppliers = new suppliersModel();
+      $id = $_GET['id']; 
+      $response = $suppliers->activate($id); 
 
-   //codigo de respuesta HTTP
-   http_response_code(mapHttpResponseCode($response['status']));
-   echo json_encode($response);
-});
+      setHttpResponseSuppliers($response['status']); 
+      echo json_encode($response);
+   });
 
-$AppRoutes->AddRoutes('PATCH', 'suppliers/activate', function () {
-   require_once 'models/suppliers.php';
-   $suppliers = new suppliersModel();
-   $id = $_GET['id']; 
-   $response = $suppliers->activate($id); 
-
-   //establecer el código de respuesta HTTP
-   http_response_code(mapHttpResponseCode($response['status']));
-   echo json_encode($response);
-});
-
-//funcion para mapear los cóoigos de respuestas
-function mapHttpResponseCode($status) {
-   switch ($status) {
-       case 'Success':
-           return 200;
-       case 'Not Found':
-           return 404;
-       case 'Conflict':
-           return 409;
-       case 'Not Valid':
-           return 400;
-       case 'Internal Error':
-           return 500;
-       default:
-           return 500; 
-   }
-}
-
+?>

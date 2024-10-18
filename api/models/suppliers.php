@@ -8,7 +8,7 @@ class suppliersModel
       $this->conn = $conn;
    }
    //funcion para verificar y asegurar de que el nombre no este siendo usado 
-   public function validationDataName($fullname) {
+   public function validationName($fullname) {
       $query = "SELECT * FROM suppliers WHERE fullname = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $fullname);
@@ -17,67 +17,54 @@ class suppliersModel
       $stmt->close();
   
       if ($result->num_rows > 0) {
-          return [
-              'status' => 'Conflicts',
-              'message' => 'Este nombre del proveedor ya está siendo usado por otro proveedor.'
-          ];
+         return [
+            'status' => 'Conflicts',
+            'message' => 'Este nombre del proveedor ya está siendo usado por otro proveedor.'
+         ];
       }
       return [
          'status' => 'Success'
      ]; 
    }
-   
    // funcion verificar si el phone cumple con los requisitos correspondientes
-   public function validationDataPhone($phone) {
+   public function validationPhone($phone) {
       if (!preg_match('/^\d{10}$/', $phone)) {
           return [
               'status' => 'Not Valid',
-              'message' => 'El número de teléfono debe cumplir con los 10 dígitos y debe ser solo números.'
+              'message' => 'El número de teléfono debe ser exactamente 10 dígitos numéricos.'
           ];
       }
-      return [
-         'status' => 'Success'
-     ]; 
-   }
-   
-    //funcion para verificar y asegurar de que el numero no este siendo usado 
-   public function validationNumberPhone($phone) {
+
       $query = "SELECT * FROM suppliers WHERE phone = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $phone);
       $stmt->execute();
       $result = $stmt->get_result();
       $stmt->close();
-  
+
       if ($result->num_rows > 0) {
           return [
               'status' => 'Conflicts',
-              'message' => 'Este número de teléfono del proveedor ya está siendo usado por otro proveedor.'
+              'message' => 'Este número de teléfono ya está siendo usado por otro usuario.'
           ];
       }
-      
       return [
-         'status' => 'Success'
-     ]; 
-   }
-
-   //funcion para el metodo POST
+          'status' => 'Success'
+      ]; 
+  }
+  
    public function create($fullname, $phone, $address, $description, $category) {
 
       //Llamamos a la funciones de validacion para varificar los datos 
-      $response = $this->validationDataName($fullname);
-         if ($response['status'] !== 'Success') {
-         return $response; 
-      }$response = $this->validationDataPhone($phone);
+      $response = $this->validationName($fullname);
          if ($response['status'] !== 'Success') {
          return $response; 
       }
-      $response = $this->validationNumberPhone($phone);
+      $response = $this->validationPhone($phone);
          if ($response['status'] !== 'Success') {
-         return $response; 
+         return $response;
       }
 
-      //si pasa la validacion, procedemos a crear el nuevo proveedor
       $query = "INSERT INTO suppliers (fullname, phone, address, description, category) VALUES (?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
@@ -113,14 +100,12 @@ class suppliersModel
       }
    }
 
-   //funcion para el metodo GET
    public function readAll() {
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
       return $result->fetch_all(MYSQLI_ASSOC);
    }
 
-   //uncion para el metodo GET por id
    public function readById($id_supplier) {
       if(!is_numeric($id_supplier)){
          return[
@@ -129,7 +114,6 @@ class suppliersModel
          ];
       }
 
-      // Asegurarse de que el campo status sea parte de la selección
       $query = "SELECT id_supplier, fullname, phone, address, description, category, status FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
@@ -158,10 +142,8 @@ class suppliersModel
       ];
    }
 
-   //funcion para el metodo UPDATE
    public function update($id_supplier, $data) {
       
-      // verifica si el ID es numérico
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -169,7 +151,6 @@ class suppliersModel
          ];
       }
   
-      // validar que el proveedor existe
       $validation = $this->readById($id_supplier);
       if (empty($validation['supplier'])) {
          return [
@@ -178,17 +159,15 @@ class suppliersModel
          ];
       }
   
-      //obtener los datos existentes del proveedor
       $existingSupplier = $validation['supplier'];
   
-      // Comprobar si los campos han cambiado
       $updateFields = [];
       $params = [];
   
-      // Solo actualizamos los campos que han cambiado
+      //solo actualizamos los campos que han cambiado
       if (isset($data['fullname']) && $data['fullname'] !== $existingSupplier['fullname']) {
          // aqui traemos la funcion de validar el nuevo nombre si ya esta en uso
-         $response = $this->validationDataName($data['fullname']);
+         $response = $this->validationName($data['fullname']);
          if ($response['status'] !== 'Success') {
             return $response; 
          }
@@ -197,14 +176,9 @@ class suppliersModel
       }
       if (isset($data['phone']) && $data['phone'] !== $existingSupplier['phone']) {
          // aqui traemos la funcion de validar el numero si ya esta en uso
-         $response = $this->validationDataPhone($data['phone']);
+         $response = $this->validationPhone($data['phone']);   
          if ($response['status'] !== 'Success') {
-            return $response; 
-         }
-         //funcion para verificar que el numero cumpla con los caracteres correspondientes
-         $response = $this->validationNumberPhone($data['phone']);
-         if ($response['status'] !== 'Success') {
-            return $response; 
+            return $response;
          }
           $updateFields[] = "phone = ?";
           $params[] = $data['phone'];
@@ -222,7 +196,6 @@ class suppliersModel
          $params[] = $data['category'];
       }
   
-      //si no se han proporcionado cambios, mandar este mensaje 
       if (empty($updateFields)) {
          return [
             'status' => 'Success',
@@ -230,10 +203,8 @@ class suppliersModel
          ];
       }
   
-      // Agregar el ID del proveedor a los parámetros
       $params[] = $id_supplier;
   
-      // Crear la consulta dinámica
       $query = "UPDATE suppliers SET " . implode(", ", $updateFields) . " WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       
@@ -244,7 +215,6 @@ class suppliersModel
          ];
       }
   
-      // Bind de parámetros
       $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
       if ($stmt->execute()) {
          return [
@@ -268,7 +238,6 @@ class suppliersModel
          ];
       }
 
-      // validar que el proveedor exista
       $existingSupplier = $this->readById($id_supplier);
       if ($existingSupplier['status'] !== 'Success') {
          return [
@@ -284,7 +253,6 @@ class suppliersModel
          ];
       }
 
-      // funcion para ativar el proveedor
       $query = "UPDATE suppliers SET status = 'activo' WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
@@ -316,7 +284,6 @@ class suppliersModel
       }
    }
 
-   //funcion para desactivar el provedor
    public function deactivate($id_supplier) {
       if (!is_numeric($id_supplier)) {
          return [
@@ -333,7 +300,6 @@ class suppliersModel
          ];
       }
 
-      // verificar si ya esta activo
       if ($existingSupplier['supplier']['status'] == 'inactivo') {
          return [
             'status' => 'Conflict',
@@ -341,7 +307,6 @@ class suppliersModel
          ];
       }
 
-      // inactivar el proveedor
       $query = "UPDATE suppliers SET status = 'inactivo' WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
