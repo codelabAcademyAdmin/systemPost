@@ -1,7 +1,486 @@
-@import url('./app.css');
-@import url('./layout.css');
-@import url('./layoutHeader.css');
-@import url('./layoutMenu.css');
-@import url('./loginForm.css');
-@import url('./loginAside.css');
-@import url('./categories.css');
+
+
+/* estilos de aside del login */
+
+.container-aside-login{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container-aside-login .container1{
+    border-radius: 50%;
+    background: linear-gradient(to left,#FDA4AC , #FEADB9);
+    height:300px;
+    width: 300px;
+    display: flex;
+    position: absolute;
+    top: -160px;
+    right: 150px;
+    z-index: 120;
+}
+
+.container-aside-login .container2{
+    border-radius: 50%;
+    background: linear-gradient(to bottom,#1B2597, #04073C);
+    transform: rotate(45deg);
+    height: 220px;
+    width: 220px;
+    display: flex;
+    position: absolute;
+    top: -35px;
+    right: -30px;
+}
+
+.container-aside-login .container3{
+    border-radius: 50%;
+    background: linear-gradient(to bottom,#09A5B2, #006271);
+    transform: rotate(45deg);
+    height: 220px;
+    width: 220px;
+    display: flex;
+    position: absolute;
+    left: -110px;
+    top: 50%;
+}
+
+.container-aside-login .container4{
+    border-radius: 50%;
+    background: linear-gradient(to bottom,#09A5B2, #006271);
+    transform: rotate(0deg);
+    height: 50px;
+    width: 50px;
+    display: flex;
+    position: absolute;
+    right: 70px;
+    bottom: 90px;
+}
+
+.container-aside-login .container5{
+    border-radius: 50%;
+    background-color: #FEADB9;
+    transform: rotate(45deg);
+    height: 180px;
+    width: 180px;
+    display: flex;
+    position: absolute;
+    right: -60px;
+    bottom: -45px;
+}
+
+.container-aside-login .container-info-aside{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    position: fixed;
+    bottom: 35px;
+}
+
+.container-aside-login .container-logo{
+    width: 210px;
+    height: 210px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.container-aside-login .container-logo .codelab {
+    font-size: 45px;
+    font-weight: 600;
+}
+
+
+/* estilos de loginForm */
+
+
+.login-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.login-container .login-header{
+    width: 300px;
+    height: 50px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.login-container .login-header .login-title{
+    font-size: 40px;
+    font-weight: 400;
+    font-weight: bold;
+}
+
+.login-container .login-form{
+    width: 300px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container .login-form .input-group{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login-container .login-form .input-group .input-field{
+    width: 100%;
+    height: 40px;
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 1px solid gray;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.login-container .login-form .input-group .password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.login-container .login-form .input-group .password-container .input-password{
+    padding-right: 40px;
+}
+
+
+.login-container .login-form .input-group .password-container .icon-password {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 10px;
+    bottom: 26px;
+    cursor: pointer; 
+}
+
+.login-container .login-form .remember-me{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.login-container .login-form .remember-me .checkbox-mark {
+    accent-color: rgb(115, 236, 226);
+}
+
+.login-container .login-form .remember-me .checkbox{
+    font-size: 15px;
+    color: gray;
+}
+
+.login-container .login-form .login-button{
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container .login-form .login-button .button{
+    width: 60%;
+    padding: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 40px;
+    cursor: pointer;
+    background-color: rgb(115, 236, 226);
+}
+
+.login-container .login-form .login-button .button:hover{
+    background-color: rgb(28, 183, 203);
+    transition: background-color 0.3s ease;
+}
+
+.login-container .login-form .content-forgot-password{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+}
+
+.login-container .login-form .content-forgot-password .forgot-password {
+    margin-top: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    padding-left: 6px;
+    text-align: center;
+}
+
+
+
+
+/* estilos de layout */
+
+.layout{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.layout .layout-aside{
+    width: 60px;
+    height: 100%;
+    background-color: #bdc3c7;
+}
+
+.layout .layout-section{
+    width: calc(100% - 60px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout .layout-section .layout-section-header{
+    width: 100%;
+    height: 60px;
+    background-color: #95a5a6;
+}
+
+.layout .layout-section .layout-section-content{
+    width: 100%;
+    height: calc(100% - 60px);
+    background-color: #ecf0f1;
+}
+
+
+/* estilos de login */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.page-login{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.page-login .page-login-aside{
+    width: 50%;
+    height: 100%;
+background-color: #E6E6F0;
+    
+}
+
+.page-login .page-login-form{
+    width: 50%;
+    height: 100%;
+background-color: aquamarine;
+}
+
+.poppins{
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+
+/* estilos de categorias */
+
+.category-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 15px;
+    gap: 20px;
+    font-family: Arial;
+}
+
+.category-container .category-item {
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    text-align: row;
+    justify-content: row;
+    align-items: row;
+    padding: 10px;
+    gap: 8px;
+    background-color: #E5EBF4;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 20px;
+    border-radius: 5px;
+    padding-bottom: 12px;
+    color: #888;
+}
+
+.category-container .category-item:hover {
+    background-color: #E5EBF4;
+    transform: scale(1.05);
+}
+
+.category-container .active {
+    background-color: #E5EBF4;
+}
+
+.category-container .category-item  .content-icon{
+    width: 40px;
+    height: 40px;
+}
+
+
+
+/* estilos de header */
+
+
+.header{
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 26px;
+    font-family: Arial;
+}
+
+.header .content-profile{
+    display: flex;
+    height: 100%;
+    flex-direction: row;
+    gap: 25px;
+    align-items: center;
+}
+
+.header .content-profile .content-icon-1  .icon-lock{
+    width: 28px;
+    height: 28px;
+    color: black;
+}
+
+.header .content-profile .profile{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    position: relative;
+}
+
+.header .content-profile .profile .name-profile{
+    cursor: pointer;
+}
+
+.header .content-profile .profile .content-icon-2 .icon-row{
+    width: 18px;
+    height: 12px;
+    color: black;
+}
+
+.header .content-profile .profile .circle-profile{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray;
+}
+
+
+.header .content-profile .profile .dropdown-content {
+    position: absolute;
+    width: 130px;
+    top: 45px;
+    left: 50px;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.header .content-profile .profile .dropdown-content a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    text-align: start;
+    color: black;
+}
+.header .content-profile .profile .dropdown-content a:hover {
+   background-color: rgb(232, 231, 231);
+   font-weight: 600;
+}
+
+
+/* estilos de menu */
+
+
+.component-menu {
+    width: 60px;
+    height: 100vh;
+    background-color: #3f4b6b; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15px;
+    position: relative;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+.component-menu .menu-logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px; 
+}
+
+.component-menu .menu-options {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    padding-bottom: 30px; 
+}
+
+.component-menu .menu-options .option {
+    margin: 15px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.component-menu .menu-options .option svg {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+    transition: stroke 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.component-menu .menu-options .option:hover svg {
+    stroke: #ff6b6b;
+    transform: scale(1.1); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
