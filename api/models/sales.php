@@ -1,11 +1,14 @@
 <?php
-class SalesModel{
+class SalesModel
+{
     private $conn;
-    public function __construct() {
+    public function __construct()
+    {
         global $conn;
         $this->conn = $conn;
     }
-    public function create($sales) {
+    public function create($sales)
+    {
         $total = 0;
         $id_user = null;
 
@@ -29,14 +32,14 @@ class SalesModel{
             $total += $product_price * $quantity;
         }
 
-        if(empty($id_user)  || empty($id_product) || empty($quantity)){
+        if (empty($id_user)  || empty($id_product) || empty($quantity)) {
             http_response_code(400);
             return ['status' => 'error', 'message' => "campo es requerido."];
         }
         // Insertar la venta
         $query = "INSERT INTO sales (id_user, total) VALUES (?, ?);";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt){
+        if (!$stmt) {
             http_response_code(500);
             return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
         }
@@ -58,7 +61,7 @@ class SalesModel{
 
                 $query = "INSERT INTO sale_details (id_sale, id_product, quantity, product_price) VALUES (?, ?, ?, ?);";
                 $stmt = $this->conn->prepare($query);
-                if(!$stmt){
+                if (!$stmt) {
                     http_response_code(500);
                     return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
                 }
@@ -94,7 +97,8 @@ class SalesModel{
         }
     }
 
-    public function readSalesAll(){
+    public function readSalesAll()
+    {
         $query = "SELECT * FROM sales;";
         $result = $this->conn->query($query);
         if (!$result) {
@@ -104,10 +108,11 @@ class SalesModel{
         http_response_code(200);
         return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
-    public function readSalesById($id){
+    public function readSalesById($id)
+    {
         $query = "SELECT * FROM sales WHERE id_sale = ?";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt){
+        if (!$stmt) {
             http_response_code(500);
             return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
         }
@@ -117,15 +122,16 @@ class SalesModel{
         if ($result->num_rows === 0) {
             http_response_code(404);
             return ['status' => 'error', 'message' => "No se encontró ninguna venta con el ID proporcionado."];
-        }else{
+        } else {
             http_response_code(200);
             return ['status' => 'ok', 'data' => $result->fetch_assoc()];
         }
     }
-    public function readSalesDetailsById($id){
+    public function readSalesDetailsById($id)
+    {
         $query = "SELECT * FROM sale_details WHERE id_sale = ?";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt){
+        if (!$stmt) {
             http_response_code(500);
             return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
         }
@@ -135,16 +141,17 @@ class SalesModel{
         if ($result->num_rows === 0) {
             http_response_code(404);
             return ['status' => 'error', 'message' => "No se encontró ningún detalle de venta con el ID proporcionado."];
-        }else{
+        } else {
             http_response_code(200);
             return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
         }
     }
 
-    public function readProductsById($id){
+    public function readProductsById($id)
+    {
         $query = "SELECT * FROM products WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt){
+        if (!$stmt) {
             http_response_code(500);
             return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
         }
@@ -154,24 +161,26 @@ class SalesModel{
         if ($result->num_rows === 0) {
             http_response_code(404);
             return ['status' => 'error', 'message' => "No se encontró ningún producto con el ID proporcionado."];
-        }else{
+        } else {
             http_response_code(200);
             return ['status' => 'ok', 'data' => $result->fetch_assoc()];
         }
     }
-    public function validateStock($id_product, $quantity) {
+
+    public function validateStock($id_product, $quantity)
+    {
         $product = $this->readProductsById($id_product);
         if ($product['status'] !== 'ok') {
-            return $product; 
+            return $product;
         }
 
-     
+
         $stock = $product['data']['stock'];
-        if($stock === 0){
+        if ($stock === 0) {
             http_response_code(409);
             return ['status' => 'error', 'message' => "No hay stock disponible para el producto con ID $id_product."];
         }
-        if ($stock < $quantity) {
+        if ($stock <= $quantity) {
             http_response_code(409);
             return ['status' => 'error', 'message' => "Stock insuficiente para el producto con ID $id_product."];
         }
@@ -180,22 +189,23 @@ class SalesModel{
         return ['status' => 'ok', 'message' => "Stock suficiente."];
     }
 
-    public function updateProductStock($id_product, $quantity) {
+    public function updateProductStock($id_product, $quantity)
+    {
         $stockValidation = $this->validateStock($id_product, $quantity);
         if ($stockValidation['status'] !== 'ok') {
             return $stockValidation;
         }
-      
+
         $product = $this->readProductsById($id_product);
         if ($product['status'] !== 'ok') {
             return $product;
         }
-       
+
         $new_stock = $product['data']['stock'] - $quantity;
 
         $query = "UPDATE products SET stock = ? WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt){
+        if (!$stmt) {
             http_response_code(500);
             return ['status' => 'error', 'message' => "Error al preparar la consulta: " . $this->conn->error];
         }
@@ -208,7 +218,4 @@ class SalesModel{
 
         return ['status' => 'ok', 'message' => "Stock actualizado correctamente."];
     }
-
 }
-
-?>
