@@ -243,7 +243,6 @@ class usersModel
         $updateFields = [];
         $params = [];
     
-        // Actualizar fullname si es diferente
         if (isset($data['fullname']) && $data['fullname'] !== $existingUser['fullname']) {
             $response = $this->validationName($data['fullname']);
             if ($response['status'] !== 'Success') {
@@ -253,7 +252,6 @@ class usersModel
             $params[] = $data['fullname'];
         }
     
-        // Actualizar email si es diferente
         if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
             $response = $this->validationEmail($data['email']);
             if ($response['status'] !== 'Success') {
@@ -263,7 +261,6 @@ class usersModel
             $params[] = $data['email'];
         }
     
-        // Actualizar password si se proporciona
         if (isset($data['pass']) && !empty($data['pass'])) {
             $response = $this->validationPassword($data['pass']);
             if ($response['status'] !== 'Success') {
@@ -274,7 +271,6 @@ class usersModel
             $params[] = $data['pass'];
         }
     
-        // Actualizar phone si es diferente
         if (isset($data['phone']) && $data['phone'] !== $existingUser['phone']) {
             $response = $this->validationPhone($data['phone']);
             if ($response['status'] !== 'Success') {
@@ -284,7 +280,6 @@ class usersModel
             $params[] = $data['phone'];
         }
     
-        // Si no hay campos para actualizar, devolver mensaje de éxito
         if (empty($updateFields)) {
             return [
                 'status' => 'Success',
@@ -294,7 +289,6 @@ class usersModel
     
         $params[] = $id_user;
     
-        // Crear la consulta de actualización
         $query = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
     
@@ -305,7 +299,6 @@ class usersModel
             ];
         }
     
-        // Bind de parámetros (aquí se repite "s" para todos menos el último que es "i")
         $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
         
         if ($stmt->execute()) {
