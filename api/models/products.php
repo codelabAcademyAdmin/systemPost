@@ -361,7 +361,7 @@ class productsModel
         if (!is_numeric($id_product)) {
             return [
                 'status' => 'Not Valid',
-                'message' => "El ID del producto debe ser un número."
+                'message' => "El ID del producto debe ser un numero."
             ];
         }
 
