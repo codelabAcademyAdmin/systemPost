@@ -97,17 +97,6 @@ class SalesModel
         }
     }
 
-    public function readSalesAll()
-    {
-        $query = "SELECT * FROM sales;";
-        $result = $this->conn->query($query);
-        if (!$result) {
-            http_response_code(500);
-            return ['status' => 'error', 'message' => "Error al obtener las ventas: " . $this->conn->error];
-        }
-        http_response_code(200);
-        return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
-    }
     public function readSalesById($id)
     {
         $query = "SELECT * FROM sales WHERE id_sale = ?";

@@ -4,8 +4,9 @@ $sales = new SalesModel();
 $request = $_SERVER['REQUEST_METHOD'];
 $response;
 
-if ($request == 'POST') {
+if($request == 'POST'){
    $data = json_decode(file_get_contents('php://input'), true);
    $response = $sales->create($data['sales']);
    echo json_encode($response);
 }
+?>
