@@ -46,7 +46,7 @@ class usersModel
             'status' => 'Success'
         ]; 
     }
-    // funcion verificar si el phone cumple con los requisitos correspondientes
+    // funcion verificar si el telefono cumple con los requisitos correspondientes
     public function validationPhone($phone) {
         if (!preg_match('/^\d{10}$/', $phone)) {
             return [
@@ -97,10 +97,34 @@ class usersModel
             'status' => 'Success'
         ];
     }
+    //fuuncion para verficar el rol, solo admin pueden registrar usuarios
+    public function validationRol($rol) {
+        $query = "SELECT rol FROM users WHERE rol = ? "; 
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $rol); 
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            if ($user['rol'] === 'admin') {
+                return [
+                    'status' => 'Success',
+                    'message' => 'Tienes permisos para crear nuevos usuarios.'
+                ];
+            } 
+        }  else {
+            return [
+                'status' => 'Error',
+                'message' => 'No tienes permisos para registrar nuevos usuarios.'
+            ];
+        }
+    }
+    
     
     public function create($fullname, $email, $pass, $phone, $rol) {
 
-        //llamamos a la funciones de validacion para varificar los datos 
+        //validamos antes de registrar un usario
         $response = $this->validationName($fullname);
             if ($response['status'] !== 'Success') {
             return $response; 
@@ -114,6 +138,10 @@ class usersModel
             return $response;
         }
         $response = $this->validationPassword($pass);
+        if ($response['status'] !== 'Success') {
+            return $response;
+        }
+        $response = $this->validationRol($rol);
         if ($response['status'] !== 'Success') {
             return $response;
         }
@@ -215,8 +243,8 @@ class usersModel
         $updateFields = [];
         $params = [];
     
+        // Actualizar fullname si es diferente
         if (isset($data['fullname']) && $data['fullname'] !== $existingUser['fullname']) {
-             // aqui traemos la funcion de validar el nuevo nombre si ya esta en uso
             $response = $this->validationName($data['fullname']);
             if ($response['status'] !== 'Success') {
                 return $response; 
@@ -225,8 +253,8 @@ class usersModel
             $params[] = $data['fullname'];
         }
     
+        // Actualizar email si es diferente
         if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
-            // verifica que el nuevo email no esté en uso
             $response = $this->validationEmail($data['email']);
             if ($response['status'] !== 'Success') {
                 return $response;
@@ -235,19 +263,19 @@ class usersModel
             $params[] = $data['email'];
         }
     
+        // Actualizar password si se proporciona
         if (isset($data['pass']) && !empty($data['pass'])) {
-            //valida la nueva contrase;a
             $response = $this->validationPassword($data['pass']);
             if ($response['status'] !== 'Success') {
                 return $response; 
             }
-
+    
             $updateFields[] = "pass = ?";
             $params[] = $data['pass'];
         }
-
+    
+        // Actualizar phone si es diferente
         if (isset($data['phone']) && $data['phone'] !== $existingUser['phone']) {
-            // verifica que el nuevo telefono no esté en uso
             $response = $this->validationPhone($data['phone']);
             if ($response['status'] !== 'Success') {
                 return $response;
@@ -256,11 +284,7 @@ class usersModel
             $params[] = $data['phone'];
         }
     
-        if (isset($data['rol']) && $data['rol'] !== $existingUser['rol']) {
-            $updateFields[] = "rol = ?";
-            $params[] = $data['rol'];
-        }
-    
+        // Si no hay campos para actualizar, devolver mensaje de éxito
         if (empty($updateFields)) {
             return [
                 'status' => 'Success',
@@ -270,7 +294,7 @@ class usersModel
     
         $params[] = $id_user;
     
-        //crear la consulta de actualizacion
+        // Crear la consulta de actualización
         $query = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
     
@@ -281,20 +305,23 @@ class usersModel
             ];
         }
     
+        // Bind de parámetros (aquí se repite "s" para todos menos el último que es "i")
         $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
+        
         if ($stmt->execute()) {
             return [
-               'status' => 'Success',
-               'message' => 'Usuario actualizado exitosamente.',
-               'user' => $this->readById($id_user)['user'] 
+                'status' => 'Success',
+                'message' => 'Usuario actualizado exitosamente.',
+                'user' => $this->readById($id_user)['user'] 
             ];
-         } else {
+        } else {
             return [
-               'status' => 'Error',
-               'message' => 'Error al actualizar el usuario: ' . $stmt->error
+                'status' => 'Error',
+                'message' => 'Error al actualizar el usuario: ' . $stmt->error
             ];
-         }
-     }
+        }
+    }
+    
 
     public function delete($id_user) {
 
