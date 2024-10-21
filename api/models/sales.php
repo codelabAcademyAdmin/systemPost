@@ -1,24 +1,42 @@
 <?php
 
 require_once 'inventories.php';
+require_once 'users.php';
 class SalesModel
 {
     private $conn;
     private $inventoriesModel;
+    private $usersModel;
     public function __construct()
     {
         global $conn;
         $this->conn = $conn;
+        $this->usersModel = new usersModel();
         $this->inventoriesModel = new inventoriesModel();
     }
     public function create($id_user,$sales)
     {
         $total = 0;
+        $userValidation = $this->usersModel->readById($id_user);
+            if ($userValidation["status"] === "Not Found") {
+                http_response_code(404);
+                return $userValidation;
+            }
+            if ($userValidation["status"] === "Not Valid") {
+                http_response_code(400);
+                return $userValidation;
+            }
+            if ($userValidation["status"] === "Error") {
+                http_response_code(500);
+                return $userValidation;
+            }
 
         // Validar el stock de cada producto
         foreach ($sales as $sale) {
             $id_product = $sale["id_product"];
             $quantity = $sale["quantity"];
+
+            
 
             $stockValidation = $this->validateStock($id_product, $quantity);
             if ($stockValidation["status"] !== "ok") {
