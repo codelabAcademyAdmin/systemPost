@@ -9,76 +9,41 @@ class usersModel
         global $conn;
         $this->conn = $conn;
     }
-    //funcion para verificar de que el nombre no este siendo usado 
-    public function validationName($fullname) {
-        $query = "SELECT * FROM users WHERE fullname = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $fullname);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-
-        if ($result->num_rows > 0) {
-            return [
-                'status' => 'Conflicts',
-                'message' => 'Este nombre de usuario ya está siendo usado.'
-            ];
-        }
-        return [
-            'status' => 'Success'
-        ]; 
-     }
+    
     //funcion para verificar de que el gmail no este siendo usado 
-    public function validationEmail($email) {
-        $queryEmail = "SELECT * FROM users WHERE email = ?";
-        $stmtEmail = $this->conn->prepare($queryEmail);
-        $stmtEmail->bind_param("s", $email);
-        $stmtEmail->execute();
-        $resultEmail = $stmtEmail->get_result();
-
-        if ($resultEmail->num_rows > 0) {
-            return [
-                'status' => 'Conflicts',
-                'message' => 'El correo no es valido, ya está siendo usado por otro usuario.'
-            ];
-        } 
-        return [
-            'status' => 'Success'
-        ]; 
-    }
-    // funcion verificar si el telefono cumple con los requisitos correspondientes
-    public function validationPhone($phone) {
+    public function validationIfExist($email, $phone)
+    {
         if (!preg_match('/^\d{10}$/', $phone)) {
             return [
                 'status' => 'Not Valid',
                 'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
             ];
         }
+        $queryEmail = "SELECT * FROM users WHERE email = ? AND phone = ?";
+        $stmtEmail = $this->conn->prepare($queryEmail);
+        $stmtEmail->bind_param("ss", $email, $phone);
+        $stmtEmail->execute();
+        $resultEmail = $stmtEmail->get_result();
 
-        $query = "SELECT * FROM users WHERE phone = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $phone);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-
-        if ($result->num_rows > 0) {
+        if ($resultEmail) {
             return [
                 'status' => 'Conflicts',
-                'message' => 'Este número de teléfono ya está siendo usado por otro usuario.'
+                'message' => 'El correo o numero de telefono ya esta en uso'
             ];
         }
         return [
             'status' => 'Success'
-        ]; 
+        ];
     }
+
     //funcion para una password segura
-    public function validationPassword($password) {
-        $minLength = 8; 
-        $uppercase = preg_match('/[A-Z]/', $password); 
+    public function validationPassword($password)
+    {
+        $minLength = 8;
+        $uppercase = preg_match('/[A-Z]/', $password);
         $lowercase = preg_match('/[a-z]/', $password);
-        $number = preg_match('/[0-9]/', $password); 
-        $specialChar = preg_match('/[!@#$%^&*().]/', $password); 
+        $number = preg_match('/[0-9]/', $password);
+        $specialChar = preg_match('/[!@#$%^&*().]/', $password);
 
         if (strlen($password) < $minLength) {
             return [
@@ -97,58 +62,23 @@ class usersModel
             'status' => 'Success'
         ];
     }
-    //fuuncion para verficar el rol, solo admin pueden registrar usuarios
-    public function validationRol($rol) {
-        $query = "SELECT rol FROM users WHERE rol = ? "; 
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $rol); 
-        $stmt->execute();
-        $result = $stmt->get_result();
     
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            if ($user['rol'] === 'admin') {
-                return [
-                    'status' => 'Success',
-                    'message' => 'Tienes permisos para crear nuevos usuarios.'
-                ];
-            } 
-        }  else {
-            return [
-                'status' => 'Error',
-                'message' => 'No tienes permisos para registrar nuevos usuarios.'
-            ];
-        }
-    }
-    
-    
-    public function create($fullname, $email, $pass, $phone, $rol) {
 
-        //validamos antes de registrar un usario
-        $response = $this->validationName($fullname);
-            if ($response['status'] !== 'Success') {
-            return $response; 
-        }
-        $response = $this->validationEmail($email);
-            if ($response['status'] !== 'Success') {
-            return $response; 
-        }
-        $response = $this->validationPhone($phone);
-            if ($response['status'] !== 'Success') {
+    public function create($fullname, $email, $pass, $phone, $rol)
+    {
+
+        $response = $this->validationIfExist($email, $phone);
+        if ($response['status'] !== 'Success') {
             return $response;
         }
         $response = $this->validationPassword($pass);
         if ($response['status'] !== 'Success') {
             return $response;
         }
-        $response = $this->validationRol($rol);
-        if ($response['status'] !== 'Success') {
-            return $response;
-        }
 
         $query = "INSERT INTO users ( fullname, email, pass, phone, rol) VALUES ( ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        if(!$stmt) {
+        if (!$stmt) {
             return [
                 'status' => 'Error',
                 'message' => 'Error al preparar la consulta: ' . $this->conn->error
@@ -181,55 +111,58 @@ class usersModel
         }
     }
 
-    public function readAll() {
+    public function readAll()
+    {
         $query = "SELECT * FROM users";
         $result = $this->conn->query($query);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function readById($id_user) {
-        if(!is_numeric($id_user)){
-            return [
-                'status' => 'Not Valid',
-                'message' => 'El id debe ser solo números.'
-            ];
-        }
-    
-        $query = "SELECT id_user, fullname, email, pass, phone, rol, create_at, update_at FROM users WHERE id_user = ?";
-        $stmt = $this->conn->prepare($query);
-        if (!$stmt){
-            return [
-                'status' => 'Error',
-                'message' => 'Error al preparar la consulta: ' . $this->conn->error
-            ];
-        }
-    
-        $stmt->bind_param("i", $id_user);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-    
-        if(!$user) {
-            return [
-                'status' => 'Not Found',
-                'message' => 'No se encontró ningún usuario con el id ' . $id_user
-            ];
-        }
-    
-        return [
-            'status' => 'Success',
-            'user' => $user 
-        ];
-    }
-    
-    public function update($id_user, $data) {
+    public function readById($id_user)
+    {
         if (!is_numeric($id_user)) {
             return [
                 'status' => 'Not Valid',
                 'message' => 'El id debe ser solo números.'
             ];
         }
-    
+
+        $query = "SELECT id_user, fullname, email, pass, phone, rol, create_at, update_at FROM users WHERE id_user = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+
+        $stmt->bind_param("i", $id_user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+
+        if (!$user) {
+            return [
+                'status' => 'Not Found',
+                'message' => 'No se encontró ningún usuario con el id ' . $id_user
+            ];
+        }
+
+        return [
+            'status' => 'Success',
+            'user' => $user
+        ];
+    }
+
+    public function update($id_user, $fullname, $email, $pass, $phone, $rol)
+    {
+        if (!is_numeric($id_user)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El id debe ser solo números.'
+            ];
+        }
+
         $validation = $this->readById($id_user);
         if (empty($validation['user'])) {
             return [
@@ -237,75 +170,85 @@ class usersModel
                 'message' => 'No se encontró el usuario con ese id.'
             ];
         }
-    
-        $existingUser = $validation['user'];
-    
-        $updateFields = [];
-        $params = [];
-    
-        if (isset($data['fullname']) && $data['fullname'] !== $existingUser['fullname']) {
-            $response = $this->validationName($data['fullname']);
-            if ($response['status'] !== 'Success') {
-                return $response; 
-            }
-            $updateFields[] = "fullname = ?";
-            $params[] = $data['fullname'];
+
+        $response = $this->validationIfExist($email, $phone);
+        if ($response['status'] !== 'Success') {
+            return $response;
         }
-    
-        if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
-            $response = $this->validationEmail($data['email']);
-            if ($response['status'] !== 'Success') {
-                return $response;
-            }
-            $updateFields[] = "email = ?";
-            $params[] = $data['email'];
+        
+        $response = $this->validationPassword($pass);
+        if ($response['status'] !== 'Success') {
+            return $response;
         }
-    
-        if (isset($data['pass']) && !empty($data['pass'])) {
-            $response = $this->validationPassword($data['pass']);
-            if ($response['status'] !== 'Success') {
-                return $response; 
-            }
-    
-            $updateFields[] = "pass = ?";
-            $params[] = $data['pass'];
-        }
-    
-        if (isset($data['phone']) && $data['phone'] !== $existingUser['phone']) {
-            $response = $this->validationPhone($data['phone']);
-            if ($response['status'] !== 'Success') {
-                return $response;
-            }
-            $updateFields[] = "phone = ?";
-            $params[] = $data['phone'];
-        }
-    
-        if (empty($updateFields)) {
-            return [
-                'status' => 'Success',
-                'message' => 'No se realizaron cambios en la actualización.'
-            ];
-        }
-    
-        $params[] = $id_user;
-    
-        $query = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id_user = ?";
+
+        // $existingUser = $validation['user'];
+
+        // $updateFields = [];
+        // $params = [];
+
+        // if (isset($data['fullname']) && $data['fullname'] !== $existingUser['fullname']) {
+        //     $response = $this->validationName($data['fullname']);
+        //     if ($response['status'] !== 'Success') {
+        //         return $response;
+        //     }
+        //     $updateFields[] = "fullname = ?";
+        //     $params[] = $data['fullname'];
+        // }
+
+        // if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
+        //     $response = $this->validationEmail($data['email']);
+        //     if ($response['status'] !== 'Success') {
+        //         return $response;
+        //     }
+        //     $updateFields[] = "email = ?";
+        //     $params[] = $data['email'];
+        // }
+
+        // if (isset($data['pass']) && !empty($data['pass'])) {
+        //     $response = $this->validationPassword($data['pass']);
+        //     if ($response['status'] !== 'Success') {
+        //         return $response;
+        //     }
+
+        //     $updateFields[] = "pass = ?";
+        //     $params[] = $data['pass'];
+        // }
+
+        // if (isset($data['phone']) && $data['phone'] !== $existingUser['phone']) {
+        //     $response = $this->validationPhone($data['phone']);
+        //     if ($response['status'] !== 'Success') {
+        //         return $response;
+        //     }
+        //     $updateFields[] = "phone = ?";
+        //     $params[] = $data['phone'];
+        // }
+
+        // if (empty($updateFields)) {
+        //     return [
+        //         'status' => 'Success',
+        //         'message' => 'No se realizaron cambios en la actualización.'
+        //     ];
+        // }
+
+        // $params[] = $id_user;
+
+        $query = "UPDATE users SET fullname = ?, email = ?, pass ?, phone ?, rol ? , WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
-    
+
         if (!$stmt) {
             return [
                 'status' => 'Error',
                 'message' => 'Error al preparar la consulta: ' . $this->conn->error
             ];
         }
-    
+
         $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
-        
+
         if ($stmt->execute()) {
             return [
                 'status' => 'Success',
                 'message' => 'Usuario actualizado exitosamente.',
-                'user' => $this->readById($id_user)['user'] 
+                'user' => $this->readById($id_user)['user']
             ];
         } else {
             return [
@@ -314,21 +257,22 @@ class usersModel
             ];
         }
     }
-    
 
-    public function delete($id_user) {
 
-        if(!is_numeric($id_user)){
-            return[
-               'status' => 'Not Valid',
-               'message' => 'El id debe ser solo numeros.'
+    public function delete($id_user)
+    {
+
+        if (!is_numeric($id_user)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El id debe ser solo numeros.'
             ];
         }
         $user = $this->readById($id_user);
         if ($user['status'] == 'Not Found') {
-         return [
-            'status' => 'Not Found',
-            'message' => 'No se puede eliminar el usuario porque el ID ' . $id_user . ' no existe.'
+            return [
+                'status' => 'Not Found',
+                'message' => 'No se puede eliminar el usuario porque el ID ' . $id_user . ' no existe.'
             ];
         }
 
