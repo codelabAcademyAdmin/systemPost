@@ -38,14 +38,12 @@ if ($request == 'GET') {
                     $response = $inventories->readAllSuppliers();
                 }
                 break;
-                default:
-                $response = ['status' => 400, 'error' => 'Acción no reconocida'];
-                break;
+                
+            default:
+                $response = ['status' => 404, 'error' => 'Acción no reconocida'];
+            break;
         }
-    } else {
-        $response = ['status' => 400, 'error' => 'Ruta no válida'];
-    }
-    http_response_code($response['status']);
+    } 
     echo json_encode($response);
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+
    $AppRoutes->AddRoutes('POST', 'sales', function() {
       require_once 'models/sales.php';
       $sales = new SalesModel();
@@ -7,5 +8,5 @@
  
       echo json_encode($response);
    });
-   ?>
 
+   ?>

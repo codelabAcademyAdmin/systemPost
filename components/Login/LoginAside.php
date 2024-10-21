@@ -14,7 +14,7 @@
    </div>
 
     <div class="container-logo"> 
-         <img src="assets/images/LOGO.svg" alt="">
+         <img src="assets/images/LOGO-black.svg" alt="">
           <div class="codelab">CODELAB</div>
     </div>
 
