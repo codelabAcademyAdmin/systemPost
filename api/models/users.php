@@ -10,7 +10,6 @@ class usersModel
         $this->conn = $conn;
     }
     
-    //funcion para verificar de que el gmail no este siendo usado 
     public function validationIfExist($email, $phone)
     {
         if (!preg_match('/^\d{10}$/', $phone)) {
@@ -19,12 +18,50 @@ class usersModel
                 'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
             ];
         }
-        $query = "SELECT * FROM users WHERE email = ? AND phone = ?";
+        $query = "SELECT * FROM users WHERE email = ? OR phone = ?";
         $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
         $stmt->bind_param("ss", $email, $phone);
         $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ($stmt->num_rows() > 0) {
+        if ($result->num_rows > 0) {
+            return [
+                'status' => 'Conflicts',
+                'message' => 'El correo o numero de telefono ya esta en uso'
+            ];
+        }
+        return [
+            'status' => 'Success'
+        ];
+    }
+
+    public function validationIfExistForUpdate($email, $phone, $id_user)
+    {
+        if (!preg_match('/^\d{10}$/', $phone)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+            ];
+        }
+        $query = "SELECT * FROM users WHERE (email = ? OR phone = ?) AND id_user != ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+        $stmt->bind_param("ssi", $email, $phone, $id_user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
             return [
                 'status' => 'Conflicts',
                 'message' => 'El correo o numero de telefono ya esta en uso'
@@ -124,7 +161,7 @@ class usersModel
         if ($result->num_rows > 0) {
             return [
                 'status' => 'Success',
-                'products' => $result->fetch_all(MYSQLI_ASSOC)
+                'users' => $result->fetch_all(MYSQLI_ASSOC)
             ];
         }
     }
@@ -179,7 +216,7 @@ class usersModel
             return $validation;
         }
 
-        $response = $this->validationIfExist($email, $phone);
+        $response = $this->validationIfExistForUpdate($email, $phone, $id_user);
         if ($response['status'] !== 'Success') {
             return $response;
         }

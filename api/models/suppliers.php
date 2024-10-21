@@ -3,65 +3,80 @@ class suppliersModel
 {
    private $conn;
 
-   public function __construct() {
+   public function __construct()
+   {
       global $conn;
       $this->conn = $conn;
    }
-   //funcion para verificar y asegurar de que el nombre no este siendo usado 
-   public function validationName($fullname) {
-      $query = "SELECT * FROM suppliers WHERE fullname = ?";
+
+   public function validationIfExist($phone)
+   {
+      if (!preg_match('/^\d{10}$/', $phone)) {
+         return [
+            'status' => 'Not Valid',
+            'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+         ];
+      }
+      $query = "SELECT * FROM users WHERE phone = ?";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("s", $fullname);
+      if (!$stmt) {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+      $stmt->bind_param("s", $phone);
       $stmt->execute();
       $result = $stmt->get_result();
-      $stmt->close();
-  
+
       if ($result->num_rows > 0) {
          return [
             'status' => 'Conflicts',
-            'message' => 'Este nombre del proveedor ya está siendo usado por otro proveedor.'
+            'message' => 'El numero de telefono ya esta en uso'
          ];
       }
       return [
          'status' => 'Success'
-     ]; 
+      ];
    }
-   // funcion verificar si el phone cumple con los requisitos correspondientes
-   public function validationPhone($phone) {
-      if (!preg_match('/^\d{10}$/', $phone)) {
-          return [
-              'status' => 'Not Valid',
-              'message' => 'El número de teléfono debe ser exactamente 10 dígitos numéricos.'
-          ];
-      }
 
-      $query = "SELECT * FROM suppliers WHERE phone = ?";
+   public function validationIfExistForUpdate($phone, $id_user)
+   {
+      if (!preg_match('/^\d{10}$/', $phone)) {
+         return [
+            'status' => 'Not Valid',
+            'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+         ];
+      }
+      $query = "SELECT * FROM suppliers WHERE phone = ? AND id_supplier != ?";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("s", $phone);
+      if (!$stmt) {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+      $stmt->bind_param("si", $phone, $id_user);
       $stmt->execute();
       $result = $stmt->get_result();
-      $stmt->close();
 
       if ($result->num_rows > 0) {
-          return [
-              'status' => 'Conflicts',
-              'message' => 'Este número de teléfono ya está siendo usado por otro usuario.'
-          ];
+         return [
+            'status' => 'Conflicts',
+            'message' => 'El numero de telefono ya esta en uso'
+         ];
       }
       return [
-          'status' => 'Success'
-      ]; 
-  }
-  
-   public function create($fullname, $phone, $address, $description, $category) {
+         'status' => 'Success'
+      ];
+   }
 
-      //Llamamos a la funciones de validacion para varificar los datos 
-      $response = $this->validationName($fullname);
-         if ($response['status'] !== 'Success') {
-         return $response; 
-      }
-      $response = $this->validationPhone($phone);
-         if ($response['status'] !== 'Success') {
+
+   public function create($fullname, $phone, $address, $description, $category)
+   {
+
+      $response = $this->validationIfExist($phone);
+      if ($response['status'] !== 'Success') {
          return $response;
       }
 
@@ -100,15 +115,30 @@ class suppliersModel
       }
    }
 
-   public function readAll() {
+   public function readAll()
+   {
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
-      return $result->fetch_all(MYSQLI_ASSOC);
+
+      if ($result === false) {
+         return [
+            'status' => 'Internal Error',
+            'message' => 'Error al ejecutar la consulta: ' . $this->conn->error
+         ];
+      }
+
+      if ($result->num_rows > 0) {
+         return [
+            'status' => 'Success',
+            'suppliers' => $result->fetch_all(MYSQLI_ASSOC)
+         ];
+      }
    }
 
-   public function readById($id_supplier) {
-      if(!is_numeric($id_supplier)){
-         return[
+   public function readById($id_supplier)
+   {
+      if (!is_numeric($id_supplier)) {
+         return [
             'status' => 'Not Valid',
             'message' => 'El id debe ser solo números.'
          ];
@@ -127,12 +157,11 @@ class suppliersModel
       $stmt->execute();
       $result = $stmt->get_result();
       $supplier = $result->fetch_assoc();
-      $stmt->close();
 
       if (!$supplier) {
          return [
             'status' => 'Not Found',
-            'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
+            'message' => 'No se encontró ningún proveedor con el id ' . $id_supplier
          ];
       }
 
@@ -142,95 +171,62 @@ class suppliersModel
       ];
    }
 
-   public function update($id_supplier, $data) {
-      
+   public function update($id_supplier, $fullname, $phone, $address, $description, $category)
+   {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
             'message' => 'El id debe ser solo números.'
          ];
       }
-  
+
       $validation = $this->readById($id_supplier);
-      if (empty($validation['supplier'])) {
-         return [
-            'status' => 'Not Found',
-            'message' => 'No se encontró un proveedor con ese ID.'
-         ];
+      if ($validation['status'] !== 'Success') {
+         return $validation;
       }
-  
-      $existingSupplier = $validation['supplier'];
-  
-      $updateFields = [];
-      $params = [];
-  
-      //solo actualizamos los campos que han cambiado
-      if (isset($data['fullname']) && $data['fullname'] !== $existingSupplier['fullname']) {
-         // aqui traemos la funcion de validar el nuevo nombre si ya esta en uso
-         $response = $this->validationName($data['fullname']);
-         if ($response['status'] !== 'Success') {
-            return $response; 
-         }
-         $updateFields[] = "fullname = ?";
-         $params[] = $data['fullname'];
+
+      $response = $this->validationIfExistForUpdate($phone, $id_supplier);
+      if ($response['status'] !== 'Success') {
+         return $response;
       }
-      if (isset($data['phone']) && $data['phone'] !== $existingSupplier['phone']) {
-         // aqui traemos la funcion de validar el numero si ya esta en uso
-         $response = $this->validationPhone($data['phone']);   
-         if ($response['status'] !== 'Success') {
-            return $response;
-         }
-          $updateFields[] = "phone = ?";
-          $params[] = $data['phone'];
-      }
-      if (isset($data['address']) && $data['address'] !== $existingSupplier['address']) {
-         $updateFields[] = "address = ?";
-         $params[] = $data['address'];
-      }
-      if (isset($data['description']) && $data['description'] !== $existingSupplier['description']) {
-         $updateFields[] = "description = ?";
-         $params[] = $data['description'];
-      }
-      if (isset($data['category']) && $data['category'] !== $existingSupplier['category']) {
-         $updateFields[] = "category = ?";
-         $params[] = $data['category'];
-      }
-  
-      if (empty($updateFields)) {
-         return [
-            'status' => 'Success',
-            'message' => 'No se realizaron cambios en la actualización.'
-         ];
-      }
-  
-      $params[] = $id_supplier;
-  
-      $query = "UPDATE suppliers SET " . implode(", ", $updateFields) . " WHERE id_supplier = ?";
+
+      $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, category = ? WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
-      
+
       if (!$stmt) {
          return [
             'status' => 'Error',
             'message' => 'Error al preparar la consulta: ' . $this->conn->error
          ];
       }
-  
-      $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
-      if ($stmt->execute()) {
-         return [
-            'status' => 'Success',
-            'message' => 'Proveedor actualizado exitosamente.',
-            'supplier' => $this->readById($id_supplier)['supplier'] 
-         ];
-      } else {
+
+      $stmt->bind_param("sssssi", $fullname, $phone, $address, $description, $category, $id_supplier);
+
+      if (!$stmt->execute()) {
          return [
             'status' => 'Error',
             'message' => 'Error al actualizar el proveedor: ' . $stmt->error
          ];
       }
-  }
 
-   public function activate($id_supplier) {
+      if ($stmt->affected_rows > 0) {
+         return [
+            'status' => 'Success',
+            'message' => 'Proveedor actualizado exitosamente.',
+            'supplier' => $this->readById($id_supplier)['supplier']
+         ];
+      } else {
+         return [
+            'status' => 'Success',
+            'message' => 'No se evidenciaron cambios',
+            'supplier' => $this->readById($id_supplier)['supplier']
+         ];
+      }
+   }
+
+
+   public function activate($id_supplier)
+   {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -284,7 +280,8 @@ class suppliersModel
       }
    }
 
-   public function deactivate($id_supplier) {
+   public function deactivate($id_supplier)
+   {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -337,6 +334,4 @@ class suppliersModel
          ];
       }
    }
-
 }
-?>
