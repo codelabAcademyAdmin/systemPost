@@ -2,11 +2,13 @@
 
 require_once 'inventories.php';
 require_once 'users.php';
+
 class SalesModel
 {
     private $conn;
     private $inventoriesModel;
     private $usersModel;
+
     public function __construct()
     {
         global $conn;
@@ -14,134 +16,118 @@ class SalesModel
         $this->usersModel = new usersModel();
         $this->inventoriesModel = new inventoriesModel();
     }
-    public function create($id_user,$sales)
+
+    public function create($id_user, $sales)
     {
         $total = 0;
-        $userValidation = $this->usersModel->readById($id_user);
-            if ($userValidation["status"] === "Not Found") {
-                http_response_code(404);
-                return $userValidation;
-            }
-            if ($userValidation["status"] === "Not Valid") {
-                http_response_code(400);
-                return $userValidation;
-            }
-            if ($userValidation["status"] === "Error") {
-                http_response_code(500);
-                return $userValidation;
-            }
 
-        // Validar el stock de cada producto
+        // Validar si el usuario existe
+        $userValidation = $this->usersModel->readById($id_user);
+        if ($userValidation["status"] === "Not Found") {
+            http_response_code(404);
+            return $userValidation;
+        }
+        if ($userValidation["status"] === "Not Valid") {
+            http_response_code(400);
+            return $userValidation;
+        }
+        if ($userValidation["status"] === "Error") {
+            http_response_code(500);
+            return $userValidation;
+        }
+
+        // Validar el stock de cada producto y calcular el total
+        $products = [];
         foreach ($sales as $sale) {
             $id_product = $sale["id_product"];
             $quantity = $sale["quantity"];
 
-            
-
             $stockValidation = $this->validateStock($id_product, $quantity);
             if ($stockValidation["status"] !== "ok") {
-                return $stockValidation; 
+                return $stockValidation;
             }
 
-            $product = $this->inventoriesModel->readProductsById($id_product);
-            if ($product["status"] !== "ok") {
-                return $product; 
+            if (!isset($products[$id_product])) {
+                $product = $this->inventoriesModel->readProductsById($id_product);
+                if ($product["status"] !== "ok") {
+                    return $product;
+                }
+                $products[$id_product] = $product["data"];
             }
 
-            $product_price = $product["data"]["product_price"];
+            $product_price = $products[$id_product]["product_price"];
             $total += $product_price * $quantity;
         }
 
         if (empty($id_user) || empty($id_product) || empty($quantity)) {
             http_response_code(400);
-            return ["status" => "error", "message" => "campo es requerido."];
+            return ["status" => "error", "message" => "Campo es requerido."];
         }
-        // Insertar la venta
-        $query = "INSERT INTO sales (id_user, total) VALUES (?, ?);";
-        $stmt = $this->conn->prepare($query);
-        if (!$stmt) {
-            http_response_code(500);
-            return [
-                "status" => "error",
-                "message" =>
-                    "Error al preparar la consulta: " . $this->conn->error,
-            ];
-        }
-        $stmt->bind_param("ii", $id_user, $total);
-        $stmt->execute();
-        if ($stmt->affected_rows === 0) {
-            http_response_code(500);
-            return [
-                "status" => "error",
-                "message" => "Error al crear la venta: " . $stmt->error,
-            ];
-        } else {
+
+        // Iniciar transacción
+        $this->conn->begin_transaction();
+
+        try {
+            // Insertar la venta
+            $query = "INSERT INTO sales (id_user, total) VALUES (?, ?);";
+            $stmt = $this->conn->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta: " . $this->conn->error);
+            }
+            $stmt->bind_param("ii", $id_user, $total);
+            $stmt->execute();
+            if ($stmt->affected_rows === 0) {
+                throw new Exception("Error al crear la venta: " . $stmt->error);
+            }
             $id_sale = $stmt->insert_id;
 
             // Insertar los detalles de la venta y actualizar el stock
             foreach ($sales as $sale) {
                 $id_product = $sale["id_product"];
                 $quantity = $sale["quantity"];
+                $product_price = $products[$id_product]["product_price"];
 
-                $product = $this->inventoriesModel->readProductsById($id_product);
-                $product_price = $product["data"]["product_price"];
-
-                $query =
-                    "INSERT INTO sale_details (id_sale, id_product, quantity, product_price) VALUES (?, ?, ?, ?);";
+                $query = "INSERT INTO sale_details (id_sale, id_product, quantity, product_price) VALUES (?, ?, ?, ?);";
                 $stmt = $this->conn->prepare($query);
                 if (!$stmt) {
-                    http_response_code(500);
-                    return [
-                        "status" => "error",
-                        "message" =>
-                            "Error al preparar la consulta: " .
-                            $this->conn->error,
-                    ];
+                    throw new Exception("Error al preparar la consulta: " . $this->conn->error);
                 }
-                $stmt->bind_param(
-                    "iiii",
-                    $id_sale,
-                    $id_product,
-                    $quantity,
-                    $product_price
-                );
+                $stmt->bind_param("iiii", $id_sale, $id_product, $quantity, $product_price);
                 $stmt->execute();
                 if ($stmt->affected_rows === 0) {
-                    http_response_code(500);
-                    return [
-                        "status" => "error",
-                        "message" =>
-                            "Error al crear el detalle de la venta: " .
-                            $stmt->error,
-                    ];
+                    throw new Exception("Error al crear el detalle de la venta: " . $stmt->error);
                 }
 
-                $updateStock = $this->updateProductStock(
-                    $id_product,
-                    $quantity
-                );
+                $updateStock = $this->updateProductStock($id_product, $quantity);
                 if ($updateStock["status"] !== "ok") {
-                    return $updateStock;
+                    throw new Exception($updateStock["message"]);
                 }
             }
-           
+
+            // Obtener la venta y sus detalles
             $sale = $this->inventoriesModel->readSaleById($id_sale);
             $details = $this->readSalesDetailsById($id_sale);
 
             if ($sale["status"] !== "ok" || $details["status"] !== "ok") {
-                http_response_code(500);
-                return [
-                    "status" => "error",
-                    "message" => "Error al obtener la venta o sus detalles.",
-                ];
+                throw new Exception("Error al obtener la venta o sus detalles.");
             }
 
+            // Confirmar transacción
+            $this->conn->commit();
             http_response_code(201);
             return [
                 "status" => "ok",
                 "message" => "Venta creada correctamente.",
                 "sale" => $sale["data"],
                 "details" => $details["data"],
+            ];
+        } catch (Exception $e) {
+            // Revertir transacción en caso de error
+            $this->conn->rollback();
+            http_response_code(500);
+            return [
+                "status" => "error",
+                "message" => $e->getMessage(),
             ];
         }
     }
@@ -154,8 +140,7 @@ class SalesModel
             http_response_code(500);
             return [
                 "status" => "error",
-                "message" =>
-                    "Error al preparar la consulta: " . $this->conn->error,
+                "message" => "Error al preparar la consulta: " . $this->conn->error,
             ];
         }
         $stmt->bind_param("i", $id);
@@ -165,8 +150,7 @@ class SalesModel
             http_response_code(404);
             return [
                 "status" => "error",
-                "message" =>
-                    "No se encontró ningún detalle de venta con el ID proporcionado.",
+                "message" => "No se encontró ningún detalle de venta con el ID proporcionado.",
             ];
         } else {
             http_response_code(200);
@@ -185,7 +169,7 @@ class SalesModel
         }
 
         $stock = $product["data"]["stock"];
-        if($stock < $quantity){
+        if ($stock < $quantity) {
             http_response_code(409);
             return [
                 "status" => "error",
@@ -216,8 +200,7 @@ class SalesModel
             http_response_code(500);
             return [
                 "status" => "error",
-                "message" =>
-                    "Error al preparar la consulta: " . $this->conn->error,
+                "message" => "Error al preparar la consulta: " . $this->conn->error,
             ];
         }
         $stmt->bind_param("ii", $new_stock, $id_product);
@@ -226,9 +209,7 @@ class SalesModel
             http_response_code(500);
             return [
                 "status" => "error",
-                "message" =>
-                    "Error al actualizar el stock del producto: " .
-                    $stmt->error,
+                "message" => "Error al actualizar el stock del producto: " . $stmt->error,
             ];
         }
 
