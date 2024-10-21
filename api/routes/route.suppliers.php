@@ -35,7 +35,7 @@
          $response = $suppliers->readAll();
       }
       
-      setHttpResponseSuppliers('Success'); 
+      setHttpResponseSuppliers($response['status']); 
       echo json_encode($response);
    });
 
