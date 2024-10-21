@@ -8,6 +8,57 @@ class inventoriesModel {
         $this->conn = $conn;
     }
 
+    public function validateStatus($status) {
+        if ($status !== 'active' && $status !== 'inactive') {
+            http_response_code(400);
+            return ['status' => 'error', 'message' => "El estado debe ser 'active' o 'inactive'."];
+        }
+    }
+    public function readSuppliersActive($status){
+        $query = "SELECT * FROM suppliers WHERE status = 'activo';";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al obtener los proveedores activos: " . $this->conn->error];
+        }
+        http_response_code(200);
+        return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+    }
+
+    public function readsuppliersInactive($status){
+        $query = "SELECT * FROM suppliers WHERE status = 'inactivo';";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al obtener los proveedores inactivos: " . $this->conn->error];
+        }
+        http_response_code(200);
+        return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+    }
+
+    public function readProductsActive($status){
+        $query = "SELECT * FROM products WHERE status = 'activo';";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al obtener los productos activos: " . $this->conn->error];
+        }
+        http_response_code(200);
+        return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+
+    }
+    public function readProductsInactive($status){
+        $query = "SELECT * FROM products WHERE status = 'inactivo';";
+        $result = $this->conn->query($query);
+        if (!$result) {
+            http_response_code(500);
+            return ['status' => 'error', 'message' => "Error al obtener los productos inactivos: " . $this->conn->error];
+        }
+        http_response_code(200);
+        return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
+
+    }
+
     public function readSaleAll() {
         $query = "SELECT * FROM sales;";
         $result = $this->conn->query($query);

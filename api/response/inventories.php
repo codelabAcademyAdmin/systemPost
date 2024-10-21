@@ -15,6 +15,7 @@ if ($request == 'GET') {
     if (count($pathSegments) >= 2 && $pathSegments[0] == 'inventories') {
         $action = $pathSegments[1];
         $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $status = isset($_GET['status']) ? $_GET['status'] : null;
 
         switch ($action) {
             case 'sales':
@@ -25,24 +26,26 @@ if ($request == 'GET') {
                 }
                 break;
             case 'products':
-                if ($id) {
-                    $response = $inventories->readProductsById($id);
-                } else {
+                if ($status === 'active') {
+                    $response = $inventories->readProductsActive();
+                } else if ($status === 'inactive') {
+                    $response = $inventories->readProductsInactive();
+                }
+                else {
                     $response = $inventories->readAllProducts();
                 }
                 break;
             case 'suppliers':
-                if ($id) {
-                    $response = $inventories->readsuppliersById($id);
+                if ($status === 'active') {
+                    $response = $inventories->readSuppliersActive();
+                } else if ($status === 'inactive') {
+                    $response = $inventories->readSuppliersInactive();
                 } else {
                     $response = $inventories->readAllSuppliers();
                 }
                 break;
-                
-            default:
-                $response = ['status' => 404, 'error' => 'Acción no reconocida'];
-            break;
         }
+        
     } 
     echo json_encode($response);
 }

@@ -18,12 +18,18 @@ $AppRoutes->AddRoutes('GET', 'inventories/products', function() {
     $inventories = new inventoriesModel();
     $response;
 
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-        $response = $inventories->readProductsById($id);
-    } else {
+    if (isset($_GET['status'])) {
+        $status = $_GET['status'];
+   if($status === 'active'){
+        $response = $inventories->readProductsActive($status);
+       }else if($status === 'inactive'){
+        $response = $inventories->readProductsInactive($status);
+       }else{
+        $response = $inventories->validateStatus($status);
+       }
+    }else {
         $response = $inventories->readAllProducts();
-    }
+       }
 
     echo json_encode($response);
 });
@@ -33,12 +39,18 @@ $AppRoutes->AddRoutes('GET', 'inventories/suppliers', function() {
     $inventories = new inventoriesModel();
     $response;
 
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-        $response = $inventories->readsuppliersById($id);
-    } else {
+    if (isset($_GET['status'])) {
+        $status = $_GET['status'];
+   if($status === 'active'){
+        $response = $inventories->readSuppliersActive($status);
+       }else if($status === 'inactive'){
+        $response = $inventories->readSuppliersInactive($status);
+       }else{
+        $response = $inventories->validateStatus($status);
+       }
+    }else {
         $response = $inventories->readAllSuppliers();
-    }
+       }
     echo json_encode($response);
 });
 
