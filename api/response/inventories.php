@@ -26,9 +26,9 @@ if ($request == 'GET') {
                 }
                 break;
             case 'products':
-                if ($status === 'active') {
+                if ($status === 'activo') {
                     $response = $inventories->readProductsActive();
-                } else if ($status === 'inactive') {
+                } else if ($status === 'inactivo') {
                     $response = $inventories->readProductsInactive();
                 }
                 else {
@@ -36,9 +36,9 @@ if ($request == 'GET') {
                 }
                 break;
             case 'suppliers':
-                if ($status === 'active') {
+                if ($status === 'activo') {
                     $response = $inventories->readSuppliersActive();
-                } else if ($status === 'inactive') {
+                } else if ($status === 'inactivo') {
                     $response = $inventories->readSuppliersInactive();
                 } else {
                     $response = $inventories->readAllSuppliers();

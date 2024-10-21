@@ -9,9 +9,9 @@ class inventoriesModel {
     }
 
     public function validateStatus($status) {
-        if ($status !== 'active' && $status !== 'inactive') {
+        if ($status !== 'activo' && $status !== 'inactivo') {
             http_response_code(400);
-            return ['status' => 'error', 'message' => "El estado debe ser 'active' o 'inactive'."];
+            return ['status' => 'error', 'message' => "El estado debe ser 'activo' o 'inactivo'."];
         }
     }
     public function readSuppliersActive($status){

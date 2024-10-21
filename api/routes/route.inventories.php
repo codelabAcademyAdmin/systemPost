@@ -20,9 +20,9 @@ $AppRoutes->AddRoutes('GET', 'inventories/products', function() {
 
     if (isset($_GET['status'])) {
         $status = $_GET['status'];
-   if($status === 'active'){
+   if($status === 'activo'){
         $response = $inventories->readProductsActive($status);
-       }else if($status === 'inactive'){
+       }else if($status === 'inactivo'){
         $response = $inventories->readProductsInactive($status);
        }else{
         $response = $inventories->validateStatus($status);
@@ -41,9 +41,9 @@ $AppRoutes->AddRoutes('GET', 'inventories/suppliers', function() {
 
     if (isset($_GET['status'])) {
         $status = $_GET['status'];
-   if($status === 'active'){
+   if($status === 'activo'){
         $response = $inventories->readSuppliersActive($status);
-       }else if($status === 'inactive'){
+       }else if($status === 'inactivo'){
         $response = $inventories->readSuppliersInactive($status);
        }else{
         $response = $inventories->validateStatus($status);
