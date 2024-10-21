@@ -45,8 +45,170 @@ $productos = [
       'cantidad' => 25,
       'activo' => true,
       'fecha_creacion' => '10/02/2024'
+   ],
+   [
+      'id' => 6,
+      'nombre' => 'Tablet Android',
+      'descripcion' => 'Tablet de 10 pulgadas con 64GB de almacenamiento',
+      'precio' => 299.99,
+      'cantidad' => 150,
+      'activo' => true,
+      'fecha_creacion' => '05/03/2024'
+   ],
+   [
+      'id' => 7,
+      'nombre' => 'Consola de Videojuegos',
+      'descripcion' => 'Consola de última generación con 1TB de almacenamiento',
+      'precio' => 499.99,
+      'cantidad' => 80,
+      'activo' => true,
+      'fecha_creacion' => '20/02/2024'
+   ],
+   [
+      'id' => 8,
+      'nombre' => 'Impresora Multifuncional',
+      'descripcion' => 'Impresora, escáner y copiadora con WiFi',
+      'precio' => 179.99,
+      'cantidad' => 60,
+      'activo' => false,
+      'fecha_creacion' => '15/01/2024'
+   ],
+   [
+      'id' => 9,
+      'nombre' => 'Monitor 4K',
+      'descripcion' => 'Monitor de 27 pulgadas con resolución 4K',
+      'precio' => 349.99,
+      'cantidad' => 40,
+      'activo' => true,
+      'fecha_creacion' => '01/03/2024'
+   ],
+   [
+      'id' => 10,
+      'nombre' => 'Teclado Mecánico',
+      'descripcion' => 'Teclado gaming con switches Cherry MX',
+      'precio' => 129.99,
+      'cantidad' => 100,
+      'activo' => true,
+      'fecha_creacion' => '10/02/2024'
+   ],
+   [
+      'id' => 11,
+      'nombre' => 'Disco Duro Externo',
+      'descripcion' => 'Disco duro portátil de 2TB con USB 3.0',
+      'precio' => 89.99,
+      'cantidad' => 200,
+      'activo' => true,
+      'fecha_creacion' => '25/02/2024'
+   ],
+   [
+      'id' => 12,
+      'nombre' => 'Altavoz Bluetooth',
+      'descripcion' => 'Altavoz portátil resistente al agua',
+      'precio' => 79.99,
+      'cantidad' => 120,
+      'activo' => true,
+      'fecha_creacion' => '05/01/2024'
+   ],
+   [
+      'id' => 13,
+      'nombre' => 'Router WiFi',
+      'descripcion' => 'Router de doble banda con tecnología WiFi 6',
+      'precio' => 149.99,
+      'cantidad' => 75,
+      'activo' => false,
+      'fecha_creacion' => '18/02/2024'
+   ],
+   [
+      'id' => 14,
+      'nombre' => 'Webcam HD',
+      'descripcion' => 'Cámara web 1080p con micrófono integrado',
+      'precio' => 59.99,
+      'cantidad' => 150,
+      'activo' => true,
+      'fecha_creacion' => '22/01/2024'
+   ],
+   [
+      'id' => 15,
+      'nombre' => 'Batería Externa',
+      'descripcion' => 'Powerbank de 20000mAh con carga rápida',
+      'precio' => 49.99,
+      'cantidad' => 180,
+      'activo' => true,
+      'fecha_creacion' => '28/02/2024'
+   ],
+   [
+      'id' => 16,
+      'nombre' => 'Tarjeta Gráfica',
+      'descripcion' => 'GPU de gama alta para gaming y diseño',
+      'precio' => 699.99,
+      'cantidad' => 30,
+      'activo' => true,
+      'fecha_creacion' => '12/03/2024'
+   ],
+   [
+      'id' => 17,
+      'nombre' => 'Silla Gaming',
+      'descripcion' => 'Silla ergonómica con soporte lumbar',
+      'precio' => 199.99,
+      'cantidad' => 50,
+      'activo' => true,
+      'fecha_creacion' => '08/01/2024'
+   ],
+   [
+      'id' => 18,
+      'nombre' => 'Proyector HD',
+      'descripcion' => 'Proyector portátil con resolución 1080p',
+      'precio' => 279.99,
+      'cantidad' => 35,
+      'activo' => false,
+      'fecha_creacion' => '03/03/2024'
+   ],
+   [
+      'id' => 19,
+      'nombre' => 'Smartband',
+      'descripcion' => 'Pulsera inteligente con monitor de actividad',
+      'precio' => 39.99,
+      'cantidad' => 250,
+      'activo' => true,
+      'fecha_creacion' => '17/02/2024'
+   ],
+   [
+      'id' => 20,
+      'nombre' => 'Adaptador USB-C',
+      'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
+      'precio' => 69.99,
+      'cantidad' => 100,
+      'activo' => true,
+      'fecha_creacion' => '26/01/2024'
    ]
 ];
+
+
+$productosPorPagina = 5;
+$paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$totalProductos = count($productos);
+$totalPaginas = ceil($totalProductos / $productosPorPagina);
+
+// Asegurarse de que la página actual es válida
+$paginaActual = max(1, min($paginaActual, $totalPaginas));
+
+// Calcular el índice de inicio para la página actual
+$indiceInicio = ($paginaActual - 1) * $productosPorPagina;
+
+// Obtener los productos para la página actual
+$productosEnPagina = array_slice($productos, $indiceInicio, $productosPorPagina);
+
+
+function getPaginationRange($paginaActual, $totalPaginas, $maxPaginas = 3)
+{
+   $mitad = floor($maxPaginas / 2);
+   $inicio = max(1, min($paginaActual - $mitad, $totalPaginas - $maxPaginas + 1));
+   $fin = min($totalPaginas, $inicio + $maxPaginas - 1);
+   return range($inicio, $fin);
+}
+
+$paginasAMostrar = getPaginationRange($paginaActual, $totalPaginas, 3);
+
 ?>
 
 <div class="container">
@@ -65,7 +227,7 @@ $productos = [
             </tr>
          </thead>
          <tbody>
-            <?php foreach ($productos as $producto): ?>
+            <?php foreach ($productosEnPagina as $producto): ?>
                <tr>
                   <td><?php echo $producto['id']; ?></td>
                   <td><?php echo $producto['nombre']; ?></td>
@@ -103,108 +265,171 @@ $productos = [
       </table>
    </div>
 
-   <style>
-      .container {
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         height: calc(100vh - 100px);
-      }
+   <div class="">
+      <div class="pagination">
+         <a href="?pagina=<?php echo max(1, $paginaActual - 1); ?>" class="pagination-arrow <?php echo $paginaActual == 1 ? 'disabled' : ''; ?>">
+            &lt;
+         </a>
+         <?php foreach ($paginasAMostrar as $pagina): ?>
+            <a href="?pagina=<?php echo $pagina; ?>" class="pagination-number <?php echo $pagina === $paginaActual ? 'active' : ''; ?>">
+               <?php echo $pagina; ?>
+            </a>
+         <?php endforeach; ?>
+         <a href="?pagina=<?php echo min($totalPaginas, $paginaActual + 1); ?>" class="pagination-arrow <?php echo $paginaActual == $totalPaginas ? 'disabled' : ''; ?>">
+            &gt;
+         </a>
+      </div>
+   </div>
 
-      .table-container {
-         /* min-width: 100%; */
-         max-width: 1200px;
-         overflow-y: auto;
-         overflow-x: auto;
-         max-height: 500px;
-         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-         margin-top: 8px;
-         border-radius: 8px;
-      }
+</div>
 
-      .product-table {
-         min-width: 100%;
-         table-layout: auto;
-         background-color: white;
-         border-radius: 8px;
-      }
+<style>
+   .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      font-family: Arial, sans-serif;
+   }
 
-      .product-table thead tr {
-         background-color: #e5e7eb;
-         text-align: left;
-         color: #4b5563;
-         text-transform: uppercase;
-         font-size: 14px;
-         line-height: 20px;
-      }
+   .pagination a {
+      text-decoration: none;
+      color: #4a5568;
+      padding: 8px 12px;
+      margin: 0 2px;
+      border-radius: 4px;
+      transition: background-color 0.3s, color 0.3s;
+   }
 
-      .product-table th {
-         padding: 8px 24px;
-      }
+   .pagination-number {
+      background-color: #edf2f7;
+   }
 
-      .product-table td {
-         padding: 12px 24px;
-      }
+   .pagination-number.active {
+      background-color: #4a5568;
+      color: white;
+   }
 
-      .product-table tbody tr {
-         border-bottom: 1px solid #e5e7eb;
-      }
+   .pagination-arrow {
+      background-color: #edf2f7;
+      font-weight: bold;
+   }
 
-      .product-table tbody tr:hover {
-         background-color: #f3f4f6;
-      }
+   .pagination-arrow.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+   }
 
-      .text-center {
-         text-align: center;
-      }
+   .pagination a:hover:not(.active):not(.disabled) {
+      background-color: #e2e8f0;
+   }
 
-      .status-active {
-         background-color: #99A5E0;
-         color: white;
-         padding: 8px 16px;
-         border-radius: 9999px;
-         font-size: 14px;
-      }
 
-      .status-inactive {
-         background-color: #fecaca;
-         color: #b91c1c;
-         padding: 4px 12px;
-         border-radius: 9999px;
-         font-size: 12px;
-      }
 
-      .acciones {
-         display: flex;
-         flex-direction: row;
-         gap: 6px;
-      }
 
-      .icon {
-         width: 24px;
-         height: 24px;
-      }
 
-      .btn-edit,
-      .btn-delete,
-      .btn-view {
-         width: 40px;
-         height: 40px;
-         border-radius: 9999px;
-         border: none;
-         cursor: pointer;
-         background-color: #E6EBF9;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         color: #6668C5;
-         transition: all 0.3s ease;
-      }
+   .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 100px);
+      flex-direction: column;
+   }
 
-      .btn-delete:hover,
-      .btn-edit:hover,
-      .btn-view:hover {
-         background-color: #6668C5;
-         color: #E6EBF9;
-      }
-   </style>
+   .table-container {
+      /* min-width: 100%; */
+      max-width: 1200px;
+      overflow-y: auto;
+      overflow-x: auto;
+      max-height: 500px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      margin-top: 8px;
+      border-radius: 8px;
+   }
+
+   .product-table {
+      min-width: 100%;
+      table-layout: auto;
+      background-color: white;
+      border-radius: 8px;
+   }
+
+   .product-table thead tr {
+      background-color: #e5e7eb;
+      text-align: left;
+      color: #4b5563;
+      text-transform: uppercase;
+      font-size: 14px;
+      line-height: 20px;
+   }
+
+   .product-table th {
+      padding: 8px 24px;
+   }
+
+   .product-table td {
+      padding: 12px 24px;
+   }
+
+   .product-table tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+   }
+
+   .product-table tbody tr:hover {
+      background-color: #f3f4f6;
+   }
+
+   .text-center {
+      text-align: center;
+   }
+
+   .status-active {
+      background-color: #99A5E0;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 14px;
+   }
+
+   .status-inactive {
+      background-color: #fecaca;
+      color: #b91c1c;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 14px;
+   }
+
+   .acciones {
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+   }
+
+   .icon {
+      width: 24px;
+      height: 24px;
+   }
+
+   .btn-edit,
+   .btn-delete,
+   .btn-view {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      background-color: #E6EBF9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #6668C5;
+      transition: all 0.3s ease;
+   }
+
+   .btn-delete:hover,
+   .btn-edit:hover,
+   .btn-view:hover {
+      background-color: #6668C5;
+      color: #E6EBF9;
+   }
+</style>
