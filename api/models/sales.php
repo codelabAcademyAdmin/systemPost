@@ -42,6 +42,11 @@ class SalesModel
             $id_product = $sale["id_product"];
             $quantity = $sale["quantity"];
 
+            if($quantity < 1){
+                http_response_code(400);
+                return ["status" => "error", "message" => "La cantidad debe ser mayor a 0."];
+            }
+
             $stockValidation = $this->validateStock($id_product, $quantity);
             if ($stockValidation["status"] !== "ok") {
                 return $stockValidation;
