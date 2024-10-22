@@ -10,7 +10,6 @@ class usersModel
         $this->conn = $conn;
     }
     
-    //funcion para verificar de que el gmail no este siendo usado 
     public function validationIfExist($email, $phone)
     {
         if (!preg_match('/^\d{10}$/', $phone)) {
@@ -19,13 +18,50 @@ class usersModel
                 'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
             ];
         }
-        $queryEmail = "SELECT * FROM users WHERE email = ? AND phone = ?";
-        $stmtEmail = $this->conn->prepare($queryEmail);
-        $stmtEmail->bind_param("ss", $email, $phone);
-        $stmtEmail->execute();
-        $resultEmail = $stmtEmail->get_result();
+        $query = "SELECT * FROM users WHERE email = ? OR phone = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+        $stmt->bind_param("ss", $email, $phone);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ($resultEmail) {
+        if ($result->num_rows > 0) {
+            return [
+                'status' => 'Conflicts',
+                'message' => 'El correo o numero de telefono ya esta en uso'
+            ];
+        }
+        return [
+            'status' => 'Success'
+        ];
+    }
+
+    public function validationIfExistForUpdate($email, $phone, $id_user)
+    {
+        if (!preg_match('/^\d{10}$/', $phone)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+            ];
+        }
+        $query = "SELECT * FROM users WHERE (email = ? OR phone = ?) AND id_user != ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+        $stmt->bind_param("ssi", $email, $phone, $id_user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
             return [
                 'status' => 'Conflicts',
                 'message' => 'El correo o numero de telefono ya esta en uso'
@@ -62,7 +98,6 @@ class usersModel
             'status' => 'Success'
         ];
     }
-    
 
     public function create($fullname, $email, $pass, $phone, $rol)
     {
@@ -84,7 +119,7 @@ class usersModel
                 'message' => 'Error al preparar la consulta: ' . $this->conn->error
             ];
         }
-        $stmt->bind_param("sssis", $fullname, $email, $pass, $phone, $rol);
+        $stmt->bind_param("sssss", $fullname, $email, $pass, $phone, $rol);
 
         if ($stmt->execute()) {
             $id_user = $this->conn->insert_id;
@@ -115,7 +150,20 @@ class usersModel
     {
         $query = "SELECT * FROM users";
         $result = $this->conn->query($query);
-        return $result->fetch_all(MYSQLI_ASSOC);
+        
+        if ($result === false) {
+            return [
+                'status' => 'Internal Error',
+                'message' => 'Error al ejecutar la consulta: ' . $this->conn->error
+            ];
+        }
+
+        if ($result->num_rows > 0) {
+            return [
+                'status' => 'Success',
+                'users' => $result->fetch_all(MYSQLI_ASSOC)
+            ];
+        }
     }
 
     public function readById($id_user)
@@ -164,14 +212,11 @@ class usersModel
         }
 
         $validation = $this->readById($id_user);
-        if (empty($validation['user'])) {
-            return [
-                'status' => 'Not Found',
-                'message' => 'No se encontró el usuario con ese id.'
-            ];
+        if ($validation['status'] !== 'Success') {
+            return $validation;
         }
 
-        $response = $this->validationIfExist($email, $phone);
+        $response = $this->validationIfExistForUpdate($email, $phone, $id_user);
         if ($response['status'] !== 'Success') {
             return $response;
         }
@@ -181,58 +226,7 @@ class usersModel
             return $response;
         }
 
-        // $existingUser = $validation['user'];
-
-        // $updateFields = [];
-        // $params = [];
-
-        // if (isset($data['fullname']) && $data['fullname'] !== $existingUser['fullname']) {
-        //     $response = $this->validationName($data['fullname']);
-        //     if ($response['status'] !== 'Success') {
-        //         return $response;
-        //     }
-        //     $updateFields[] = "fullname = ?";
-        //     $params[] = $data['fullname'];
-        // }
-
-        // if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
-        //     $response = $this->validationEmail($data['email']);
-        //     if ($response['status'] !== 'Success') {
-        //         return $response;
-        //     }
-        //     $updateFields[] = "email = ?";
-        //     $params[] = $data['email'];
-        // }
-
-        // if (isset($data['pass']) && !empty($data['pass'])) {
-        //     $response = $this->validationPassword($data['pass']);
-        //     if ($response['status'] !== 'Success') {
-        //         return $response;
-        //     }
-
-        //     $updateFields[] = "pass = ?";
-        //     $params[] = $data['pass'];
-        // }
-
-        // if (isset($data['phone']) && $data['phone'] !== $existingUser['phone']) {
-        //     $response = $this->validationPhone($data['phone']);
-        //     if ($response['status'] !== 'Success') {
-        //         return $response;
-        //     }
-        //     $updateFields[] = "phone = ?";
-        //     $params[] = $data['phone'];
-        // }
-
-        // if (empty($updateFields)) {
-        //     return [
-        //         'status' => 'Success',
-        //         'message' => 'No se realizaron cambios en la actualización.'
-        //     ];
-        // }
-
-        // $params[] = $id_user;
-
-        $query = "UPDATE users SET fullname = ?, email = ?, pass ?, phone ?, rol ? , WHERE id_user = ?";
+        $query = "UPDATE users SET fullname = ?, email = ?, pass = ?, phone = ?, rol = ?  WHERE id_user = ?";
         $stmt = $this->conn->prepare($query);
 
         if (!$stmt) {
@@ -242,18 +236,26 @@ class usersModel
             ];
         }
 
-        $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
+        $stmt->bind_param("sssssi", $fullname, $email, $pass, $phone, $rol, $id_user);
 
-        if ($stmt->execute()) {
+        if (!$stmt->execute()) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al actualizar el usuario: ' . $stmt->error
+            ];
+        } 
+
+        if($stmt->affected_rows > 0 ){
             return [
                 'status' => 'Success',
                 'message' => 'Usuario actualizado exitosamente.',
                 'user' => $this->readById($id_user)['user']
             ];
-        } else {
+        }else{
             return [
-                'status' => 'Error',
-                'message' => 'Error al actualizar el usuario: ' . $stmt->error
+                'status' => 'Success',
+                'message' => 'No se evidenciaron cambios',
+                'user' => $this->readById($id_user)['user']
             ];
         }
     }

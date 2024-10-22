@@ -31,13 +31,11 @@
       if (isset($_GET['id'])) {
          $id = $_GET['id'];
          $response = $suppliers->readById($id);
-         
-         setHttpResponseSuppliers($response['status']); 
       } else {
          $response = $suppliers->readAll();
-         setHttpResponseSuppliers('Success'); 
       }
-
+      
+      setHttpResponseSuppliers($response['status']); 
       echo json_encode($response);
    });
 
@@ -45,21 +43,20 @@
       require_once 'models/suppliers.php';
       $suppliers = new suppliersModel();
       $data = json_decode(file_get_contents('php://input'), true);
-
+      $response;
       if (!$data || 
          empty($data['fullname']) || empty($data['phone']) || empty($data['address']) || 
          empty($data['description']) || empty($data['category'])) {
-         
-         $response = [
-               'status' => 'Not Valid',
-               'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
-         ];
-         setHttpResponseSuppliers($response['status']); 
-         echo json_encode($response);
-         return; 
-      }
+            $response = [
+                  'status' => 'Not Valid',
+                  'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
+            ];
+            setHttpResponseSuppliers($response['status']); 
+            echo json_encode($response);
+         }
 
       $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
+
       setHttpResponseSuppliers($response['status']);
       echo json_encode($response);
    });
@@ -70,45 +67,21 @@
       $id_supplier = $_GET['id'];
       $data = json_decode(file_get_contents('php://input'), true);
 
-      if (empty($data)) {
-         $response = ['status' => 'Error', 'message' => 'Faltan datos requeridos.'];
-         setHttpResponseSuppliers($response['status']); 
-         echo json_encode($response);
-         return;
-      }
+      if (
+         !$data ||
+         empty($data['fullname']) || empty($data['phone']) || empty($data['address']) || empty($data['description']) || empty($data['category'])
+         ) {
+            $response = [
+               'status' => 'Not Valid',
+               'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
+            ];
+            setHttpResponseSuppliers($response['status']); 
+            echo json_encode($response);
+         }
 
-      $existingSuppliersResponse = $suppliers->readById($id_supplier);
-      if ($existingSuppliersResponse['status'] !== 'Success') {
-         setHttpResponseSuppliers($existingSuppliersResponse['status']); 
-         echo json_encode([
-               'status' => 'Error',
-               'message' => $existingSuppliersResponse['message']
-         ]);
-         return;
-      }
+         $response = $suppliers->update($id_supplier, $data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
 
-      $existingSupplier = $existingSuppliersResponse['supplier'];
-      $updateData = [];
-
-      // Verificamos si hay cambios para cada campo
-      if (isset($data['fullname']) && $data['fullname'] !== $existingSupplier['fullname']) {
-         $updateData['fullname'] = $data['fullname'];
-      }
-      if (isset($data['phone']) && $data['phone'] !== $existingSupplier['phone']) {
-         $updateData['phone'] = $data['phone'];
-      }
-      if (isset($data['address']) && $data['address'] !== $existingSupplier['address']) {
-         $updateData['address'] = $data['address'];
-      }
-      if (isset($data['description']) && $data['description'] !== $existingSupplier['description']) {
-         $updateData['description'] = $data['description'];
-      }
-      if (isset($data['category']) && $data['category'] !== $existingSupplier['category']) {
-         $updateData['category'] = $data['category'];
-      }
-
-      $response = $suppliers->update($id_supplier, $updateData);
-      setHttpResponseSuppliers($response['status']); 
+      setHttpResponseUsers($response['status']);
       echo json_encode($response);
    });
 

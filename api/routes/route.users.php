@@ -44,18 +44,15 @@ $AppRoutes->AddRoutes('POST', 'users', function () {
     $users = new usersModel();
     $data = json_decode(file_get_contents('php://input'), true);
     $response;
-    if (
-        !$data ||
-        empty($data['fullname']) || empty($data['email']) || empty($data['pass']) || empty($data['phone']) || empty($data['rol'])
-    ) {
-
-        $response = [
-            'status' => 'Not Valid',
-            'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
-        ];
-        setHttpResponseUsers($response['status']);
-        echo json_encode($response);
-    }
+    if (!$data ||
+        empty($data['fullname']) || empty($data['email']) || empty($data['pass']) || empty($data['phone']) || empty($data['rol'])) {
+            $response = [
+                'status' => 'Not Valid',
+                'message' => 'Los datos no son válidos, recuerda que todos los campos son obligatorios.'
+            ];
+            setHttpResponseUsers($response['status']);
+            echo json_encode($response);
+        }
 
     $response = $users->create($data['fullname'], $data['email'], $data['pass'], $data['phone'], $data['rol']);
 
@@ -80,7 +77,7 @@ $AppRoutes->AddRoutes('PUT', 'users', function () {
         ];
         setHttpResponseUsers($response['status']);
         echo json_encode($response);
-    }
+    }   
 
     $response = $users->update($id_user, $data['fullname'], $data['email'], $data['pass'], $data['phone'], $data['rol']);
 
