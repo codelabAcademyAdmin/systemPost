@@ -9,8 +9,7 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function validationIfExist($phone)
-   {
+   public function validationIfExist($phone) {
       if (!preg_match('/^\d{10}$/', $phone)) {
          return [
             'status' => 'Not Valid',
@@ -40,8 +39,7 @@ class suppliersModel
       ];
    }
 
-   public function validationIfExistForUpdate($phone, $id_user)
-   {
+   public function validationIfExistForUpdate($phone, $id_user) {
       if (!preg_match('/^\d{10}$/', $phone)) {
          return [
             'status' => 'Not Valid',
@@ -71,9 +69,7 @@ class suppliersModel
       ];
    }
 
-
-   public function create($fullname, $phone, $address, $description, $category)
-   {
+   public function create($fullname, $phone, $address, $description, $category) {
 
       $response = $this->validationIfExist($phone);
       if ($response['status'] !== 'Success') {
@@ -115,8 +111,7 @@ class suppliersModel
       }
    }
 
-   public function readAll()
-   {
+   public function readAll() {
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
 
@@ -135,8 +130,7 @@ class suppliersModel
       }
    }
 
-   public function readById($id_supplier)
-   {
+   public function readById($id_supplier) {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -171,8 +165,42 @@ class suppliersModel
       ];
    }
 
-   public function update($id_supplier, $fullname, $phone, $address, $description, $category)
-   {
+   public function readByStatus($status) {
+
+      if ($status !== 'activo' && $status !== 'inactivo') {
+         return [
+            'status' => 'Not Valid',
+            'message' => 'El estado proporcionado no es válido. Debes usar "activo" o "inactivo"'
+         ];
+      }
+      
+      $query = "SELECT * FROM suppliers WHERE status = ?";
+      $stmt = $this->conn->prepare($query);
+
+      if (!$stmt) {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+
+      $stmt->bind_param("s", $status);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      if ($result->num_rows === 0) {
+         return [
+            'status' => 'Not Found',
+            'message' => 'No se encontró ningún provedor con ese estado: ' . $status
+         ];
+      }
+
+      return [
+         'status' => 'Success',
+         'supplier' => $result->fetch_all(MYSQLI_ASSOC)
+      ];
+   }
+
+   public function update($id_supplier, $fullname, $phone, $address, $description, $category) {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -225,8 +253,7 @@ class suppliersModel
    }
 
 
-   public function activate($id_supplier)
-   {
+   public function activate($id_supplier) {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
@@ -280,8 +307,7 @@ class suppliersModel
       }
    }
 
-   public function deactivate($id_supplier)
-   {
+   public function deactivate($id_supplier) {
       if (!is_numeric($id_supplier)) {
          return [
             'status' => 'Not Valid',
