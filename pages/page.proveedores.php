@@ -1,3 +1,4 @@
+<?php ?>
 <div class="page-proveedores">
     <div class="container-header-proveedores">
         <div class="content-info-proveedores">
@@ -24,6 +25,11 @@
                     Proveedores Totales
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="container-table-proveedores">
+        <div class="table-proveedores">
+            <?php require('./components/Table/Table.php') ?>   
         </div>
     </div>
 </div>
