@@ -222,6 +222,10 @@
     text-align: center;
 }
 
+.login-container .login-form .login-button #btn_disabled{
+    display: none;
+}
+
 
 
 
