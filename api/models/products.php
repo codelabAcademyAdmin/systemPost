@@ -251,7 +251,7 @@ class productsModel
     public function getFiltredProducts($status)
     {
 
-        if($status !== 'activo' || $status !== 'inactivo'){
+        if($status !== 'activo' && $status !== 'inactivo'){
             return [
                 'status' => 'Not Valid',
                 'message' => 'El estado ingresado no es valido'
