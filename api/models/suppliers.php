@@ -9,8 +9,76 @@ class suppliersModel
       $this->conn = $conn;
    }
 
+   public function validationIfExist($phone)
+   {
+      if (!preg_match('/^\d{10}$/', $phone)) {
+         return [
+            'status' => 'Not Valid',
+            'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+         ];
+      }
+      $query = "SELECT * FROM users WHERE phone = ?";
+      $stmt = $this->conn->prepare($query);
+      if (!$stmt) {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+      $stmt->bind_param("s", $phone);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      if ($result->num_rows > 0) {
+         return [
+            'status' => 'Conflicts',
+            'message' => 'El numero de telefono ya esta en uso'
+         ];
+      }
+      return [
+         'status' => 'Success'
+      ];
+   }
+
+   public function validationIfExistForUpdate($phone, $id_user)
+   {
+      if (!preg_match('/^\d{10}$/', $phone)) {
+         return [
+            'status' => 'Not Valid',
+            'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
+         ];
+      }
+      $query = "SELECT * FROM suppliers WHERE phone = ? AND id_supplier != ?";
+      $stmt = $this->conn->prepare($query);
+      if (!$stmt) {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+      $stmt->bind_param("si", $phone, $id_user);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      if ($result->num_rows > 0) {
+         return [
+            'status' => 'Conflicts',
+            'message' => 'El numero de telefono ya esta en uso'
+         ];
+      }
+      return [
+         'status' => 'Success'
+      ];
+   }
+
+
    public function create($fullname, $phone, $address, $description, $category)
    {
+
+      $response = $this->validationIfExist($phone);
+      if ($response['status'] !== 'Success') {
+         return $response;
+      }
 
       $query = "INSERT INTO suppliers (fullname, phone, address, description, category) VALUES (?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
@@ -51,19 +119,32 @@ class suppliersModel
    {
       $query = "SELECT * FROM suppliers";
       $result = $this->conn->query($query);
-      return $result->fetch_all(MYSQLI_ASSOC);
+
+      if ($result === false) {
+         return [
+            'status' => 'Internal Error',
+            'message' => 'Error al ejecutar la consulta: ' . $this->conn->error
+         ];
+      }
+
+      if ($result->num_rows > 0) {
+         return [
+            'status' => 'Success',
+            'suppliers' => $result->fetch_all(MYSQLI_ASSOC)
+         ];
+      }
    }
 
    public function readById($id_supplier)
    {
-      if(!is_numeric($id_supplier)){
-         return[
+      if (!is_numeric($id_supplier)) {
+         return [
             'status' => 'Not Valid',
-            'message' => 'El id debe ser un numero.'
+            'message' => 'El id debe ser solo números.'
          ];
       }
 
-      $query = "SELECT id_supplier, fullname, phone, address, description, category FROM suppliers WHERE id_supplier = ?";
+      $query = "SELECT id_supplier, fullname, phone, address, description, category, status FROM suppliers WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
          return [
@@ -71,16 +152,16 @@ class suppliersModel
             'message' => 'Error al preparar la consulta: ' . $this->conn->error
          ];
       }
+
       $stmt->bind_param("i", $id_supplier);
       $stmt->execute();
       $result = $stmt->get_result();
       $supplier = $result->fetch_assoc();
-      $stmt->close();
 
       if (!$supplier) {
          return [
             'status' => 'Not Found',
-            'message' => 'No se encontró ningún proveedor con el ID ' . $id_supplier
+            'message' => 'No se encontró ningún proveedor con el id ' . $id_supplier
          ];
       }
 
@@ -90,36 +171,24 @@ class suppliersModel
       ];
    }
 
-   public function validationProductSuppliers($id_supplier)
-   {
-      $query = "SELECT COUNT(*) as total FROM products_suppliers WHERE id_supplier = ?";
-      $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("i", $id_supplier);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $supplier = $result->fetch_assoc();
-      $stmt->close();
-
-      return $supplier;
-   }
-
-
    public function update($id_supplier, $fullname, $phone, $address, $description, $category)
    {
-      if(!is_numeric($id_supplier)){
-         return[
+      if (!is_numeric($id_supplier)) {
+         return [
             'status' => 'Not Valid',
-            'message' => 'El id debe ser un numero.'
+            'message' => 'El id debe ser solo números.'
          ];
       }
 
       $validation = $this->readById($id_supplier);
-      if(empty($validation['supplier'])){
-         return [
-            'status' => 'Not Found',
-            'message' => 'No se encontro el proveedor con ese id'
-         ];
-      };
+      if ($validation['status'] !== 'Success') {
+         return $validation;
+      }
+
+      $response = $this->validationIfExistForUpdate($phone, $id_supplier);
+      if ($response['status'] !== 'Success') {
+         return $response;
+      }
 
       $query = "UPDATE suppliers SET fullname = ?, phone = ?, address = ?, description = ?, category = ? WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
@@ -131,77 +200,138 @@ class suppliersModel
          ];
       }
 
-      $stmt->bind_param("ssssss", $fullname, $phone, $address, $description, $category, $id_supplier);
+      $stmt->bind_param("sssssi", $fullname, $phone, $address, $description, $category, $id_supplier);
 
-      if ($stmt->execute()) {
-         if ($stmt->error) {
-            return [
-               'status' => 'Error',
-               'message' => 'Error al ejecutar la consulta: ' . $stmt->error
-            ];
-         }
-
-         if ($stmt->affected_rows > 0) {
-            $update = $this->readById($id_supplier);
-            return [
-               'status' => 'Success',
-               'message' => 'Proveedor actualizado exitosamente.',
-               'supplier' => $update['supplier']
-            ];
-         } else{
-            return [
-               'status' => 'Success',
-               'message' => 'No se actulizaron datos.'
-            ];
-         }
-      } else {
+      if (!$stmt->execute()) {
          return [
             'status' => 'Error',
             'message' => 'Error al actualizar el proveedor: ' . $stmt->error
          ];
       }
+
+      if ($stmt->affected_rows > 0) {
+         return [
+            'status' => 'Success',
+            'message' => 'Proveedor actualizado exitosamente.',
+            'supplier' => $this->readById($id_supplier)['supplier']
+         ];
+      } else {
+         return [
+            'status' => 'Success',
+            'message' => 'No se evidenciaron cambios',
+            'supplier' => $this->readById($id_supplier)['supplier']
+         ];
+      }
    }
 
 
-   public function delete($id_supplier)
+   public function activate($id_supplier)
    {
-      if(!is_numeric($id_supplier)){
-         return[
+      if (!is_numeric($id_supplier)) {
+         return [
             'status' => 'Not Valid',
-            'message' => 'El id debe ser un numero.'
+            'message' => "El ID del proveedor debe ser un número."
          ];
       }
-      $supplier = $this->readById($id_supplier);
-      if ($supplier['status'] == 'Not Found') {
+
+      $existingSupplier = $this->readById($id_supplier);
+      if ($existingSupplier['status'] !== 'Success') {
          return [
             'status' => 'Not Found',
-            'message' => 'No se puede eliminar el proveedor porque el ID ' . $id_supplier . ' no existe.'
+            'message' => 'No se puede inactivar el proveedor porque el ID ' . $id_supplier . ' no existe.'
          ];
       }
 
-      $validation = $this->validationProductSuppliers($id_supplier);
-      if ($validation['total'] > 0) {
+      if ($existingSupplier['supplier']['status'] == 'activo') {
          return [
             'status' => 'Conflict',
-            'message' => 'No se puede eliminar el proveedor porque tiene productos relacionados.'
+            'message' => 'El proveedor ya está activo.'
          ];
       }
 
-      $query = "DELETE FROM suppliers WHERE id_supplier = ?";
+      $query = "UPDATE suppliers SET status = 'activo' WHERE id_supplier = ?";
       $stmt = $this->conn->prepare($query);
+      if (!$stmt) {
+         return [
+            'status' => 'Internal Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+
       $stmt->bind_param("i", $id_supplier);
 
       if ($stmt->execute()) {
          if ($stmt->affected_rows > 0) {
             return [
                'status' => 'Success',
-               'message' => 'Proveedor eliminado exitosamente'
+               'message' => 'Proveedor activado exitosamente.'
+            ];
+         } else {
+            return [
+               'status' => 'Not Found',
+               'message' => 'No se encontró el proveedor para activar.'
             ];
          }
+      } else {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al activar el proveedor: ' . $stmt->error
+         ];
       }
-      return [
-         'status' => 'Error',
-         'message' => 'No se pudo eliminar el proveedor'
-      ];
+   }
+
+   public function deactivate($id_supplier)
+   {
+      if (!is_numeric($id_supplier)) {
+         return [
+            'status' => 'Not Valid',
+            'message' => "El ID del proveedor debe ser solo números."
+         ];
+      }
+
+      $existingSupplier = $this->readById($id_supplier);
+      if ($existingSupplier['status'] === 'Not Found') {
+         return [
+            'status' => 'Not Found',
+            'message' => 'No se puede inactivar el proveedor porque el ID ' . $id_supplier . ' no existe.'
+         ];
+      }
+
+      if ($existingSupplier['supplier']['status'] == 'inactivo') {
+         return [
+            'status' => 'Conflict',
+            'message' => 'El proveedor ya está inactivo.'
+         ];
+      }
+
+      $query = "UPDATE suppliers SET status = 'inactivo' WHERE id_supplier = ?";
+      $stmt = $this->conn->prepare($query);
+      if (!$stmt) {
+         return [
+            'status' => 'Internal Error',
+            'message' => 'Error al preparar la consulta: ' . $this->conn->error
+         ];
+      }
+
+      $stmt->bind_param("i", $id_supplier);
+
+      if ($stmt->execute()) {
+         if ($stmt->affected_rows > 0) {
+            return [
+               'status' => 'Success',
+               'message' => 'Proveedor inactivado exitosamente.'
+            ];
+         } else {
+            return [
+               'status' => 'Not Found',
+               'message' => 'No se encontró el proveedor para inactivar.'
+            ];
+         }
+      } else {
+         return [
+            'status' => 'Error',
+            'message' => 'Error al inactivar el proveedor: ' . $stmt->error
+         ];
+      }
    }
 }

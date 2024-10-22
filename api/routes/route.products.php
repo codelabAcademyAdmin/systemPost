@@ -31,6 +31,9 @@ $AppRoutes->AddRoutes('GET', 'products', function () {
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
         $response = $products->readById($id);
+    } else if (isset($_GET['status'])) {
+        $status = $_GET['status'];
+        $response = $products->getFiltredProducts($status);
     } else {
         $response = $products->readAll();
     }
@@ -45,7 +48,7 @@ $AppRoutes->AddRoutes('POST', 'products', function () {
     $response;
     $data = json_decode(file_get_contents('php://input'), true);
     $response = $products->create($data['name'], $data['description'], $data['stock'], $data['category'], $data['product_price'], $data['suppliers']);
-    
+
     setHttpResponseCode($response['status']);
     echo json_encode($response);
 });
@@ -56,7 +59,7 @@ $AppRoutes->AddRoutes('PUT', 'products', function () {
     $response;
     $data = json_decode(file_get_contents('php://input'), true);
     $id = $_GET['id'];
-    $response = $products->update($id,$data['name'], $data['description'], $data['stock'], $data['category'], $data['product_price'], $data['suppliers']);
+    $response = $products->update($id, $data['name'], $data['description'], $data['stock'], $data['category'], $data['product_price'], $data['suppliers']);
 
     setHttpResponseCode($response['status']);
     echo json_encode($response);

@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 @import url('./inventario.css');
 
+=======
+>>>>>>> eebd02442e2444d1d0582423424b9f28d1a72905
 /* estilos de aside del login */
 
-.container-aside-login{
+.container-aside-login {
     width: 100%;
     height: 100vh;
     display: flex;
@@ -12,10 +15,10 @@
     overflow: hidden;
 }
 
-.container-aside-login .container1{
+.container-aside-login .container1 {
     border-radius: 50%;
-    background: linear-gradient(to left,#FDA4AC , #FEADB9);
-    height:300px;
+    background: linear-gradient(to left, #FDA4AC, #FEADB9);
+    height: 300px;
     width: 300px;
     display: flex;
     position: absolute;
@@ -24,9 +27,9 @@
     z-index: 120;
 }
 
-.container-aside-login .container2{
+.container-aside-login .container2 {
     border-radius: 50%;
-    background: linear-gradient(to bottom,#1B2597, #04073C);
+    background: linear-gradient(to bottom, #1B2597, #04073C);
     transform: rotate(45deg);
     height: 220px;
     width: 220px;
@@ -36,9 +39,9 @@
     right: -30px;
 }
 
-.container-aside-login .container3{
+.container-aside-login .container3 {
     border-radius: 50%;
-    background: linear-gradient(to bottom,#09A5B2, #006271);
+    background: linear-gradient(to bottom, #09A5B2, #006271);
     transform: rotate(45deg);
     height: 220px;
     width: 220px;
@@ -48,9 +51,9 @@
     top: 50%;
 }
 
-.container-aside-login .container4{
+.container-aside-login .container4 {
     border-radius: 50%;
-    background: linear-gradient(to bottom,#09A5B2, #006271);
+    background: linear-gradient(to bottom, #09A5B2, #006271);
     transform: rotate(0deg);
     height: 50px;
     width: 50px;
@@ -60,7 +63,7 @@
     bottom: 90px;
 }
 
-.container-aside-login .container5{
+.container-aside-login .container5 {
     border-radius: 50%;
     background-color: #FEADB9;
     transform: rotate(45deg);
@@ -72,7 +75,7 @@
     bottom: -45px;
 }
 
-.container-aside-login .container-info-aside{
+.container-aside-login .container-info-aside {
     display: flex;
     gap: 20px;
     justify-content: center;
@@ -80,9 +83,9 @@
     bottom: 35px;
 }
 
-.container-aside-login .container-logo{
+.container-aside-login .container-logo {
     width: 210px;
-    height: 210px; 
+    height: 210px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -98,7 +101,7 @@
 /* estilos de loginForm */
 
 
-.login-container{
+.login-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -108,34 +111,34 @@
     background-color: #fff;
 }
 
-.login-container .login-header{
+.login-container .login-header {
     width: 300px;
     height: 50px;
     margin-bottom: 40px;
     text-align: center;
 }
 
-.login-container .login-header .login-title{
+.login-container .login-header .login-title {
     font-size: 40px;
     font-weight: 400;
     font-weight: bold;
 }
 
-.login-container .login-form{
+.login-container .login-form {
     width: 300px;
     height: 250px;
     display: flex;
     flex-direction: column;
 }
 
-.login-container .login-form .input-group{
+.login-container .login-form .input-group {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.login-container .login-form .input-group .input-field{
+.login-container .login-form .input-group .input-field {
     width: 100%;
     height: 40px;
     margin-bottom: 15px;
@@ -152,7 +155,7 @@
     align-items: center;
 }
 
-.login-container .login-form .input-group .password-container .input-password{
+.login-container .login-form .input-group .password-container .input-password {
     padding-right: 40px;
 }
 
@@ -163,10 +166,10 @@
     position: absolute;
     right: 10px;
     bottom: 26px;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
-.login-container .login-form .remember-me{
+.login-container .login-form .remember-me {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -176,12 +179,12 @@
     accent-color: rgb(115, 236, 226);
 }
 
-.login-container .login-form .remember-me .checkbox{
+.login-container .login-form .remember-me .checkbox {
     font-size: 15px;
     color: gray;
 }
 
-.login-container .login-form .login-button{
+.login-container .login-form .login-button {
     width: 100%;
     margin-top: 30px;
     display: flex;
@@ -189,7 +192,7 @@
     align-items: center;
 }
 
-.login-container .login-form .login-button .button{
+.login-container .login-form .login-button .button {
     width: 60%;
     padding: 10px;
     color: #fff;
@@ -201,12 +204,12 @@
     background-color: rgb(115, 236, 226);
 }
 
-.login-container .login-form .login-button .button:hover{
+.login-container .login-form .login-button .button:hover {
     background-color: rgb(28, 183, 203);
     transition: background-color 0.3s ease;
 }
 
-.login-container .login-form .content-forgot-password{
+.login-container .login-form .content-forgot-password {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -227,33 +230,33 @@
 
 /* estilos de layout */
 
-.layout{
+.layout {
     width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: row;
 }
 
-.layout .layout-aside{
+.layout .layout-aside {
     width: 60px;
     height: 100%;
     background-color: #bdc3c7;
 }
 
-.layout .layout-section{
+.layout .layout-section {
     width: calc(100% - 60px);
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.layout .layout-section .layout-section-header{
+.layout .layout-section .layout-section-header {
     width: 100%;
     height: 60px;
     background-color: #95a5a6;
 }
 
-.layout .layout-section .layout-section-content{
+.layout .layout-section .layout-section-content {
     width: 100%;
     height: calc(100% - 60px);
     background-color: #ecf0f1;
@@ -262,32 +265,32 @@
 
 /* estilos de login */
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.page-login{
+.page-login {
     display: flex;
     width: 100%;
     height: 100vh;
 }
 
-.page-login .page-login-aside{
+.page-login .page-login-aside {
     width: 50%;
     height: 100%;
-background-color: #E6E6F0;
-    
+    background-color: #E6E6F0;
+
 }
 
-.page-login .page-login-form{
+.page-login .page-login-form {
     width: 50%;
     height: 100%;
-background-color: aquamarine;
+    background-color: aquamarine;
 }
 
-.poppins{
+.poppins {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
@@ -333,7 +336,7 @@ background-color: aquamarine;
     background-color: #E5EBF4;
 }
 
-.category-container .category-item  .content-icon{
+.category-container .category-item .content-icon {
     width: 40px;
     height: 40px;
 }
@@ -343,7 +346,7 @@ background-color: aquamarine;
 /* estilos de header */
 
 
-.header{
+.header {
     width: 100%;
     height: 100%;
     background-color: #fff;
@@ -354,7 +357,7 @@ background-color: aquamarine;
     font-family: Arial;
 }
 
-.header .content-profile{
+.header .content-profile {
     display: flex;
     height: 100%;
     flex-direction: row;
@@ -362,13 +365,13 @@ background-color: aquamarine;
     align-items: center;
 }
 
-.header .content-profile .content-icon-1  .icon-lock{
+.header .content-profile .content-icon-1 .icon-lock {
     width: 28px;
     height: 28px;
     color: black;
 }
 
-.header .content-profile .profile{
+.header .content-profile .profile {
     display: flex;
     flex-direction: row;
     gap: 12px;
@@ -376,17 +379,17 @@ background-color: aquamarine;
     position: relative;
 }
 
-.header .content-profile .profile .name-profile{
+.header .content-profile .profile .name-profile {
     cursor: pointer;
 }
 
-.header .content-profile .profile .content-icon-2 .icon-row{
+.header .content-profile .profile .content-icon-2 .icon-row {
     width: 18px;
     height: 12px;
     color: black;
 }
 
-.header .content-profile .profile .circle-profile{
+.header .content-profile .profile .circle-profile {
     display: flex;
     width: 40px;
     height: 40px;
@@ -405,6 +408,7 @@ background-color: aquamarine;
     z-index: 1;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .header .content-profile .profile .dropdown-content a {
     display: block;
     padding: 8px;
@@ -412,9 +416,10 @@ background-color: aquamarine;
     text-align: start;
     color: black;
 }
+
 .header .content-profile .profile .dropdown-content a:hover {
-   background-color: rgb(232, 231, 231);
-   font-weight: 600;
+    background-color: rgb(232, 231, 231);
+    font-weight: 600;
 }
 
 
@@ -424,13 +429,13 @@ background-color: aquamarine;
 .component-menu {
     width: 60px;
     height: 100vh;
-    background-color: #3f4b6b; 
+    background-color: #3f4b6b;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 15px;
     position: relative;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .component-menu .menu-logo {
@@ -438,7 +443,7 @@ background-color: aquamarine;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
 .component-menu .menu-options {
@@ -447,8 +452,8 @@ background-color: aquamarine;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; 
-    padding-bottom: 30px; 
+    justify-content: flex-start;
+    padding-bottom: 30px;
 }
 
 .component-menu .menu-options .option {
@@ -468,19 +473,169 @@ background-color: aquamarine;
 
 .component-menu .menu-options .option:hover svg {
     stroke: #ff6b6b;
-    transform: scale(1.1); 
+    transform: scale(1.1);
 }
 
 
+/* estilos de tabla */
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 100px);
+    flex-direction: column;
+    max-width: 1200px;
+}
+
+.container .table-container {
+    /* min-width: 100%; */
+    max-width: 1200px;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 500px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-top: 8px;
+    border-radius: 8px;
+}
+
+.container .table-container .product-table {
+    min-width: 100%;
+    table-layout: auto;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.container .table-container .product-table thead tr {
+    background-color: #e5e7eb;
+    text-align: left;
+    color: #4b5563;
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.container .table-container .product-table th {
+    padding: 8px 24px;
+}
+
+.container .table-container .product-table td {
+    padding: 12px 24px;
+}
+
+.container .table-container .product-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.container .table-container .product-table tbody tr:hover {
+    background-color: #f3f4f6;
+}
+
+.container .table-container .product-table .text-center {
+    text-align: center;
+}
+
+.container .table-container .product-table .status-active {
+    background-color: #99A5E0;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+}
+
+.container .table-container .product-table .status-inactive {
+    background-color: #fecaca;
+    color: #b91c1c;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+}
+
+.container .table-container .product-table .acciones {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+
+.container .table-container .product-table .acciones .btn-accions {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    background-color: #E6EBF9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6668C5;
+    transition: all 0.3s ease;
+}
+
+.container .table-container .product-table .acciones .btn-accions:hover {
+    background-color: #6668C5;
+    color: #E6EBF9;
+}
+
+.container .table-container .product-table .acciones .btn-accions .icon {
+    width: 24px;
+    height: 24px;
+}
 
 
+/* paginador de la tabla */
 
+.container .container-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
 
+.container .container-pagination .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
 
+.container .container-pagination .pagination a {
+    text-decoration: none;
+    color: #47488C;
+    padding: 8px 12px;
+    margin: 0 2px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
 
+.container .container-pagination .pagination .pagination-number {
+    background-color: #E6EBF9;
+}
 
+.container .container-pagination .pagination .pagination-number.active {
+    background-color: #5555AD;
+    color: white;
+}
 
+.container .container-pagination .pagination .pagination-arrow {
+    background-color: #edf2f7;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.container .container-pagination .pagination .pagination-arrow.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
+.container .container-pagination .pagination a:hover:not(.active):not(.disabled) {
+    background-color: #D2DCF3;
+}
 
-
+.container .container-pagination .pagination .pagination-arrow .icon-paginator {
+    width: 24px;
+    height: 24px;
+    color: #5555AD;
+}

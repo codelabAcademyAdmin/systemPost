@@ -10,7 +10,10 @@ if ($request == 'GET') {
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
         $response = $product->readById($id);
-    } else {
+    } else if (isset($_GET['status'])){
+        $status = $_GET['status'];
+        $response = $products->getFiltredProducts($status);
+    }else {
         $response = $product->readAll();
     }
     echo json_encode($response);
