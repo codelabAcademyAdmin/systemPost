@@ -432,7 +432,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 15px;
+    padding-top: 10px;/* aqui*15*/
     position: relative;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -442,7 +442,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 1px; 
+    padding-right: 5px;
+}
+.component-menu .menu-logo img {
+    width: 50px;
+    height: 50px; 
 }
 
 .component-menu .menu-options {
@@ -451,12 +456,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-bottom: 30px;
+    justify-content: center; 
+    padding-bottom: 30px; 
+    padding-right: 4px;
 }
 
 .component-menu .menu-options .option {
-    margin: 15px 0;
+    margin: 12px 0;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -471,7 +477,7 @@
 }
 
 .component-menu .menu-options .option:hover svg {
-    stroke: #ff6b6b;
+    stroke: #99A5E0;
     transform: scale(1.1);
 }
 
