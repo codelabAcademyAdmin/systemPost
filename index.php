@@ -20,7 +20,7 @@ error_reporting(E_ALL);
 
    <?php 
         session_start();     
-        if(isset($_SESSION['user'])){
+        if(!isset($_SESSION['user'])){
             require 'pages/page.login.php';
         }else{
             require 'core/app.php';
@@ -36,7 +36,7 @@ error_reporting(E_ALL);
    <script src="assets/js/apiManager.js"></script>
    <script src="assets/js/app.js"></script>
    <?php 
-    if(isset($_SESSION['user'])){
+    if(!isset($_SESSION['user'])){
         echo '<script src="scripts/script.login.js"></script>';
     }else{
         $AppScript = new AppScript($listRoutes);
