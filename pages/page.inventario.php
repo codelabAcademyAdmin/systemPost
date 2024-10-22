@@ -26,4 +26,7 @@
             </div>
         </div>
     </div>
+    <div class="container-table-inventario">
+        <?php require('./components/Table/Table.inventario.php') ?>
+    </div>
 </div>

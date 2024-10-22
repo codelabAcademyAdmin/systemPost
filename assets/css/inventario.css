@@ -88,3 +88,8 @@
     font-size: 18px;
     font-weight: 600;
 }
+
+.container-table-inventario{
+    width: 100%;
+    display: flex;
+}
