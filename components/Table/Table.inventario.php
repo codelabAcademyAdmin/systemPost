@@ -7,7 +7,7 @@ $productos = [
       'descripcion' => 'Laptop de última generación ',
       'precio' => 1299.99,
       'cantidad' => 50,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '01/03/2024'
    ],
    [
@@ -16,7 +16,7 @@ $productos = [
       'descripcion' => 'Teléfono inteligente con cámara de ',
       'precio' => 799.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Telefonía',
       'fecha_creacion' => '15/02/2024'
    ],
    [
@@ -25,7 +25,7 @@ $productos = [
       'descripcion' => 'Auriculares con cancelación de ruido',
       'precio' => 199.99,
       'cantidad' => 200,
-      'activo' => true,
+      'categoria' => 'Audio',
       'fecha_creacion' => '20/01/2024'
    ],
    [
@@ -34,7 +34,7 @@ $productos = [
       'descripcion' => 'Reloj inteligente con GPS y monitor ',
       'precio' => 249.99,
       'cantidad' => 75,
-      'activo' => false,
+      'categoria' => 'Dispostivos portátiles',
       'fecha_creacion' => '05/03/2024'
    ],
    [
@@ -43,7 +43,7 @@ $productos = [
       'descripcion' => 'Cámara de 24MP con lente intercambiable',
       'precio' => 1499.99,
       'cantidad' => 25,
-      'activo' => true,
+      'categoria' => 'Fotografía',
       'fecha_creacion' => '10/02/2024'
    ],
    [
@@ -52,7 +52,7 @@ $productos = [
       'descripcion' => 'Tablet de 10 pulgadas con 64GB de almacenamiento',
       'precio' => 299.99,
       'cantidad' => 150,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '05/03/2024'
    ],
    [
@@ -61,7 +61,7 @@ $productos = [
       'descripcion' => 'Consola de última generación con 1TB de almacenamiento',
       'precio' => 499.99,
       'cantidad' => 80,
-      'activo' => true,
+      'categoria' => 'Videojuegos',
       'fecha_creacion' => '20/02/2024'
    ],
    [
@@ -70,7 +70,7 @@ $productos = [
       'descripcion' => 'Impresora, escáner y copiadora con WiFi',
       'precio' => 179.99,
       'cantidad' => 60,
-      'activo' => false,
+      'categoria' => 'Oficina',
       'fecha_creacion' => '15/01/2024'
    ],
    [
@@ -79,7 +79,7 @@ $productos = [
       'descripcion' => 'Monitor de 27 pulgadas con resolución 4K',
       'precio' => 349.99,
       'cantidad' => 40,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '01/03/2024'
    ],
    [
@@ -88,7 +88,7 @@ $productos = [
       'descripcion' => 'Teclado gaming con switches Cherry MX',
       'precio' => 129.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Periféricos',
       'fecha_creacion' => '10/02/2024'
    ],
    [
@@ -97,7 +97,7 @@ $productos = [
       'descripcion' => 'Disco duro portátil de 2TB con USB 3.0',
       'precio' => 89.99,
       'cantidad' => 200,
-      'activo' => true,
+      'categoria' => 'Almacenamiento',
       'fecha_creacion' => '25/02/2024'
    ],
    [
@@ -106,7 +106,7 @@ $productos = [
       'descripcion' => 'Altavoz portátil resistente al agua',
       'precio' => 79.99,
       'cantidad' => 120,
-      'activo' => true,
+      'categoria' => 'Audio',
       'fecha_creacion' => '05/01/2024'
    ],
    [
@@ -115,7 +115,7 @@ $productos = [
       'descripcion' => 'Router de doble banda con tecnología WiFi 6',
       'precio' => 149.99,
       'cantidad' => 75,
-      'activo' => false,
+      'categoria' => 'Redes',
       'fecha_creacion' => '18/02/2024'
    ],
    [
@@ -124,7 +124,7 @@ $productos = [
       'descripcion' => 'Cámara web 1080p con micrófono integrado',
       'precio' => 59.99,
       'cantidad' => 150,
-      'activo' => true,
+      'categoria' => 'Periféricos',
       'fecha_creacion' => '22/01/2024'
    ],
    [
@@ -133,7 +133,7 @@ $productos = [
       'descripcion' => 'Powerbank de 20000mAh con carga rápida',
       'precio' => 49.99,
       'cantidad' => 180,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '28/02/2024'
    ],
    [
@@ -142,7 +142,7 @@ $productos = [
       'descripcion' => 'GPU de gama alta para gaming y diseño',
       'precio' => 699.99,
       'cantidad' => 30,
-      'activo' => true,
+      'categoria' => 'Componentes',
       'fecha_creacion' => '12/03/2024'
    ],
    [
@@ -151,7 +151,7 @@ $productos = [
       'descripcion' => 'Silla ergonómica con soporte lumbar',
       'precio' => 199.99,
       'cantidad' => 50,
-      'activo' => true,
+      'categoria' => 'Muebles',
       'fecha_creacion' => '08/01/2024'
    ],
    [
@@ -160,7 +160,7 @@ $productos = [
       'descripcion' => 'Proyector portátil con resolución 1080p',
       'precio' => 279.99,
       'cantidad' => 35,
-      'activo' => false,
+      'categoria' => 'Audio/Video',
       'fecha_creacion' => '03/03/2024'
    ],
    [
@@ -169,7 +169,7 @@ $productos = [
       'descripcion' => 'Pulsera inteligente con monitor de actividad',
       'precio' => 39.99,
       'cantidad' => 250,
-      'activo' => true,
+      'categoria' => 'Dispostivos portátiles',
       'fecha_creacion' => '17/02/2024'
    ],
    [
@@ -178,7 +178,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ],
    [
@@ -187,7 +187,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ],
    [
@@ -196,7 +196,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ]
 
@@ -252,7 +252,7 @@ function formatText($text)
                <th>Descripción</th>
                <th>Precio</th>
                <th>Cantidad</th>
-               <th>Activo</th>
+               <th>Categoría</th>
                <th>Fecha de Creación</th>
                <th>Acciones</th>
             </tr>
@@ -265,11 +265,7 @@ function formatText($text)
                   <td><?php echo  formatText($producto['descripcion']) ?></td>
                   <td><?php echo $producto['precio']; ?></td>
                   <td class="text-center"><?php echo $producto['cantidad']; ?></td>
-                  <td class="text-center">
-                     <span class="<?php echo $producto['activo'] ? 'status-active' : 'status-inactive'; ?>">
-                        <?php echo $producto['activo'] ? 'Sí' : 'No'; ?>
-                     </span>
-                  </td>
+                  <td class="text-center"><?php echo $producto['categoria']; ?></td>
                   <td class="text-center"><?php echo $producto['fecha_creacion']; ?></td>
                   <td class="text-center acciones">
                      <button class="btn-accions view">
