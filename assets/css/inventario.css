@@ -1,12 +1,17 @@
 .page-inventario{
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    overflow: hidden;
 }
 
 .page-inventario .container-header-inventario{
     width: 100%;
-    height: 300px;
-    margin-top: 50px;
+    height: 200px;
+    margin-top: 30px;
     margin-left: 60px;
     display: flex;
     flex-direction: row;
@@ -89,7 +94,21 @@
     font-weight: 600;
 }
 
-.container-table-inventario{
+.table-inventario{
     width: 100%;
     display: flex;
 }
+
+.page-inventario .container-table {
+    width: 100%;
+    height: calc(100vh - 300px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-inventario .container-table .table-inventario {
+    width: 1200px;
+    height: 550px;
+}
+
