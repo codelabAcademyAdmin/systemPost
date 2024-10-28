@@ -1,0 +1,41 @@
+
+.content-ventas{
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.content-ventas .header-venta{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+
+
+.content-ventas .content-info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 20px;
+}
+
+.content-ventas .content-info .content-1{
+
+    width: 65%;
+
+}
+
+.content-ventas .content-info .content-2{
+    width: 35%;
+}
+
+.content-ventas .content-info .content-2 .product-info{}
+
+
+
