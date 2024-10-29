@@ -1,3 +1,6 @@
+@import url('./ventas.css');
+
+
 /* estilos de aside del login */
 
 .container-aside-login {
@@ -559,6 +562,8 @@
 .container .table-container .product-table .acciones {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     gap: 6px;
 }
 
