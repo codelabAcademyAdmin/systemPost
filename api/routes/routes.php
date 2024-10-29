@@ -4,6 +4,7 @@
         'test',
         'inventories',
         'users',
+        'sales',
         'login',
         'suppliers',
         'products',
