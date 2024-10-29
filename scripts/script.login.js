@@ -1,7 +1,8 @@
 $(document).ready(function(){
     preparando_formulario()
-    $("#btn_disabled").slideUp(0)
+    $("#btn_disabled").slideUp(0);
 })
+
 
 function preparando_formulario(){
   
@@ -56,3 +57,4 @@ async function obtener_datos(email, pass){
     }
     
 }
+
