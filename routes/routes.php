@@ -2,6 +2,8 @@
     $listRoutes = array(
         'prueba',
         'index',
+        'ventas',
+
         'productos',
     );
     foreach($listRoutes as $route) {

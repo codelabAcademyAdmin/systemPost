@@ -1,0 +1,174 @@
+
+.content-sales{
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.content-sales .header-sales{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.content-sales .content-info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 20px;
+}
+
+.content-sales .content-info .content-1{
+    width: 65%;
+
+}
+
+.content-sales .content-info .content-1 .container .table-sales{
+    min-width: 750px;
+}
+
+
+.content-sales .content-info .content-2{
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.content-sales .content-info .content-2 .product-info{
+  border-radius: 8px;
+  background-color: white;
+}
+
+.content-sales .content-info .content-2 .content-info-total{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-total{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 50px;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-total .content-subtotal{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-total .content-iva{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-total .content-total{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-button{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+
+.content-sales .content-info .content-2 .content-info-total .content-2-button .btn{
+    width: 50%;
+    height: 50px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+
+.content-sales .content-info .content-2 .content-info-total .content-2-button .btn-cancelar{
+    border: 2.5px solid #5555AD;
+    color: #5555AD;
+}
+
+.content-sales .content-info .content-2 .content-info-total .content-2-button .btn-confirmar{
+    border: none;
+    background-color: #5555AD;
+    color: white;
+}
+
+
+.content-sales .content-info .content-2 .content-2-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.content-sales .content-info .content-2 .product-info {
+    max-height: 300px; /* Ajusta esta altura según necesites */
+    overflow-y: auto;
+}
+
+.content-sales .content-info .content-2 .product-info .sale-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.content-sales .content-info .content-2 .product-info .sale-details-table th,
+.content-sales .content-info .content-2 .product-info .sale-details-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.content-sales .content-info .content-2 .product-info .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.content-sales .content-info .content-2 .product-info .action-buttons .decrease-btn,
+.content-sales .content-info .content-2 .product-info .action-buttons .increase-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.content-sales .content-info .content-2 .product-info .action-buttons .quantity{
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.content-sales .content-info .content-2 .product-info .action-buttons .icon {
+    width: 24px;
+    height: 24px;
+}
+
+
+
+
+
+
+
+
+

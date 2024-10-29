@@ -251,7 +251,7 @@ class productsModel
     public function getFiltredProducts($status)
     {
 
-        if($status !== 'activo' || $status !== 'inactivo'){
+        if($status !== 'activo' && $status !== 'inactivo'){
             return [
                 'status' => 'Not Valid',
                 'message' => 'El estado ingresado no es valido'
@@ -415,6 +415,13 @@ class productsModel
         $existingProduct = $this->readById($id_product);
         if ($existingProduct['status'] !== 'Success') {
             return $existingProduct;
+        }
+
+        if ($existingProduct['product']['status'] == 'inactivo') {
+            return [
+                'status' => 'Conflict',
+                'message' => 'El producto ya está inactivo.'
+            ];
         }
 
         $query = "UPDATE products SET status = 'inactivo' WHERE id_product = ?";
