@@ -295,19 +295,18 @@
 
 ?>
 
-<div class="content-ventas">
-    <div class="header-venta">Realizar una venta</div>
+<div class="content-sales">
+    <div class="header-sales">Realizar una venta</div>
     <div class="content-info">
         <div class="content-1">
-
             <div class="container">
-                <div class="table-container">
+                <div class="table-container table-sales">
                     <table class="product-table">
                         <thead>
                             <tr>
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>Descripción</th>
+                            <th>Stock</th>
                             <th>Precio</th>
                             <th>Acciones</th>
                             </tr>
@@ -317,13 +316,12 @@
                             <tr>
                                 <td><?php echo $producto['id']; ?></td>
                                 <td><?php echo $producto['nombre']; ?></td>
-                                <td><?php echo  formatText($producto['descripcion']) ?></td>
+                                <td><?php echo $producto['cantidad'] ?></td>
                                 <td><?php echo $producto['precio']; ?></td>
                                 <td class="text-center acciones">
                                     <button class="btn-accions">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                                        <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
                                         </svg>
                                     </button>                   
                                 </td>
@@ -375,14 +373,14 @@
                     <td class="action-buttons">
                             <button class="decrease-btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                                    <circle cx="12" cy="12" r="10" fill="#6B7280"/>
+                                    <circle cx="12" cy="12" r="10" fill="#5555AD"/>
                                     <path d="M7 12h10" stroke="white" stroke-width="2"/>
                                 </svg>
                             </button>
                             <span class="quantity"><?php echo $producto['cantidad']; ?></span>
                             <button class="increase-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                                <circle cx="12" cy="12" r="10" fill="#6B7280"/>
+                                <circle cx="12" cy="12" r="10" fill="#5555AD"/>
                                     <path d="M12 7v10M7 12h10" stroke="white" stroke-width="2"/>
                                     </svg>  
                                 </button>
@@ -393,60 +391,26 @@
                     </tbody>
                 </table>
             </div>
+            <div class="content-info-total">
+                <div class="content-2-total">
+                    <div class="content-subtotal">
+                        <div class="">Subtotal</div>
+                        <div class="">$21.000</div>
+                    </div>
+                    <div class="content-iva">
+                        <div class="">Iva</div>
+                        <div class="">0.0</div>
+                    </div>
+                    <div class="content-total">
+                        <div class="">Total</div>
+                        <div class="">$21.000</div>
+                    </div>
+                </div>
+                <div class="content-2-button">
+                    <button  class="btn-cancelar btn">Cancelar</button>
+                    <button  class="btn-confirmar btn">Confirmar Venta</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-<style>
-
-.content-ventas .content-info .content-2 .content-2-header{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 26px;
-    font-weight: 600;
-    width: 100%;
-}
-
-.product-info {
-    max-height: 300px; /* Ajusta esta altura según necesites */
-    overflow-y: auto;
-}
-
-.sale-details-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.sale-details-table th,
-.sale-details-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.decrease-btn,
-.increase-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-.icon {
-    width: 24px;
-    height: 24px;
-}
-
-.quantity {
-    font-size: 0.875rem;
-    color: #374151;
-}
-</style>
