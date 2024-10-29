@@ -15,7 +15,7 @@
             </div>
             <div class="dropdown-content" style="display: none;">
                 <a href="#">Perfil</a>
-                <a href="#">Cerrar sesión</a>
+                <a href="api/session/logout.php">Cerrar sesión</a>
             </div>
         </div>
     </div>
