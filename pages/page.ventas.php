@@ -387,7 +387,6 @@
                             </td>
                         </tr>
                         <?php endforeach; ?>
-                        <!-- Más productos aquí -->
                     </tbody>
                 </table>
             </div>
