@@ -5,7 +5,7 @@
                 Inventario
             </div>
             <div class="content-description-inventario">
-                El módulo de inventario está diseñado para facilitar la consulta y visualización de todos los productos activos en el sistema. A través de una tabla, permite a los usuarios filtrar productos de manera eficiente y acceder a información detallada de cada producto mediante un modal de visualización. Este módulo no permite modificar ni eliminar productos, enfocándose exclusivamente en la consulta de información y el control visual del inventario.
+            El módulo de inventario facilita la consulta de productos activos en el sistema mediante una tabla que permite filtrarlos y ver detalles en un modal. Está enfocado solo en la visualización y control del inventario, sin opciones para modificar o eliminar productos
             </div>
         </div>
         <div class="content-counter-inventario">

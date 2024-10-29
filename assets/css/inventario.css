@@ -5,7 +5,8 @@
     flex-direction: column;
     justify-content: start;
     align-items: start;
-    overflow: hidden;
+    overflow-y: auto !important;
+    overflow-x: hidden;
 }
 
 .page-inventario .container-header-inventario{
@@ -105,6 +106,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 50px;
 }
 
 .page-inventario .container-table .table-inventario {
