@@ -27,9 +27,10 @@
             </div>
         </div>
     </div>
+
     <div class="container-table-proveedores">
         <div class="table-proveedores">
-            <?php require('./components/Table/Table.php') ?>   
+            <?php require('./components/Table/Table.proveedores.php') ?>   
         </div>
     </div>
 </div>

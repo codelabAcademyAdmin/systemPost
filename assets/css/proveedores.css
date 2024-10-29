@@ -80,19 +80,15 @@
     font-weight: 600;
 }
 
-.container-table-proveedores{
+.page-proveedores .container-table-proveedores{
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 300px);
     display: flex;
     justify-content: center;
     align-items: center;
-    
 }
 
-.table-proveedores{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 100px;
+.page-proveedores .container-table-proveedores .table-proveedores{
+    width: 1200px;
+    height: 550px;
 }
