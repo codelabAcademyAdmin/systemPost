@@ -26,9 +26,12 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container-productos">
         <div class="container-Table-productos">
-            <?php require{'./components'} ?>
+            <?php require ('./components/Table/Table.productos.php'); ?>
         </div>
     </div>
+
 </div>
    
