@@ -9,14 +9,14 @@ class suppliersModel
       $this->conn = $conn;
    }
 
-   public function validationIfExist($phone) {
+   public function validationIfExist($fullname, $phone) {
       if (!preg_match('/^\d{10}$/', $phone)) {
          return [
             'status' => 'Not Valid',
             'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
          ];
       }
-      $query = "SELECT * FROM users WHERE phone = ?";
+      $query = "SELECT * FROM suppliers WHERE fullname =? OR phone = ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
          return [
@@ -24,14 +24,14 @@ class suppliersModel
             'message' => 'Error al preparar la consulta: ' . $this->conn->error
          ];
       }
-      $stmt->bind_param("s", $phone);
+      $stmt->bind_param("ss", $fullname, $phone);
       $stmt->execute();
       $result = $stmt->get_result();
 
       if ($result->num_rows > 0) {
          return [
             'status' => 'Conflicts',
-            'message' => 'El numero de telefono ya esta en uso'
+            'message' => 'El nombre o el numero de telefono ya esta en uso.'
          ];
       }
       return [
@@ -39,14 +39,14 @@ class suppliersModel
       ];
    }
 
-   public function validationIfExistForUpdate($phone, $id_user) {
+   public function validationIfExistForUpdate($fullname, $phone, $id_supplier) {
       if (!preg_match('/^\d{10}$/', $phone)) {
          return [
             'status' => 'Not Valid',
             'message' => 'El número de teléfono debe cumplir con solo 10 dígitos y debe ser solo números.'
          ];
       }
-      $query = "SELECT * FROM suppliers WHERE phone = ? AND id_supplier != ?";
+      $query = "SELECT * FROM suppliers WHERE ( fullname =? OR phone = ?) AND id_supplier != ?";
       $stmt = $this->conn->prepare($query);
       if (!$stmt) {
          return [
@@ -54,14 +54,14 @@ class suppliersModel
             'message' => 'Error al preparar la consulta: ' . $this->conn->error
          ];
       }
-      $stmt->bind_param("si", $phone, $id_user);
+      $stmt->bind_param("ssi", $fullname, $phone, $id_user);
       $stmt->execute();
       $result = $stmt->get_result();
 
       if ($result->num_rows > 0) {
          return [
             'status' => 'Conflicts',
-            'message' => 'El numero de telefono ya esta en uso'
+            'message' => 'El nombre o numero de telefono ya esta en uso'
          ];
       }
       return [
@@ -71,7 +71,7 @@ class suppliersModel
 
    public function create($fullname, $phone, $address, $description, $category) {
 
-      $response = $this->validationIfExist($phone);
+      $response = $this->validationIfExist($fullname, $phone);
       if ($response['status'] !== 'Success') {
          return $response;
       }
@@ -213,7 +213,7 @@ class suppliersModel
          return $validation;
       }
 
-      $response = $this->validationIfExistForUpdate($phone, $id_supplier);
+      $response = $this->validationIfExistForUpdate($fullname, $phone, $id_supplier);
       if ($response['status'] !== 'Success') {
          return $response;
       }

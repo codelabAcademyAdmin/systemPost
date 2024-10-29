@@ -72,7 +72,6 @@ class usersModel
         ];
     }
 
-    //funcion para una password segura
     public function validationPassword($password)
     {
         $minLength = 8;

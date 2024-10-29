@@ -41,6 +41,7 @@
       
       setHttpResponseSuppliers($response['status']); 
       echo json_encode($response);
+      
    });
   
    $AppRoutes->AddRoutes('POST', 'suppliers', function() {
@@ -57,12 +58,14 @@
             ];
             setHttpResponseSuppliers($response['status']); 
             echo json_encode($response);
+            return;
          }
 
       $response = $suppliers->create($data['fullname'], $data['phone'], $data['address'], $data['description'], $data['category']);
 
       setHttpResponseSuppliers($response['status']);
       echo json_encode($response);
+
    });
 
    $AppRoutes->AddRoutes('PUT', 'suppliers', function() {

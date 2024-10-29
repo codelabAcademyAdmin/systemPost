@@ -52,6 +52,7 @@ $AppRoutes->AddRoutes('POST', 'users', function () {
             ];
             setHttpResponseUsers($response['status']);
             echo json_encode($response);
+            return;
         }
 
     $response = $users->create($data['fullname'], $data['email'], $data['pass'], $data['phone'], $data['rol']);
