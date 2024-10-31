@@ -1,5 +1,6 @@
 @import url('./ventas.css');
 @import url('./inventario.css');
+@import url('./productos.css');
 
 /* estilos de aside del login */
 
@@ -656,4 +657,11 @@
     width: 24px;
     height: 24px;
     color: #5555AD;
+}
+
+
+.container-Table-productos{
+    width: 100%;
+    height: 100%;
+    
 }

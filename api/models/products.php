@@ -417,6 +417,13 @@ class productsModel
             return $existingProduct;
         }
 
+        if ($existingProduct['product']['status'] == 'inactivo') {
+            return [
+                'status' => 'Conflict',
+                'message' => 'El producto ya está inactivo.'
+            ];
+        }
+
         $query = "UPDATE products SET status = 'inactivo' WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
