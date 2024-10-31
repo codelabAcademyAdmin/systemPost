@@ -7,7 +7,7 @@ $productos = [
       'descripcion' => 'Laptop de última generación ',
       'precio' => 1299.99,
       'cantidad' => 50,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '01/03/2024'
    ],
    [
@@ -16,7 +16,7 @@ $productos = [
       'descripcion' => 'Teléfono inteligente con cámara de ',
       'precio' => 799.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Telefonía',
       'fecha_creacion' => '15/02/2024'
    ],
    [
@@ -25,7 +25,7 @@ $productos = [
       'descripcion' => 'Auriculares con cancelación de ruido',
       'precio' => 199.99,
       'cantidad' => 200,
-      'activo' => true,
+      'categoria' => 'Audio',
       'fecha_creacion' => '20/01/2024'
    ],
    [
@@ -34,7 +34,7 @@ $productos = [
       'descripcion' => 'Reloj inteligente con GPS y monitor ',
       'precio' => 249.99,
       'cantidad' => 75,
-      'activo' => false,
+      'categoria' => 'Dispostivos portátiles',
       'fecha_creacion' => '05/03/2024'
    ],
    [
@@ -43,7 +43,7 @@ $productos = [
       'descripcion' => 'Cámara de 24MP con lente intercambiable',
       'precio' => 1499.99,
       'cantidad' => 25,
-      'activo' => true,
+      'categoria' => 'Fotografía',
       'fecha_creacion' => '10/02/2024'
    ],
    [
@@ -52,7 +52,7 @@ $productos = [
       'descripcion' => 'Tablet de 10 pulgadas con 64GB de almacenamiento',
       'precio' => 299.99,
       'cantidad' => 150,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '05/03/2024'
    ],
    [
@@ -61,7 +61,7 @@ $productos = [
       'descripcion' => 'Consola de última generación con 1TB de almacenamiento',
       'precio' => 499.99,
       'cantidad' => 80,
-      'activo' => true,
+      'categoria' => 'Videojuegos',
       'fecha_creacion' => '20/02/2024'
    ],
    [
@@ -70,7 +70,7 @@ $productos = [
       'descripcion' => 'Impresora, escáner y copiadora con WiFi',
       'precio' => 179.99,
       'cantidad' => 60,
-      'activo' => false,
+      'categoria' => 'Oficina',
       'fecha_creacion' => '15/01/2024'
    ],
    [
@@ -79,7 +79,7 @@ $productos = [
       'descripcion' => 'Monitor de 27 pulgadas con resolución 4K',
       'precio' => 349.99,
       'cantidad' => 40,
-      'activo' => true,
+      'categoria' => 'Computación',
       'fecha_creacion' => '01/03/2024'
    ],
    [
@@ -88,7 +88,7 @@ $productos = [
       'descripcion' => 'Teclado gaming con switches Cherry MX',
       'precio' => 129.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Periféricos',
       'fecha_creacion' => '10/02/2024'
    ],
    [
@@ -97,7 +97,7 @@ $productos = [
       'descripcion' => 'Disco duro portátil de 2TB con USB 3.0',
       'precio' => 89.99,
       'cantidad' => 200,
-      'activo' => true,
+      'categoria' => 'Almacenamiento',
       'fecha_creacion' => '25/02/2024'
    ],
    [
@@ -106,7 +106,7 @@ $productos = [
       'descripcion' => 'Altavoz portátil resistente al agua',
       'precio' => 79.99,
       'cantidad' => 120,
-      'activo' => true,
+      'categoria' => 'Audio',
       'fecha_creacion' => '05/01/2024'
    ],
    [
@@ -115,7 +115,7 @@ $productos = [
       'descripcion' => 'Router de doble banda con tecnología WiFi 6',
       'precio' => 149.99,
       'cantidad' => 75,
-      'activo' => false,
+      'categoria' => 'Redes',
       'fecha_creacion' => '18/02/2024'
    ],
    [
@@ -124,7 +124,7 @@ $productos = [
       'descripcion' => 'Cámara web 1080p con micrófono integrado',
       'precio' => 59.99,
       'cantidad' => 150,
-      'activo' => true,
+      'categoria' => 'Periféricos',
       'fecha_creacion' => '22/01/2024'
    ],
    [
@@ -133,7 +133,7 @@ $productos = [
       'descripcion' => 'Powerbank de 20000mAh con carga rápida',
       'precio' => 49.99,
       'cantidad' => 180,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '28/02/2024'
    ],
    [
@@ -142,7 +142,7 @@ $productos = [
       'descripcion' => 'GPU de gama alta para gaming y diseño',
       'precio' => 699.99,
       'cantidad' => 30,
-      'activo' => true,
+      'categoria' => 'Componentes',
       'fecha_creacion' => '12/03/2024'
    ],
    [
@@ -151,7 +151,7 @@ $productos = [
       'descripcion' => 'Silla ergonómica con soporte lumbar',
       'precio' => 199.99,
       'cantidad' => 50,
-      'activo' => true,
+      'categoria' => 'Muebles',
       'fecha_creacion' => '08/01/2024'
    ],
    [
@@ -160,7 +160,7 @@ $productos = [
       'descripcion' => 'Proyector portátil con resolución 1080p',
       'precio' => 279.99,
       'cantidad' => 35,
-      'activo' => false,
+      'categoria' => 'Audio/Video',
       'fecha_creacion' => '03/03/2024'
    ],
    [
@@ -169,7 +169,7 @@ $productos = [
       'descripcion' => 'Pulsera inteligente con monitor de actividad',
       'precio' => 39.99,
       'cantidad' => 250,
-      'activo' => true,
+      'categoria' => 'Dispostivos portátiles',
       'fecha_creacion' => '17/02/2024'
    ],
    [
@@ -178,7 +178,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ],
    [
@@ -187,7 +187,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ],
    [
@@ -196,7 +196,7 @@ $productos = [
       'descripcion' => 'Hub multipuerto con HDMI y lector de tarjetas',
       'precio' => 69.99,
       'cantidad' => 100,
-      'activo' => true,
+      'categoria' => 'Accesorios',
       'fecha_creacion' => '26/01/2024'
    ]
 
@@ -252,8 +252,8 @@ function formatText($text)
                <th>Descripción</th>
                <th>Precio</th>
                <th>Cantidad</th>
-               <th>Activo</th>
-               <th>Fecha de Creación</th>
+               <th>Categoría</th>
+               <th>Fecha de Actualización</th>
                <th>Acciones</th>
             </tr>
          </thead>
@@ -265,30 +265,17 @@ function formatText($text)
                   <td><?php echo  formatText($producto['descripcion']) ?></td>
                   <td><?php echo $producto['precio']; ?></td>
                   <td class="text-center"><?php echo $producto['cantidad']; ?></td>
-                  <td class="text-center">
-                     <span class="<?php echo $producto['activo'] ? 'status-active' : 'status-inactive'; ?>">
-                        <?php echo $producto['activo'] ? 'Sí' : 'No'; ?>
-                     </span>
-                  </td>
+                  <td class="text-center"><?php echo $producto['categoria']; ?></td>
                   <td class="text-center"><?php echo $producto['fecha_creacion']; ?></td>
                   <td class="text-center acciones">
-                     <button class="btn-accions edit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                           <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                           <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                        </svg>
-                     </button>
-                     <button class="btn-accions delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                           <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
-                        </svg>
-                     </button>
-                     <button class="btn-accions view">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                           <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                           <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
-                        </svg>
-                     </button>
+                     <div class="content-actions">
+                        <button class="btn-accions view">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                              <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
+                           </svg>
+                        </button>
+                     </div> 
                   </td>
                </tr>
             <?php endforeach; ?>
