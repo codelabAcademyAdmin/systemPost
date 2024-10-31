@@ -30,8 +30,7 @@ if ($request == 'GET') {
                     $response = $inventories->readProductsActive();
                 } else if ($status === 'inactivo') {
                     $response = $inventories->readProductsInactive();
-                }
-                else {
+                } else {
                     $response = $inventories->readAllProducts();
                 }
                 break;
@@ -45,8 +44,6 @@ if ($request == 'GET') {
                 }
                 break;
         }
-        
-    } 
+    }
     echo json_encode($response);
 }
-?>

@@ -14,6 +14,8 @@ class inventoriesModel {
             return ['status' => 'error', 'message' => "El estado debe ser 'activo' o 'inactivo'."];
         }
     }
+
+    
     public function readSuppliersActive($status){
         $query = "SELECT * FROM suppliers WHERE status = 'activo';";
         $result = $this->conn->query($query);
@@ -25,7 +27,7 @@ class inventoriesModel {
         return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
 
-    public function readsuppliersInactive($status){
+    public function readSuppliersInactive($status){
         $query = "SELECT * FROM suppliers WHERE status = 'inactivo';";
         $result = $this->conn->query($query);
         if (!$result) {
@@ -210,7 +212,7 @@ class inventoriesModel {
         return ['status' => 'ok', 'data' => $result->fetch_all(MYSQLI_ASSOC)];
     }
 
-    public function readsuppliersById($id) {
+    public function readSuppliersById($id) {
         if (!is_numeric($id)) {
             http_response_code(400);
             return ['status' => 'error', 'message' => "El ID del proveedor debe ser un número."];
