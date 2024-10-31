@@ -1,6 +1,8 @@
 @import url('./ventas.css');
+@import url('./inventario.css');
+@import url('./productos.css');
 
-
+@import url('./proveedores.css');
 /* estilos de aside del login */
 
 .container-aside-login {
@@ -491,7 +493,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 100px);
+    height: 530px;
     flex-direction: column;
     max-width: 1200px;
 }
@@ -565,6 +567,14 @@
     justify-content: center;
     align-items: center;
     gap: 6px;
+}
+
+.container .table-container .product-table .content-actions {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container .table-container .product-table .acciones .btn-accions {
@@ -649,3 +659,10 @@
     height: 24px;
     color: #5555AD;
 }
+
+.container-Table-productos{
+    width: 100%;
+    height: 100%;
+    
+}
+
