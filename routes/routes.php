@@ -4,7 +4,7 @@
         'index',
         'ventas',
         'proveedores',
-        'inventario'
+        'inventario',
         'productos',
 
     );
