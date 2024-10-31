@@ -1,7 +1,11 @@
 <?php
+session_start();
 
-session_start(); // Reanudar la sesión existente
-session_unset(); // Eliminar todas las variables de sesión
-session_destroy(); // Destruir la sesión
+// Comprobar si hay una sesión activa
+if (isset($_SESSION['user'])) {
+    // Destruir la sesión
+    session_destroy();
+    header("Location: ../../login.php");
+}
 
 ?>
