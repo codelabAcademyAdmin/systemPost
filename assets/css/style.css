@@ -2,6 +2,7 @@
 @import url('./inventario.css');
 @import url('./productos.css');
 
+@import url('./proveedores.css');
 /* estilos de aside del login */
 
 .container-aside-login {
@@ -659,9 +660,9 @@
     color: #5555AD;
 }
 
-
 .container-Table-productos{
     width: 100%;
     height: 100%;
     
 }
+
