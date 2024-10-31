@@ -1,11 +1,16 @@
 .page-proveedores{
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto !important;
+    overflow-x: hidden;
 }
 
 .page-proveedores .container-header-proveedores{
     width: 100%;
-    height: 200px;
     margin-top: 50px;
     margin-left: 60px;
     display: flex;
@@ -14,7 +19,6 @@
 
 .page-proveedores .container-header-proveedores .content-info-proveedores{
     width: 60%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -34,7 +38,6 @@
 
 .page-proveedores .container-header-proveedores  .content-counter-proveedores{
     width: 40%;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: start;
@@ -82,7 +85,6 @@
 
 .page-proveedores .container-table-proveedores{
     width: 100%;
-    height: calc(100vh - 300px);
     display: flex;
     justify-content: center;
     align-items: center;
