@@ -1,5 +1,5 @@
 @import url('./ventas.css');
-
+@import url('./inventario.css');
 @import url('./productos.css');
 
 /* estilos de aside del login */
@@ -492,7 +492,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 500px;
+    height: 530px;
     flex-direction: column;
     max-width: 1200px;
 }
@@ -566,6 +566,14 @@
     justify-content: center;
     align-items: center;
     gap: 6px;
+}
+
+.container .table-container .product-table .content-actions {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container .table-container .product-table .acciones .btn-accions {

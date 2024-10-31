@@ -3,7 +3,7 @@
         'prueba',
         'index',
         'ventas',
-
+        'inventario'
         'productos',
     );
     foreach($listRoutes as $route) {
