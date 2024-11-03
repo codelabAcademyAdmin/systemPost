@@ -3,11 +3,15 @@
     <div class="container-header-proveedores">
         <div class="content-info-proveedores">
             <div class="content-title-proveedores">
-            Proveedores
+                Proveedores
             </div>
             <div class="content-description-proveedores">
-            El módulo de proveedores gestiona la información y relaciones de los proveedores, permitiendo su registro, modificación, eliminación y consulta. Facilita el seguimiento de productos y servicios, así como la gestión de contratos, asegurando un control adecuado de la cadena de suministro.
+                El módulo de proveedores gestiona la información y relaciones de los proveedores, permitiendo su registro, modificación, eliminación y consulta. Facilita el seguimiento de productos y servicios, así como la gestión de contratos, asegurando un control adecuado de la cadena de suministro.
             </div>
+            <div class="container-create-button">
+                <button class="create-button">+ Crear</button>
+            </div>
+
         </div>
         <div class="content-counter-proveedores">
             <div class="content-info-counter-proveedores">
@@ -27,6 +31,8 @@
             </div>
         </div>
     </div>
+
+    
 
     <div class="container-table-proveedores">
         <div class="table-proveedores">

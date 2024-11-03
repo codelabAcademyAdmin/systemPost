@@ -94,3 +94,22 @@
     width: 1200px;
     height: 550px;
 }
+
+.page-proveedores .container-create-button {
+    margin-top: 30px;
+}
+
+.page-proveedores .container-create-button .create-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #6668C5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.page-proveedores .container-create-button .create-button:hover {
+    background-color: #99A5E0;
+}
