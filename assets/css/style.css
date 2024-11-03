@@ -3,6 +3,7 @@
 @import url('./productos.css');
 
 @import url('./proveedores.css');
+@import url('./filter.css');
 /* estilos de aside del login */
 
 .container-aside-login {
