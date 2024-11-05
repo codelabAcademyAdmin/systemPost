@@ -9,12 +9,10 @@
             El módulo de productos gestiona la información de los productos del sistema, permitiendo registrar, actualizar, eliminar y consultar sus datos de forma eficiente. Facilita la organización del inventario y garantiza que los usuarios puedan acceder a detalles clave de cada producto, como nombre, stock, precio y categoría.
             </div>
             <div class="btn-add-product">
-                <div>
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-                <div >
-                    Crear
-                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-btn-add">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <div >Crear</div>
             </div>
         </div>
         <div class="content-counter">
