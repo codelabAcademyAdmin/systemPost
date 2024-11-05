@@ -9,7 +9,7 @@
                 El módulo de proveedores gestiona la información y relaciones de los proveedores, permitiendo su registro, modificación, eliminación y consulta. Facilita el seguimiento de productos y servicios, así como la gestión de contratos, asegurando un control adecuado de la cadena de suministro.
             </div>
             <div class="container-create-button">
-                <button class="create-button">+ Crear</button>
+                <button class="create-button" onclick="toggleModal()" >+ Crear</button>
             </div>
 
         </div>
@@ -32,11 +32,11 @@
         </div>
     </div>
 
-    
-
     <div class="container-table-proveedores">
         <div class="table-proveedores">
             <?php require('./components/Table/Table.proveedores.php') ?>   
         </div>
     </div>
 </div>
+
+<?php require('./components/Modal/Modal.proveedor.php') ?>

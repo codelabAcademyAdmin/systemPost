@@ -113,3 +113,26 @@
 .page-proveedores .container-create-button .create-button:hover {
     background-color: #99A5E0;
 }
+
+.content-info form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.content-info .form-row {
+    width: 100%;
+    display: flex;
+    gap: 30px;
+}
+
+input[type="text"], input[type="email"] {
+    width: 45%;
+    outline: none;
+    padding: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    border: 1px solid #dfdede;
+    border-radius: 8px;
+}
