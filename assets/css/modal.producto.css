@@ -1,0 +1,58 @@
+#product-form {
+   display: flex;
+   gap: 15px;
+}
+
+.container-form-modal{
+   margin: 10px ;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+.input-modal-product {
+   width: 100%;
+   padding: 12px;
+   border: 1px solid #ddd;
+   border-radius: 5px;
+   font-size: 16px;
+   color: #333;
+   transition: border-color 0.3s;
+}
+
+.input-modal-product::placeholder {
+   color: #888;
+   font-weight: bold;
+}
+
+.content-buttons-product {
+   display: flex;
+   justify-content: end;
+   margin-top: 10px;
+}
+
+.btn-modal {
+   margin: 10px 5px;
+   text-align: center;
+   font-size: 16px;
+   border-radius: 5px;
+   font-weight: bold;
+   cursor: pointer;
+   padding: 10px 25px ;
+   transition: background-color 0.3s;
+}
+
+.button-cancel-product {
+   background-color: #dc3545;
+   color: white;
+}
+.button-cancel-product:hover {
+   background-color: #c82333;
+}
+
+.button-confirm-product {
+   background-color: #5555ad;
+   color: white;
+}
+.button-confirm-product:hover {
+   background-color: #5050c7;
+}
