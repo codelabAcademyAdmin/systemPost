@@ -47,3 +47,8 @@ function toggleDropdown() {
     const dropdown = document.querySelector('.dropdown-content');
     dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 }
+
+function toggleModal() {
+    const modal = document.querySelector('.content-modal');
+    modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+}

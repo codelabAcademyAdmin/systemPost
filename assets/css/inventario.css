@@ -11,16 +11,15 @@
 
 .page-inventario .container-header-inventario{
     width: 100%;
-    height: 200px;
     margin-top: 30px;
     margin-left: 60px;
     display: flex;
     flex-direction: row;
+    padding-bottom: 15px;
 }
 
 .page-inventario .container-header-inventario .content-info-inventario{
     width: 60%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -40,7 +39,6 @@
 
 .page-inventario .container-header-inventario .content-counter-inventario{
     width: 40%;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: start;
@@ -102,11 +100,9 @@
 
 .page-inventario .container-table {
     width: 100%;
-    height: calc(100vh - 300px);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 50px;
 }
 
 .page-inventario .container-table .table-inventario {
