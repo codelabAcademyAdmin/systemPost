@@ -12,6 +12,14 @@ class productsModel
 
     public function create($name, $description, $stock, $category, $product_price, $suppliers)
     {
+
+        if (empty($name) || empty($stock) || empty($category) || empty($product_price)) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'Ay campos vacios'
+            ];
+        }
+
         $existingProduct = $this->checkIfProductExists($name);
         if ($existingProduct) {
             return [
@@ -20,19 +28,26 @@ class productsModel
             ];
         }
 
-        
+
         $validationResult = $this->validateSuppliers($suppliers);
         if ($validationResult['status'] !== 'Success') {
             return $validationResult;
         }
-        
-        if($stock < 0){
+
+        if ($stock < 0) {
             return [
                 'status' => 'Not Valid',
                 'message' => 'Cantidad ingresada en el Stock no valida'
             ];
         }
-        
+
+        if ($product_price < 0) {
+            return [
+                'status' => 'Not Valid',
+                'message' => 'Precio del producto no valido'
+            ];
+        }
+
         $query = "INSERT INTO products (name, description, stock, category, product_price) 
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
@@ -198,8 +213,6 @@ class productsModel
         }
     }
 
-
-
     public function readById($id_product)
     {
         if (!is_numeric($id_product)) {
@@ -235,6 +248,40 @@ class productsModel
         ];
     }
 
+    public function getFiltredProducts($status)
+    {
+
+        if($status !== 'activo' && $status !== 'inactivo'){
+            return [
+                'status' => 'Not Valid',
+                'message' => 'El estado ingresado no es valido'
+            ];
+        }
+        $query = "SELECT * FROM products WHERE status = ?";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return [
+                'status' => 'Error',
+                'message' => 'Error al preparar la consulta: ' . $this->conn->error
+            ];
+        }
+        $stmt->bind_param("s", $status);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            return [
+                'status' => 'Not Found',
+                'message' => "No se encontró ningún producto con status = ".$status
+            ];
+        }
+
+        return [
+            'status' => 'Success',
+            'products' => $result->fetch_all(MYSQLI_ASSOC)
+        ];
+    }
+
+
     public function update($id_product, $name, $description, $stock, $category, $product_price, $suppliers)
     {
         if (!is_numeric($id_product)) {
@@ -249,7 +296,7 @@ class productsModel
             return $existingProduct;
         }
 
-        if($stock < 0){
+        if ($stock < 0) {
             return [
                 'status' => 'Not Valid',
                 'message' => 'Cantidad ingresada en el Stock no valida'
@@ -314,7 +361,7 @@ class productsModel
 
         $existingProduct = $this->readById($id_product);
         if ($existingProduct['status'] !== 'Success') {
-            return $existingProduct; 
+            return $existingProduct;
         }
 
         if ($existingProduct['product']['status'] == 'activo') {
@@ -370,6 +417,13 @@ class productsModel
             return $existingProduct;
         }
 
+        if ($existingProduct['product']['status'] == 'inactivo') {
+            return [
+                'status' => 'Conflict',
+                'message' => 'El producto ya está inactivo.'
+            ];
+        }
+
         $query = "UPDATE products SET status = 'inactivo' WHERE id_product = ?";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
@@ -395,4 +449,6 @@ class productsModel
             ];
         }
     }
+
+    
 }

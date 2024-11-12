@@ -1,0 +1,112 @@
+.page-inventario{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+}
+
+.page-inventario .container-header-inventario{
+    width: 100%;
+    margin-top: 30px;
+    margin-left: 60px;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 15px;
+}
+
+.page-inventario .container-header-inventario .content-info-inventario{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 8px;
+    padding-right: 20px;
+}
+
+.page-inventario .container-header-inventario .content-info-inventario .content-title-inventario{
+    width: 100%;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.page-inventario .container-header-inventario .content-info-inventario .content-description-inventario{
+    width: 100%;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario{
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario .content-info-counter-inventario{
+    width: 270px;
+    height: 150px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    background-color: #f1f5fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario .content-info-counter-inventario .info-counter-inventario{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario .content-info-counter-inventario .info-counter-inventario .icono-counter-inventario{
+    width: 50px;
+    height: 50px;
+    color: #779fe5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario .content-info-counter-inventario .info-counter-inventario .number-counter-inventario{
+    width: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.page-inventario .container-header-inventario .content-counter-inventario .content-info-counter-inventario .title-counter-inventario{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.table-inventario{
+    width: 100%;
+    display: flex;
+}
+
+.page-inventario .container-table {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-inventario .container-table .table-inventario {
+    width: 1200px;
+    height: 550px;
+}
+

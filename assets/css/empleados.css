@@ -1,0 +1,96 @@
+.page-empleados{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+}
+
+.page-empleados .container-header-empleados{
+    width: 100%;
+    margin-top: 50px;
+    margin-left: 60px;
+    display: flex;
+    flex-direction: row;
+}
+
+.page-empleados .container-header-empleados .content-info-empleados{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 8px;
+    padding-right: 20px;
+}
+
+.page-empleados .container-header-empleados .content-info-empleados .content-title-empleados{
+    width: 100%;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.page-empleados .container-header-empleados .content-info-empleados .content-description-empleados{
+    width: 100%;
+}
+
+.page-empleados .container-header-empleados  .content-counter-empleados{
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.page-empleados .container-header-empleados .content-counter-empleados .content-info-counter-empleados{
+    width: 270px;
+    height: 150px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    background-color: #f1f5fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.page-empleados .container-header-empleados .content-counter-empleados .content-info-counter-empleados .info-counter-empleados{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.page-empleados .container-header-empleados .content-counter-empleados .content-info-counter-empleados .info-counter-empleados .icono-counter-empleados{
+    width: 50px;
+    height: 50px;
+    color: #779fe5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-empleados .container-header-empleados .content-counter-empleados .content-info-counter-empleados  .number-counter-empleados{
+    width: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.page-empleados .container-table-empleados{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-empleados .container-table-empleados .table-empleados{
+    width: 1200px;
+    height: 550px;
+}
